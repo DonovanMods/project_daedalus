@@ -6,14 +6,16 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
-      <%= yield %>
+  <body class="bg-fixed bg-topo-light dark:bg-topo-dark bg-slate-200 dark:bg-slate-800 prose prose-slate dark:prose-invert lg:prose-xl min-h-screen text-slate-800 dark:text-slate-300">
+    <header class="header mx-auto px-5 flex-auto flex-col">Heading goes here</header>
+    <main class="w-screen flex flex-row justify-center">
+      <div class="container paper bg-slate-100 dark:bg-slate-900 mt-28 mb-12 p-2 rounded">
+        <%= yield %>
+      </div>
     </main>
   </body>
 </html>

@@ -13,6 +13,12 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
     },
+    extend: {
+      backgroundImage: {
+        "topo-light": "url('/bg-topography-light.svg')",
+        "topo-dark": "url('/bg-topography-dark.svg')"
+      }
+    }
   },
   plugins: [
     require('@tailwindcss/forms'),

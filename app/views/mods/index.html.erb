@@ -1,0 +1,23 @@
+<div class="container flex-auto flex-col">
+  <h1>Mod Listing</h1>
+  <table class="table-auto">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th class="invisible md:visible">Version</th>
+        <th>Author</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @mods.each do |mod| %>
+        <tr>
+          <td><%= link_to mod.data[:name], mod.data[:fileURL] %></td>
+          <td class="invisible md:visible"><%= "#{mod.data[:version]} (#{mod.data[:compatibility]})" %></td>
+          <td><%= mod.data[:author] %></td>
+          <td><%= mod.data[:description] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
