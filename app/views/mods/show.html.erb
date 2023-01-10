@@ -1,0 +1,30 @@
+<section class="px-5" data-controller="mods">
+  <div class="mt-5 flex flex-auto items-center justify-between">
+    <div class="min-w-0 flex-1 font-bold text-2xl md:text-4xl"><%= @mod.name %></div>
+    <button
+      data-action="mods#download"
+      data-mods-url-param="<%= @mod.url %>"
+      data-mods-file-name-param="<%= @mod.filename %>"
+      type="button"
+      class="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+      DOWNLOAD
+    </button>
+  </div>
+
+  <div class="flex flex-auto items-center justify-between">
+    <div>By <%= @mod.author %></div>
+    <div><%= @mod.version_string %> (<%= @mod.compatibility %>)</div>
+  </div>
+  <div class="float-right"><%= @mod.updated_string %></div>
+
+  <div class="mt-12">
+    <div class="pb-2 font-bold">Description</div>
+    <div class="pb-5 pl-5"><%= @mod.description %></div>
+    <div class="pb-2 font-bold">Long Description</div>
+    <div class="pb-5 pl-5"><%= @mod.long_description %></div>
+  </div>
+
+  <button data-action="mods#goToMods" type="button" class="float-right mb-5 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+    Take Me Back
+  </button>
+</section>

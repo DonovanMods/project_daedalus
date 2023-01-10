@@ -1,21 +1,31 @@
-<div class="container flex-auto flex-col">
+<div data-controller="mods" class="flex-auto flex-col">
   <h1>Mod Listing</h1>
   <table class="table-auto">
     <thead>
       <tr>
-        <th>Name</th>
-        <th class="invisible md:visible">Version</th>
-        <th>Author</th>
-        <th>Description</th>
+        <th colspan="2"><a class="no-underline font-bold" href="<%= mods_path(sort: "name") %>">Name</a></th>
+        <th class="invisible sm:visible">Version</th>
+        <th><a class="no-underline font-bold" href="<%= mods_path(sort: "author") %>">Author</a></th>
+        <th class="invisible lg:visible">Description</th>
       </tr>
     </thead>
     <tbody>
       <% @mods.each do |mod| %>
-        <tr>
-          <td><%= link_to mod.data[:name], mod.data[:fileURL] %></td>
-          <td class="invisible md:visible"><%= "#{mod.data[:version]} (#{mod.data[:compatibility]})" %></td>
-          <td><%= mod.data[:author] %></td>
-          <td><%= mod.data[:description] %></td>
+        <tr data-action="click->mods#goToMod" data-mods-id-param="<%= mod.id %>" class="hover:bg-slate-700 cursor-pointer">
+          <td><%= mod.name %></td>
+          <td>
+            <button
+              data-action="mods#download"
+              data-mods-url-param="<%= mod.url %>"
+              data-mods-file-name-param="<%= mod.filename %>"
+              type="button"
+              class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-2 py-1 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              Download
+            </button>
+          </td>
+          <td class="invisible sm:visible"><%= mod.version_string %></td>
+          <td><%= mod.author %></td>
+          <td class="invisible lg:visible"><%= mod.description %></td>
         </tr>
       <% end %>
     </tbody>
