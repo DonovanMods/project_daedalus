@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.1.2"
+ruby "3.1.3"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
@@ -11,8 +11,11 @@ gem "rails", "~> 7.0.4"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 
-# Use sqlite3 as the database for Active Record
+# Use sqlite3 as the database for Active Record in Test and Development
 gem "sqlite3", "~> 1.4"
+
+# Use postgresql as the database for Active Record in Production
+gem "pg", "~> 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
@@ -74,4 +77,6 @@ group :development do
   # gem "spring"
 end
 
+gem "dotenv-rails", "~> 2.8"
 gem "google-cloud-firestore", "~> 2.8"
+gem "google-cloud-storage", "~> 1.44"
