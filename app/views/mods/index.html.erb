@@ -1,5 +1,5 @@
 <div data-controller="mods" class="flex-auto flex-col">
-  <h1>Mod Listing</h1>
+  <h1 class="text-blue-500">Mods</h1>
   <table class="table-auto">
     <thead>
       <tr>
@@ -11,7 +11,7 @@
     </thead>
     <tbody>
       <% @mods.each do |mod| %>
-        <tr data-action="click->mods#goToMod" data-mods-id-param="<%= mod.id %>" class="hover:bg-slate-700 cursor-pointer">
+        <tr data-action="click->mods#goToMod" data-mods-id-param="<%= mod.id %>" class="hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer">
           <td><%= mod.name %></td>
           <td>
             <button
