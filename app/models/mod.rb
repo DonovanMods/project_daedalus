@@ -4,10 +4,9 @@ class Mod
   include ActiveModel::Model
 
   SORTKEYS = %w[name author].freeze
+  ATTRIBUTES = %i[id name author version compatibility description long_description file_type url image_url created_at updated_at].freeze
 
-  %i[id name author version compatibility description long_description file_type url image_url created_at updated_at].each do |attr|
-    attr_accessor attr
-  end
+  ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def filename
     url.split("/").last

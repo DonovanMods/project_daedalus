@@ -1,17 +1,17 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  goToMods() {
-    window.location.href = "/mods"
+  navigateTo({ params }) {
+    window.location.href = params.path;
   }
 
-  goToMod({ params }) {
-    window.location.href = `/mods/${params.id}`
-  }
-
-  download({ params }) {
+  download(event) {
+    const params = event.params
     const [url, fileName] = [params.url, params.fileName];
     const anchor = document.createElement("a");
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
 
     anchor.href = url;
     anchor.download = fileName;
