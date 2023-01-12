@@ -3,9 +3,8 @@ postgres: &postgres
   adapter:  postgresql
   encoding: unicode
   port:     <%= ENV.fetch("POSTGRESQL_PORT", "5432") %>
-  pool:     <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV.fetch("PRODUCTION_DB_USERNAME") %>
-  password: <%= Rails.application.credentials.gcp[:db_password] %>
+  pool:     <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  timeout:  <%= ENV.fetch("RAILS_DB_TIMEOUT", 5000) %>
   host:     <%= ENV['POSTGRESQL_HOST'] %>
 
 sqlite: &sqlite
@@ -39,4 +38,6 @@ production:
   <<: *postgres
   adapter: postgresql
   database: <%= ENV.fetch("PRODUCTION_DB_NAME") %>
+  username: <%= ENV.fetch("PRODUCTION_DB_USER") %>
+  password: <%= Rails.application.credentials.gcp[:db_password] %>
   host: "<%= ENV.fetch('DB_SOCKET_DIR', '/cloudsql') %>/<%= ENV.fetch('CLOUD_SQL_CONNECTION_NAME') %>"
