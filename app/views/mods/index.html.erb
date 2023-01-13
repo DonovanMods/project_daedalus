@@ -1,33 +1,18 @@
-<div data-controller="mods" class="flex-auto flex-col">
-  <h1 class="text-blue-500">Mods</h1>
-  <table class="table-auto">
-    <thead>
-      <tr>
-        <th colspan="2"><a class="no-underline font-bold" href="<%= mods_path(sort: "name") %>">Name</a></th>
-        <th class="invisible sm:visible">Version</th>
-        <th><a class="no-underline font-bold" href="<%= mods_path(sort: "author") %>">Author</a></th>
-        <th class="invisible lg:visible">Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @mods.each do |mod| %>
-        <tr data-action="click->mods#navigateTo" data-mods-path-param="<%= mod_path(mod.id) %>" class="z-0 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer">
-          <td><%= mod.name %></td>
-          <td>
-            <button
-              data-action="mods#download"
-              data-mods-url-param="<%= mod.url %>"
-              data-mods-file-name-param="<%= mod.filename %>"
-              type="button"
-              class="z-10 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-2 py-1 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-              Download
-            </button>
-          </td>
-          <td class="invisible sm:visible"><%= mod.version_string %></td>
-          <td><%= mod.author %></td>
-          <td class="invisible lg:visible"><%= mod.description %></td>
-        </tr>
+<div data-controller="mods" class="container">
+  <div class="md:flex md:flex-1">
+    <div class="px-2 md:flex md:flex-auto md:items-middle md:justify-between">
+      <h1 class="text-blue-500">Mods</h1>
+      <%= form_with(url: mods_path, method: :get, data: {turbo_frame: "mods", turbo_action: "advance"}) do |form| %>
+        <div class="flex items-bottom space-x-3">
+          <%= form.text_field :query, placeholder: "Search", class: "py-1 px-3 text-slate-500 rounded border ring-0 focus:ring-4 focus:ring-blue-500 focus:shadow-none focus:border-blue-500 focus:outline-none" %>
+          <%= form.submit 'Search', class: "py-1 px-3 font-medium bg-blue-500 text-slate-900 rounded flex items-center cursor-pointer hover:bg-blue-400 focus:ring-4 ring-0 focus:ring-blue-500" %>
+        </div>
       <% end %>
-    </tbody>
-  </table>
+    </div>
+  </div>
+  <% if @mods.nil? %>
+    No Mods match your query, please try a different search
+  <% else %>
+    <%= render "mods", mods: @mods %>
+  <% end %>
 </div>

@@ -4,7 +4,14 @@ class ModsController < ApplicationController
   before_action :fetch_mods, only: %i[index show]
 
   def index
-    @mods.sort_by! { |mod| [mod.send(params[:sort]), mod.name] } if params.key?(:sort) && Mod::SORTKEYS.include?(params[:sort])
+    @mods = find_mods(params[:query]) if params[:query].present?
+    params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(params[:sort]), mod.name] }
+
+    if turbo_frame_request?
+      render partial: "mods", locals: { mods: @mods }
+    else
+      render :index
+    end
   end
 
   def show
@@ -12,6 +19,15 @@ class ModsController < ApplicationController
   end
 
   private
+
+  def find_mods(query)
+    @mods.find_all do |mod|
+      mod.name =~ /#{query}/i ||
+        mod.author =~ /#{query}/i ||
+        mod.description =~ /#{query}/i ||
+        mod.long_description =~ /#{query}/i
+    end
+  end
 
   def firestore
     @firestore ||= Firestore.new
