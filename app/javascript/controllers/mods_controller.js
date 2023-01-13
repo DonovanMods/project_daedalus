@@ -20,4 +20,11 @@ export default class extends Controller {
     anchor.click();
     document.body.removeChild(anchor);
   }
+
+  search(event) {
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      event.target.form.requestSubmit();
+    }, 200)
+  }
 }
