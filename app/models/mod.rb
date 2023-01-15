@@ -4,7 +4,7 @@ class Mod
   include ActiveModel::Model
 
   SORTKEYS = %w[name author].freeze
-  ATTRIBUTES = %i[id name author version compatibility description long_description file_type url image_url created_at updated_at].freeze
+  ATTRIBUTES = %i[id name author version compatibility description long_description file_type url image_url readme_url created_at updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 

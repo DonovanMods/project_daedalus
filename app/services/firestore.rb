@@ -21,6 +21,7 @@ class Firestore
         file_type: mod.data[:fileType],
         url: mod.data[:fileURL],
         image_url: mod.data[:imageURL],
+        readme_url: mod.data[:readmeURL],
         created_at: mod.create_time,
         updated_at: mod.update_time
       )
