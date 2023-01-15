@@ -82,3 +82,7 @@ gem "dotenv-rails", "~> 2.8"
 gem "google-cloud-firestore", "~> 2.8"
 gem "google-cloud-storage", "~> 1.44"
 gem "redcarpet", "~> 3.5"
+
+gem "bundler-audit", "~> 0.9.1"
+
+gem "brakeman", "~> 5.4"

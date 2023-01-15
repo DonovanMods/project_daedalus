@@ -4,8 +4,8 @@ class ModsController < ApplicationController
   before_action :fetch_mods, only: %i[index show]
 
   def index
-    @mods = find_mods(params[:query]) if params[:query].present?
-    params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(params[:sort]), mod.name] }
+    @mods = find_mods(sanitize(params[:query])) if params[:query].present?
+    params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(sanitize(params[:sort])), mod.name] }
 
     if turbo_frame_request?
       render partial: "mods", locals: { mods: @mods }
