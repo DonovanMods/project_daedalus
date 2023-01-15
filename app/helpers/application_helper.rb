@@ -8,6 +8,8 @@ module ApplicationHelper
   end
 
   def markdown(text)
+    return if text.blank?
+
     coderayified = CodeRayify.new(filter_html: true, hard_wrap: true)
     options = {
       fenced_code_blocks: true,
