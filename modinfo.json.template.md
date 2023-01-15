@@ -12,7 +12,7 @@
       "fileType": "pak",
       "fileURL": "the direct download URL for your mod (e.g. https://github.com/your-repo/Icarus-Mods/raw/your-branch/your-mod_P.pak)",
       "imageURL": "A URL to an image that will be displayed in the mod list (optional)",
-      "readmdURL": "A link to your mod's README"
+      "readmeURL": "A link to your mod's README"
     },
     {
       "name": "Second Mod Name",
