@@ -3,7 +3,7 @@
 module ApplicationHelper
   class CodeRayify < Redcarpet::Render::HTML
     def block_code(code, language)
-      CodeRay.scan(code, language).div
+      CodeRay.scan(code, language || "text").div
     end
   end
 
@@ -11,6 +11,7 @@ module ApplicationHelper
     return if text.blank?
 
     coderayified = CodeRayify.new(filter_html: true, hard_wrap: true)
+
     options = {
       fenced_code_blocks: true,
       no_intra_emphasis: true,
