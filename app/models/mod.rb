@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "net/http"
+
 class Mod
   include ActiveModel::Model
 
@@ -7,6 +9,14 @@ class Mod
   ATTRIBUTES = %i[id name author version compatibility description long_description file_type url image_url readme_url created_at updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
+
+  def details
+    return Net::HTTP.get(URI(readme_url)).gsub(/^#\s+.*$/, "").strip if readme_url.present?
+
+    long_description if long_description.present?
+
+    description
+  end
 
   def filename
     url.split("/").last
