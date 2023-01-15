@@ -7,8 +7,8 @@ Rails.application.routes.draw do
   get "/mods", to: "mods#index", as: "mods"
   get "/mods/:id", to: "mods#show", as: "mod"
 
-  # get "/home", to: "home#index"
+  get "/home", to: "home#index"
 
   # Defines the root path route ("/")
-  root "home#index"
+  root "mods#index"
 end
