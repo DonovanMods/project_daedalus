@@ -77,6 +77,8 @@ group :development do
   # gem "spring"
 end
 
+gem "coderay", "~> 1.1"
 gem "dotenv-rails", "~> 2.8"
 gem "google-cloud-firestore", "~> 2.8"
 gem "google-cloud-storage", "~> 1.44"
+gem "redcarpet", "~> 3.5"

@@ -17,6 +17,6 @@ class Mod
   end
 
   def version_string
-    "v#{version}"
+    "v#{version} (#{compatibility})"
   end
 end
