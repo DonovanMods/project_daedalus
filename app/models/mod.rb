@@ -10,10 +10,14 @@ class Mod
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
-  def details
-    return Net::HTTP.get(URI(readme_url)).gsub(/^#\s+.*$/, "").strip if readme_url.present?
+  def readme
+    @readme ||= Net::HTTP.get(URI(readme_url)).gsub(/^#\s+.*$/, "").strip if readme_url.present?
+  end
 
-    long_description if long_description.present?
+  def details
+    return readme if readme.present?
+
+    return long_description if long_description.present?
 
     description
   end
