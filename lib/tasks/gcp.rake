@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength
 namespace :gcp do
   desc "Build GCP Services"
   task build: :environment do
@@ -28,3 +29,4 @@ namespace :gcp do
   desc "Build and Deploy GCP Services"
   task release: %i[build update]
 end
+# rubocop:enable Layout/LineLength
