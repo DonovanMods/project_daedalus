@@ -11,8 +11,8 @@
       "description": "A description of what your mod does",
       "fileType": "pak",
       "fileURL": "the direct download URL for your mod (e.g. https://github.com/your-repo/Icarus-Mods/raw/your-branch/your-mod_P.pak)",
-      "imageURL": "A URL to an image that will be displayed in the mod list (optional)",
-      "readmeURL": "A link to your mod's README"
+      "imageURL": "A direct download URL to an image that will be displayed in the mod list (optional)",
+      "readmeURL": "A link to the 'raw' version of your mod's README"
     },
     {
       "name": "Second Mod Name",
@@ -34,7 +34,8 @@
 - The file should be named `modinfo.json` and live in the top-level directory of your mods repository.
 - "mods" is an Array of Objects (even if you only have one mod)
 - Please try to list all the mods in a repository in a single `modinfo.json` file.
-- You can generally get the "direct download URL" by right-clicking the "download" button and selecting "copy link"
+- By "direct download URL", we mean the link that you would find by right-clicking the "download" button and selecting "copy link"
+- For text files (README, etc.), use the link given when you click on "raw" while viewing that page.
 
 ### fields
 
@@ -45,5 +46,5 @@
 - `"description"`: A description of what your mod does
 - `"fileType"`: The type of file your mod is (can be "pak" or "zip" but will default to "pak" if not specified)
 - `"fileURL"`: The full direct download URL for your mod (either the .zip or .pak file)
-- `"readmeURL"`: A link to your mod's README (optional)
-- `"imageURL"`: A URL to an image that will be displayed in the mod list (optional)
+- `"readmeURL"`: A 'raw' link to your mod's README (optional)
+- `"imageURL"`: A direct download URL to an image that will be displayed in the mod list (optional)
