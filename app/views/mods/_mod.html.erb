@@ -1,4 +1,4 @@
-<tr id="<%= dom_id mod %>" data-action="click->mods#navigateTo" data-mods-path-param="<%= mod_path(mod.id) %>" class="z-0 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer">
+<tr id="<%= dom_id mod %>" data-action="click->mods#navigateTo" data-mods-path-param="<%= mod_path(mod.id) %>" class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700">
   <td><%= mod.name %></td>
   <td>
     <button
@@ -6,7 +6,7 @@
       data-mods-url-param="<%= mod.url %>"
       data-mods-file-name-param="<%= mod.filename %>"
       type="button"
-      class="z-10 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-2 py-1 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+      class="z-10 inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
       Download
     </button>
   </td>

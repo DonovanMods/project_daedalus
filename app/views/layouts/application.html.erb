@@ -10,12 +10,12 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-fixed min-w-screen min-h-screen bg-topo-light dark:bg-topo-dark prose prose-slate dark:prose-invert lg:prose-xl text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800">
+  <body class="min-h-screen prose bg-fixed min-w-screen bg-topo-light dark:bg-topo-dark prose-slate dark:prose-invert lg:prose-xl text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800">
     <header class="w-screen">
       <%= render "layouts/header" %></header>
     </header>
-    <main class="w-screen flex flex-row justify-center">
-      <div class="container paper bg-slate-100 dark:bg-slate-900 mt-5 mb-12 p-2 rounded">
+    <main class="flex flex-row justify-center w-screen">
+      <div class="container p-2 mt-5 mb-12 rounded paper bg-slate-100 dark:bg-slate-900">
         <%= yield %>
       </div>
     </main>
