@@ -1,0 +1,9 @@
+<% flash.each do |type, message| %>
+  <% case type.to_sym %>
+  <% when :error %>
+    <div class="w-screen px-4 py-0.5 text-red-700 bg-red-100 border-l-4 border-red-500" role="<%= type %>">
+      <p class="font-bold">Whoops!</p>
+      <p><%= message %></p>
+    </div>
+  <% end %>
+<% end %>

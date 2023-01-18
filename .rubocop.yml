@@ -35,8 +35,14 @@ Metrics/BlockLength:
     - 'Guardfile'
     - '**/*_spec.rb'
 
+Metrics/CyclomaticComplexity:
+  Max: 20
+
 Metrics/MethodLength:
   Max: 25
+
+Metrics/PerceivedComplexity:
+  Max: 20
 
 ## Rails
 
