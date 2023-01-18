@@ -5,6 +5,12 @@ export default class extends Controller {
     window.location.href = params.path;
   }
 
+  navigateToAuthor(event) {
+    const author = event.target.value;
+    const path = window.location.origin;
+    window.location.href = `${path}/mods/${author}`;
+  }
+
   download(event) {
     const params = event.params
     const [url, fileName] = [params.url, params.fileName];
@@ -26,5 +32,9 @@ export default class extends Controller {
     this.timeout = setTimeout(() => {
       event.target.form.requestSubmit();
     }, 200)
+  }
+
+  submit(event) {
+    event.target.form.requestSubmit();
   }
 }

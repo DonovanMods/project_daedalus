@@ -2,6 +2,12 @@
   <div class="flex flex-1">
     <div class="flex justify-between flex-auto md:px-2 items-middle">
       <h1><%= link_to 'Icarus Mods', mods_path, class: "font-extrabold text-blue-700 no-underline dark:text-blue-500" %></h1>
+      <div class="invisible mb-3 md:visible md:mt-4 xl:w-72 items-bottom">
+        <%= collection_select nil, nil, @authors, :parameterize, :to_s,
+                              { include_blank: "Filter By Name" },
+                              data: { action: "change->mods#navigateToAuthor" },
+                              class: "form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" %>
+      </div>
       <%= form_with(url: current_path, method: :get, data: {turbo_frame: "mods", turbo_action: "advance"}) do |form| %>
         <div class="flex space-x-3 items-bottom">
           <%= form.text_field :query, placeholder: "Start Typing to Search", data: {action: "input->mods#search"}, class: "px-2 py-2 border rounded md:mt-4 md:mr-2 text-slate-500 ring-0 focus:ring-4 focus:ring-blue-500 focus:shadow-none focus:border-blue-500 focus:outline-none" %>

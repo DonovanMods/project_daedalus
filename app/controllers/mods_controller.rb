@@ -59,5 +59,6 @@ class ModsController < ApplicationController
 
   def fetch_mods
     @mods = firestore.mods
+    @authors = @mods.map(&:author).uniq.sort
   end
 end
