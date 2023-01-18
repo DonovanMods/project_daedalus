@@ -26,6 +26,10 @@ class Mod
     url.split("/").last
   end
 
+  def slug
+    name.parameterize
+  end
+
   def updated_string
     "Last Updated on #{updated_at.strftime('%B %d, %Y')}"
   end

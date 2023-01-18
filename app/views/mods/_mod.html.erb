@@ -1,4 +1,4 @@
-<tr id="<%= dom_id mod %>" data-action="click->mods#navigateTo" data-mods-path-param="<%= mod_path(mod.id) %>" class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700">
+<tr id="<%= dom_id mod %>" data-action="click->mods#navigateTo" data-mods-path-param="<%= mod_detail_path(author: mod.author, slug: mod.slug) %>" class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700">
   <td><%= mod.name %></td>
   <td>
     <button

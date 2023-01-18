@@ -4,7 +4,19 @@ class ModsController < ApplicationController
   before_action :fetch_mods, only: %i[index show]
 
   def index
+    @mods = find_mods_by_author(params[:author]) if params[:author].present?
+
+    # If we're given a mod ID, try to find it and redirect to the mod's page
+    if @mods.empty? && params[:author].present?
+      fetch_mods
+      @mod = @mods.find { |mod| mod.id == params[:author] }
+      return redirect_to mod_detail_path(author: @mod.author, slug: @mod.slug) if @mod.present?
+    end
+
+    # Perform a search if we have a query
     @mods = find_mods(params[:query]) if params[:query].present?
+
+    # Sort the mods if we have a sort key
     params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(params[:sort]), mod.name] }
 
     if turbo_frame_request?
@@ -15,7 +27,15 @@ class ModsController < ApplicationController
   end
 
   def show
-    @mod = @mods.find { |mod| mod.id == params[:id] }
+    @mod = @mods.find { |mod| mod.author.casecmp(params[:author])&.zero? && mod.slug.casecmp(params[:slug])&.zero? }
+
+    return unless @mod.nil?
+
+    flash[:error] = t("mod-not-found", author: params[:author], slug: params[:slug])
+
+    return redirect_to mods_author_path(author: params[:author]) if params[:author].present?
+
+    redirect_to mods_path
   end
 
   private
@@ -27,6 +47,10 @@ class ModsController < ApplicationController
         mod.description =~ /#{query}/i ||
         mod.long_description =~ /#{query}/i
     end
+  end
+
+  def find_mods_by_author(author)
+    @mods.find_all { |mod| mod.author.casecmp(author).zero? }
   end
 
   def firestore
