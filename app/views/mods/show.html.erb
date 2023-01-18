@@ -15,16 +15,18 @@
     <div><%= @mod.version_string %></div>
   </div>
   <div class="float-right"><%= @mod.updated_string %></div>
-
-  <div class="mt-12">
+  <div class="mt-12 min-h-48">
     <% if @mod.image_url.present? %>
-      <img class="float-left w-48 h-48 mb-5 mr-5 rounded" src="<%= @mod.image_url.gsub(%r(/blob/), '/raw/') %>" />
+      <img class="float-right w-48 h-48 mb-5 ml-5 rounded" src="<%= @mod.image_url.gsub(%r(/blob/), '/raw/') %>">
     <% end %>
 
     <div class="pt-5 pb-24"><%= markdown(@mod.details) %></div>
   </div>
-
-  <button data-action="mods#navigateTo" data-mods-path-param="<%= url_for :back %>" type="button" class="inline-flex items-center float-right px-4 py-2 mb-5 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+  <button
+    data-action="mods#navigateTo"
+    data-mods-path-param="<%= url_for :back %>"
+    type="button"
+    class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
     Back to List
   </button>
 </section>
