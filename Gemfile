@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -58,6 +56,9 @@ group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "factory_bot_rails"
   gem "faker"
+  gem "guard", "~> 2.18"
+  gem "guard-rails", "~> 0.8.1"
+  gem "guard-rspec", "~> 4.7"
   gem "rspec-rails"
 end
 

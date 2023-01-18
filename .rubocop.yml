@@ -30,13 +30,30 @@ Layout/LineLength:
 Metrics/AbcSize:
   Max: 50
 
+Metrics/BlockLength:
+  Exclude:
+    - 'Guardfile'
+    - '**/*_spec.rb'
+
 Metrics/MethodLength:
   Max: 25
+
+## Rails
+
+RSpec/NestedGroups:
+  Max: 5
 
 ## Style
 
 Style/Documentation:
   Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'Gemfile'
+    - 'Gemfile.lock'
+    - 'Guardfile'
+    - '**/spec/**/*'
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
