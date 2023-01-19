@@ -6,5 +6,5 @@ def system!(*args)
 end
 
 system! "bundle exec bundle-audit --update"
-system! "bundle exec brakeman -q -w2 --no-exit-on-warn"
+system! "bundle exec brakeman -q -w2"
 system! "bundle exec rubocop --parallel"
