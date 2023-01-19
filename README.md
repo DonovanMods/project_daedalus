@@ -1,5 +1,12 @@
 # Project Daedalus
 
-Website for the Daedalus Project; Icarus Modding Tools
+![Auditing Workflow](https://github.com/donovanmods/project_daedalus/actions/workflows/rubyonrails.yml/badge.svg)
 
-This is a work in progress, and currently only Mod Listings are functional.
+Website for the [Daedalus Project](https://projectdaedalus.app); Icarus Modding Tools
+
+- Mod Listings
+- Modding Tool Links
+
+## License
+
+Webside Code is Copyright 2023 Donovan Young and released under MIT licensing
