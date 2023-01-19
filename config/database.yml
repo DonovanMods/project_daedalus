@@ -39,5 +39,5 @@ production:
   adapter: postgresql
   database: <%= ENV.fetch("PRODUCTION_DB_NAME") %>
   username: <%= ENV.fetch("PRODUCTION_DB_USER") %>
-  password: <%= Rails.application.credentials.gcp[:db_password] %>
+  password: <%= Rails.application.credentials.gcp[:db_password] if Rails.env.production? %>
   host: "<%= ENV.fetch('DB_SOCKET_DIR', '/cloudsql') %>/<%= ENV.fetch('CLOUD_SQL_CONNECTION_NAME') %>"
