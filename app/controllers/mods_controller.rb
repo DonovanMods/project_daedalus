@@ -17,7 +17,8 @@ class ModsController < ApplicationController
     @mods = find_mods(sanitize(params[:query])) if params[:query].present?
 
     # Sort the mods if we have a sort key
-    params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(sanitize(params[:sort])), mod.name] }
+    # Disabled for now, as it's redundant with the search
+    # params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(sanitize(params[:sort])), mod.name] }
 
     if turbo_frame_request?
       render partial: "mods", locals: { mods: @mods }
