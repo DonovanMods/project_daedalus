@@ -65,7 +65,9 @@ end
 group :development do
   gem "erb_lint", "~> 0.3.1"
 
+  # Auditing
   gem "brakeman", "~> 5.4"
+  gem "bundler-audit", "~> 0.9.1"
 
   # Ruby Linter [https://github.com/rubocop/rubocop-rails]
   gem "rubocop-performance", "~> 1.15", require: false
