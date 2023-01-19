@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+def system!(*args)
+  puts "== #{args} =="
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+system! "bundle exec rspec --format progress"
+system! "bundle exec rubocop"
+system! "bundle exec brakeman --safe-methods 'firestore' --no-exit-on-warn"
+system! "bundle exec bundle-audit"
