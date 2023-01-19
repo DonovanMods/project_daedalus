@@ -20,6 +20,8 @@ class ModsController < ApplicationController
     # Disabled for now, as it's redundant with the search
     # params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(sanitize(params[:sort])), mod.name] }
 
+    @total_mods = @mods.size
+
     if turbo_frame_request?
       render partial: "mods", locals: { mods: @mods }
     else
