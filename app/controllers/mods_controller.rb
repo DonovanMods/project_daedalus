@@ -4,7 +4,7 @@ class ModsController < ApplicationController
   before_action :fetch_mods, only: %i[index show]
 
   def index
-    @mods = find_mods_by_author(params[:author]) if params[:author].present?
+    @mods = find_mods_by_author(sanitize(params[:author])) if params[:author].present?
 
     # If we're given a mod ID, try to find it and redirect to the mod's page
     if @mods.empty? && params[:author].present?
@@ -14,10 +14,10 @@ class ModsController < ApplicationController
     end
 
     # Perform a search if we have a query
-    @mods = find_mods(params[:query]) if params[:query].present?
+    @mods = find_mods(sanitize(params[:query])) if params[:query].present?
 
     # Sort the mods if we have a sort key
-    params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(params[:sort]), mod.name] }
+    params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(sanitize(params[:sort])), mod.name] }
 
     if turbo_frame_request?
       render partial: "mods", locals: { mods: @mods }

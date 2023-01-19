@@ -79,6 +79,7 @@ GEM
     bindex (0.8.1)
     bootsnap (1.15.0)
       msgpack (~> 1.2)
+    brakeman (5.4.0)
     builder (3.2.4)
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
@@ -405,6 +406,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
+  brakeman (~> 5.4)
   coderay (~> 1.1)
   debug
   dotenv-rails (~> 2.8)
