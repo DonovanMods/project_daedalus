@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get "home",  to: "home#index"
-  get "tools", to: "tools#index"
+  get "home", to: "home#index"
+  get "info", to: "info#index"
 
   scope :mods do
     get "/:author/:slug", to: "mods#show",  as: "mod_detail"

@@ -17,12 +17,34 @@ RSpec.describe Mod do
     let(:readme) { Faker::Lorem.paragraph }
 
     before do
-      allow(Net::HTTP).to receive(:get).with(URI(readme_url)).and_return(readme)
+      allow(Net::HTTP).to receive(:get).and_return(readme)
     end
 
     describe "#readme" do
       it "returns the readme" do
         expect(mod.readme).to eq(readme)
+      end
+
+      context "when readme_url is not a GitHub URL" do
+        let(:readme_url) { Faker::Internet.url }
+
+        it "uses the given readme_url" do
+          mod.readme
+
+          expect(Net::HTTP).to have_received(:get).with(URI(readme_url))
+        end
+      end
+
+      context "when readme_url is a GitHub URL" do
+        let(:readme_url) { "https://github.com/username/repo/raw/master/README.md" }
+
+        before { mod.readme_url = readme_url }
+
+        it "uses the corrected readme_url" do
+          mod.readme
+
+          expect(Net::HTTP).to have_received(:get).with(URI("https://raw.githubusercontent.com/username/repo/master/README.md"))
+        end
       end
     end
 
@@ -91,8 +113,24 @@ RSpec.describe Mod do
     let(:compatibility) { Faker::App.version }
     let(:mod) { build(:mod, version:, compatibility:) }
 
-    it "returns the version string" do
-      expect(mod.version_string).to eq("v#{version} (#{compatibility})")
+    it "returns the version and compatibility string" do
+      expect(mod.version_string).to eq("v#{version} / #{compatibility}")
+    end
+
+    context "when the version is not present" do
+      let(:version) { "" }
+
+      it "returns only the compatibility string" do
+        expect(mod.version_string).to eq(compatibility)
+      end
+    end
+
+    context "when the compatibility is not present" do
+      let(:compatibility) { "" }
+
+      it "returns only the version string" do
+        expect(mod.version_string).to eq("v#{version}")
+      end
     end
   end
 end

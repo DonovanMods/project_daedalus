@@ -11,7 +11,8 @@ class Mod
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def readme
-    @readme ||= Net::HTTP.get(URI(readme_url)).gsub(/^#\s+.*$/, "").strip if readme_url.present?
+    # We stip out the first # line of the README, as it's usually a title
+    @readme ||= Net::HTTP.get(githubusercontent(readme_url)).gsub(/^#\s+.*$/, "").strip if readme_url.present?
   end
 
   def details
@@ -35,6 +36,24 @@ class Mod
   end
 
   def version_string
-    "v#{version} (#{compatibility})"
+    v = []
+    v << "v#{version}" if version.present?
+    v << compatibility if compatibility.present?
+
+    v.join(" / ")
+  end
+
+  private
+
+  # Convert GitHub URLs to raw.githubusercontent.com URLs
+  def githubusercontent(url)
+    uri = URI(url)
+
+    if uri.host.include?("github.com")
+      uri.host = "raw.githubusercontent.com"
+      uri.path.gsub!(%r{/raw/}, "/")
+    end
+
+    uri
   end
 end

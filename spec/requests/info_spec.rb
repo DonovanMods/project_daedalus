@@ -2,10 +2,10 @@
 
 require "rails_helper"
 
-RSpec.describe "Tools" do
-  describe "GET /tools" do
+RSpec.describe "Info" do
+  describe "GET /info" do
     it "returns http success" do
-      get "/tools"
+      get "/info"
 
       expect(response).to have_http_status(:success)
     end
