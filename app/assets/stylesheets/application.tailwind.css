@@ -2,12 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-
 @layer components {
-  .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
+  .anchor-blue {
+    @apply text-blue-700 dark:text-blue-500 no-underline
+  },
+  .anchor-blue:visited {
+    @apply text-blue-700 dark:text-blue-500 no-underline
+  },
+  .anchor-blue:hover {
+    @apply text-blue-500 dark:text-blue-300 no-underline
   }
 }
-
-*/

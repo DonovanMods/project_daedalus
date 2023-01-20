@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class ToolsController < ApplicationController
+class InfoController < ApplicationController
   def index; end
 end

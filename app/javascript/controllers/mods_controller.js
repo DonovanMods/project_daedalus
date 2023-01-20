@@ -8,7 +8,13 @@ export default class extends Controller {
   navigateToAuthor(event) {
     const author = event.target.value;
     const path = window.location.origin;
-    window.location.href = `${path}/mods/${author}`;
+    let modsPath = "/mods";
+
+    if (author) {
+      modsPath = `${modsPath}/${author}`;
+    }
+
+    window.location.href = `${path}${modsPath}`;
   }
 
   download(event) {

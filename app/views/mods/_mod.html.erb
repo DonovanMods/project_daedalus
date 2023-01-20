@@ -1,17 +1,17 @@
-<tr id="<%= dom_id mod %>" data-action="click->mods#navigateTo" data-mods-path-param="<%= mod_detail_path(author: sanitize(mod.author), slug: mod.slug) %>" class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700">
-  <td><%= sanitize(mod.name) %></td>
+<tr id="<%= dom_id mod %>" data-action="click->mods#navigateTo" data-mods-path-param="<%= mod_detail_path(author: mod.author, slug: mod.slug) %>" class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700">
+  <td><%= mod.name %></td>
   <td>
     <button
       data-action="mods#download"
-      data-mods-url-param="<%= sanitize(mod.url) %>"
-      data-mods-file-name-param="<%= sanitize(mod.filename) %>"
+      data-mods-url-param="<%= raw_url(mod.url) %>"
+      data-mods-file-name-param="<%= mod.filename %>"
       type="button"
       class="z-10 inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
       Download
     </button>
   </td>
-  <td class="hidden sm:table-cell"><%= sanitize(mod.author) %></td>
-  <td class="hidden md:table-cell"><%= sanitize(mod.version) %></td>
-  <td class="hidden md:table-cell"><%= sanitize(mod.compatibility) %></td>
-  <td class="hidden lg:table-cell"><%= sanitize(mod.description) %></td>
+  <td class="hidden sm:table-cell"><%= mod.author %></td>
+  <td class="hidden md:table-cell"><%= mod.version %></td>
+  <td class="hidden md:table-cell"><%= mod.compatibility %></td>
+  <td class="hidden lg:table-cell"><%= mod.description %></td>
 </tr>
