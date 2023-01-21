@@ -45,9 +45,10 @@ class ModsController < ApplicationController
 
   def find_mods(query)
     @mods.find_all do |mod|
-      mod.name =~ /#{query}/i ||
-        mod.author =~ /#{query}/i ||
-        mod.description =~ /#{query}/i ||
+      mod.name               =~ /#{query}/i ||
+        mod.author           =~ /#{query}/i ||
+        mod.compatibility    =~ /#{query}/i ||
+        mod.description      =~ /#{query}/i ||
         mod.long_description =~ /#{query}/i
     end
   end
