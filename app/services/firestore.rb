@@ -4,15 +4,14 @@ require "google/cloud/firestore"
 
 # This is a service object that fetches mods from Firestore.
 class Firestore
-  FILTERED_FILE_TYPES = %w[exmod].freeze
-
   def initialize
     @client = Google::Cloud::Firestore.new(credentials: Rails.application.credentials.firebase_keyfile.to_h)
   end
 
   def mods
     @mods ||= @client.col("mods").get.filter_map do |mod|
-      next if FILTERED_FILE_TYPES.include?(mod.data[:fileType].to_s.downcase.strip)
+      # skip exmods
+      next if mod.data[:fileType].match?(/exmodz?/i)
 
       Mod.new(
         id: mod.document_id,
