@@ -45,7 +45,7 @@
 - `"version"`      : **[recommended]** The version of your tool (semantic versioning is recommended)
 - `"compatibility"`: **[recommended]** The latest version of Icarus that your tool is compatible with (e.g. w56)
 - `"description"`  : **[required]** A description of what your tool does
-- `"fileType"`     : **[required]** The type of file your tool is (can be "pak" or "zip" but will default to "pak" if not specified)
+- `"fileType"`     : **[required]** The type of file your tool is (can be "exe" or "zip" but will default to "zip" if not specified)
 - `"fileURL"`      : **[required]** The full direct download URL for your tool (either the .zip or .pak file)
 - `"readmeURL"`    : **[optional]** A link to the RAW version of your tool's README
 - `"imageURL"`     : **[optional]** A link to the RAW/direct download URL of an image that will be displayed along with this tool
