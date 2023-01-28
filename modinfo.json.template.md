@@ -29,22 +29,24 @@
 }
 ```
 
+## Field Descriptions
+
+- `"name"`             : **[required]** The name of your mod
+- `"author"`           : **[required]** The name of the author of your mod
+- `"version"`          : **[recommended]** The version of your mod (semantic versioning is recommended)
+- `"compatibility"`    : **[recommended]** The latest version of Icarus that your mod is compatible with (e.g. w56)
+- `"description"`      : **[required]** A description of what your mod does
+- `"long_description"` : **[deprecated]** A longer description of what your mod does (use `readmeURL` instead)
+- `"fileType"`         : **[required]** The type of file your mod is (can be "pak" or "zip" but will default to "pak" if not specified)
+- `"fileURL"`          : **[required]** The full direct download URL for your mod (either the .zip or .pak file)
+- `"readmeURL"`        : **[optional]** A link to the RAW version of your mod's README
+- `"imageURL"`         : **[optional]** A link to the RAW/direct download URL of an image that will be displayed along with this mod
+
 ## Notes
 
-- The file should be named `modinfo.json` and live in the top-level directory of your mods repository.
-- "mods" is an Array of Objects (even if you only have one mod)
-- Please try to list all the mods in a repository in a single `modinfo.json` file.
-- By "direct download URL", we mean the link that you would find by right-clicking the "download" button and selecting "copy link"
-- For text files (README, etc.), use the link given when you click on "raw" while viewing that page.
-
-### fields
-
-- `"name"`: The name of your mod
-- `"author"`: The name of the author of your mod
-- `"version"`: The version of your mod (semantic versioning is recommended)
-- `"compatibility"`: The latest version of Icarus that your mod is compatible with (e.g. w56)
-- `"description"`: A description of what your mod does
-- `"fileType"`: The type of file your mod is (can be "pak" or "zip" but will default to "pak" if not specified)
-- `"fileURL"`: The full direct download URL for your mod (either the .zip or .pak file)
-- `"readmeURL"`: A 'raw' link to your mod's README (optional)
-- `"imageURL"`: A direct download URL to an image that will be displayed in the mod list (optional)
+- The file should be named `modinfo.json` and live in the top-level directory of your tool's repository.
+- "mod" is an Array of Objects (even if you only have one)
+- Please try to list all the tools in a single repository into one `modinfo.json` file.
+- The *URL paths should be the "RAW" or "Direct Download" urls.
+  - This is the link that you would find by right-clicking the "download" button and selecting "copy link" for binary files
+  - Or by clicking the "raw" button and copying the link from the address bar for text files (README, etc.)
