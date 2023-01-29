@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Mod do
+RSpec.describe Tool do
   let(:client) { double }
   let(:collection) { double }
   let(:firestore_obj) do
@@ -22,8 +22,8 @@ RSpec.describe Mod do
   end
 
   before do
-    allow(collection).to receive(:get).and_return(Array.new(2, firestore_obj))
-    allow(client).to receive(:col).with("mods").and_return(collection)
+    allow(collection).to receive(:get).and_return(Array.new(3, firestore_obj))
+    allow(client).to receive(:col).with("tools").and_return(collection)
     allow(Google::Cloud::Firestore).to receive(:new).and_return(client)
   end
 
@@ -42,14 +42,15 @@ RSpec.describe Mod do
       expect(described_class.all).to all(be_a(described_class))
     end
 
+    # foo
     it "returns all mods", skip: "This spec fails for unknown reasons when the full suite is run" do
-      expect(described_class.all.size).to eq(2)
+      expect(described_class.all.size).to eq(3)
     end
   end
 
   context "when the readme_url is present" do
     let(:readme_url) { Faker::Internet.url }
-    let(:mod) { build(:mod, readme_url:) }
+    let(:tool) { build(:tool, readme_url:) }
     let(:readme) { Faker::Lorem.paragraph }
 
     before do
@@ -58,14 +59,14 @@ RSpec.describe Mod do
 
     describe "#readme" do
       it "returns the readme" do
-        expect(mod.readme).to eq(readme)
+        expect(tool.readme).to eq(readme)
       end
 
       context "when readme_url is not a GitHub URL" do
         let(:readme_url) { Faker::Internet.url }
 
         it "uses the given readme_url" do
-          mod.readme
+          tool.readme
 
           expect(Net::HTTP).to have_received(:get).with(URI(readme_url))
         end
@@ -74,10 +75,10 @@ RSpec.describe Mod do
       context "when readme_url is a GitHub URL" do
         let(:readme_url) { "https://github.com/username/repo/raw/master/README.md" }
 
-        before { mod.readme_url = readme_url }
+        before { tool.readme_url = readme_url }
 
         it "uses the corrected readme_url" do
-          mod.readme
+          tool.readme
 
           expect(Net::HTTP).to have_received(:get).with(URI("https://raw.githubusercontent.com/username/repo/master/README.md"))
         end
@@ -86,78 +87,65 @@ RSpec.describe Mod do
 
     describe "#details" do
       it "returns the readme" do
-        expect(mod.details).to eq(readme)
+        expect(tool.details).to eq(readme)
       end
     end
   end
 
   context "when the readme_url is not present" do
-    let(:mod) { build(:mod, readme_url: "") }
+    let(:tool) { build(:tool, readme_url: "") }
 
     describe "#readme" do
       it "returns nil" do
-        expect(mod.readme).to be_nil
+        expect(tool.readme).to be_nil
       end
     end
 
     describe "#details" do
-      context "when the long_description is present" do
-        let(:long_description) { Faker::Lorem.paragraph }
+      let(:description) { Faker::Lorem.paragraph }
 
-        before { mod.long_description = long_description }
-
-        it "returns the long_description" do
-          expect(mod.details).to eq(long_description)
-        end
+      before do
+        tool.description = description
       end
 
-      context "when the long_description is not present" do
-        let(:description) { Faker::Lorem.paragraph }
-
-        before do
-          mod.long_description = ""
-          mod.description = description
-        end
-
-        it "returns the description" do
-          expect(mod.details).to eq(description)
-        end
+      it "returns the description" do
+        expect(tool.details).to eq(description)
       end
     end
   end
 
   describe "#filename" do
     let(:url) { Faker::Internet.url }
-    let(:mod) { build(:mod, url:) }
+    let(:tool) { build(:tool, url:) }
 
     it "returns the filename" do
-      expect(mod.filename).to eq(url.split("/").last)
+      expect(tool.filename).to eq(url.split("/").last)
     end
   end
 
   describe "#updated_string" do
     let(:updated_at) { Faker::Date.backward }
-    let(:mod) { build(:mod, updated_at:) }
+    let(:tool) { build(:tool, updated_at:) }
 
     it "returns the updated string" do
-      expect(mod.updated_string).to eq("Last Updated on #{updated_at.strftime('%B %d, %Y')}")
+      expect(tool.updated_string).to eq("Last Updated on #{updated_at.strftime('%B %d, %Y')}")
     end
   end
 
   describe "#version_string" do
     let(:version) { Faker::App.version }
     let(:compatibility) { Faker::App.version }
-    let(:mod) { build(:mod, version:, compatibility:) }
+    let(:tool) { build(:tool, version:, compatibility:) }
 
     it "returns the version and compatibility string" do
-      expect(mod.version_string).to eq("v#{version} / #{compatibility}")
+      expect(tool.version_string).to eq("v#{version} / #{compatibility}")
     end
 
     context "when the version is not present" do
       let(:version) { "" }
 
       it "returns only the compatibility string" do
-        expect(mod.version_string).to eq(compatibility)
+        expect(tool.version_string).to eq(compatibility)
       end
     end
 
@@ -165,7 +153,7 @@ RSpec.describe Mod do
       let(:compatibility) { "" }
 
       it "returns only the version string" do
-        expect(mod.version_string).to eq("v#{version}")
+        expect(tool.version_string).to eq("v#{version}")
       end
     end
   end

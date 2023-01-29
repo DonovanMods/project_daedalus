@@ -57,7 +57,6 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "faker"
   gem "guard", "~> 2.18"
-  gem "guard-rails", "~> 0.8.1"
   gem "guard-rspec", "~> 4.7"
   gem "rspec-rails"
 end

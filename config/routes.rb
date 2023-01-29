@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   end
 
   scope :tools do
-    get "/:author/:slug", to: "tools#show",  as: "tool_detail"
+    # get "/:author/:slug", to: "tools#show",  as: "tool_detail"
     get "/:author",       to: "tools#index", as: "tools_author"
     get "/",              to: "tools#index", as: "tools"
   end

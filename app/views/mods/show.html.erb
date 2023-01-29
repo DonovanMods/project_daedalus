@@ -1,14 +1,20 @@
 <section class="px-5" data-controller="mods">
   <div class="flex items-center justify-between flex-auto mt-5">
     <div class="flex-1 min-w-0 text-2xl font-bold md:text-4xl"><%= @mod.name %></div>
-    <button
-      data-action="mods#download"
-      data-mods-url-param="<%= raw_url(@mod.url) %>"
-      data-mods-file-name-param="<%= @mod.filename %>"
-      type="button"
-      class="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-      DOWNLOAD
-    </button>
+    <% if @mod.file_type !~ /exmod/i %>
+      <button
+        data-action="mods#download"
+        data-mods-url-param="<%= raw_url(@mod.url) %>"
+        data-mods-file-name-param="<%= @mod.filename %>"
+        type="button"
+        class="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        DOWNLOAD
+        <%= @mod.file_type.upcase %>
+      </button>
+    <% else %>
+      <%= @mod.file_type.upcase %>
+      <div class="hidden lg:block">; To install it, please use Jimk72's Icarus Mod Manager</div>
+    <% end %>
   </div>
   <div class="flex items-center justify-between flex-auto">
     <div>By <%= @mod.author %></div>

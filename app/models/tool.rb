@@ -2,24 +2,23 @@
 
 require "net/http"
 
-class Mod
+class Tool
   include ActiveModel::Model
   include Convertable
   include Firestorable
 
   SORTKEYS = %w[author name].freeze
-  ATTRIBUTES = %i[id name author version compatibility description long_description file_type url image_url readme_url created_at updated_at].freeze
+  ATTRIBUTES = %i[id name author version compatibility description file_type url image_url readme_url created_at updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def self.all
-    @all ||= firestore.col("mods").get.filter_map do |mod|
+    @all ||= firestore.col("tools").get.filter_map do |mod|
       new(
         id: mod.document_id,
         name: mod.data[:name],
         author: mod.data[:author],
         description: mod.data[:description],
-        long_description: mod.data[:long_description],
         version: mod.data[:version],
         compatibility: mod.data[:compatibility],
         file_type: mod.data[:fileType],
@@ -39,8 +38,6 @@ class Mod
 
   def details
     return readme if readme.present?
-
-    return long_description if long_description.present?
 
     description
   end

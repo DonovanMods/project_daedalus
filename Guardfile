@@ -1,10 +1,5 @@
 # More info at https://github.com/guard/guard#readme
 
-guard "rails" do
-  watch("Gemfile.lock")
-  watch(%r{^(config|lib)/.*})
-end
-
 guard :rspec, cmd: "bundle exec rspec" do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
