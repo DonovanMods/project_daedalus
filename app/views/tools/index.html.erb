@@ -1,6 +1,29 @@
-<div>
-  <h1 class="text-4xl font-bold">Tools</h1>
-  <% @tools.each do |tool| %>
-    <p><%= "#{tool.name} by #{tool.author}" %></p>
-  <% end %>
+<div data-controller="mods" class="container">
+  <h1 class="p-2 font-extrabold text-blue-700 no-underline dark:text-blue-500">Icarus Modding Tools</h1>
+  <div class="flex flex-1 md:py-8">
+    <div class="flex flex-auto justify-evenly md:px-2 items-middle">
+      <% @tools.each do |tool| %>
+        <div class="flex flex-col justify-between p-4 border rounded-xl border-icarus-500 bg-slate-200 dark:bg-slate-800">
+          <div class="pb-8">
+            <div class="font-bold text-xxl text-icarus-500"><%= tool.name %></div>
+            <p class="px-2 text-base text-blue-500"><%= markdown(tool.details) %></p>
+          </div>
+          <div class="flex items-center">
+            <button
+              data-action="mods#download"
+              data-mods-url-param="<%= raw_url(tool.url) %>"
+              data-mods-file-name-param="<%= tool.filename %>"
+              type="button"
+              class="inline-flex items-center p-2 mr-3 text-sm text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              DOWNLOAD
+            </button>
+            <div class="text-sm">
+              <div class="py-1 leading-none text-blue-400">by <%= tool.author %></div>
+              <div class="py-1 text-xs text-slate-500"><%= tool.updated_string %></div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>

@@ -14,9 +14,6 @@ class Mod
 
   def self.all
     @all ||= firestore.col("mods").get.filter_map do |mod|
-      # skip exmods
-      next if mod.data[:fileType].match?(/exmodz?/i)
-
       new(
         id: mod.document_id,
         name: mod.data[:name],

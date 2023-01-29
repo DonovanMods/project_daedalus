@@ -1,6 +1,32 @@
 require "rails_helper"
 
 RSpec.describe Tool do
+  let(:client) { double }
+  let(:collection) { double }
+  let(:firestore_obj) do
+    instance_double(Google::Cloud::Firestore::DocumentSnapshot,
+                    document_id: SecureRandom.uuid,
+                    create_time: Time.now.utc,
+                    update_time: Time.now.utc,
+                    data: {
+                      name: Faker::App.name,
+                      author: Faker::App.author,
+                      description: Faker::Lorem.sentence,
+                      version: Faker::App.version,
+                      compatibility: "w#{Random.rand(1..5)}",
+                      fileType: "ZIP",
+                      fileURL: Faker::Internet.url,
+                      imageURL: Faker::Internet.url,
+                      readmeURL: Faker::Internet.url
+                    })
+  end
+
+  before do
+    allow(collection).to receive(:get).and_return(Array.new(3, firestore_obj))
+    allow(client).to receive(:col).with("tools").and_return(collection)
+    allow(Google::Cloud::Firestore).to receive(:new).and_return(client)
+  end
+
   described_class::ATTRIBUTES.each do |attr|
     it { is_expected.to respond_to(attr) }
   end
@@ -8,6 +34,16 @@ RSpec.describe Tool do
   describe "::SORTKEYS" do
     it "returns the sortkeys" do
       expect(described_class::SORTKEYS).to eq(%w[author name])
+    end
+  end
+
+  describe "#self.all" do
+    it "returns instances of Mod" do
+      expect(described_class.all).to all(be_a(described_class))
+    end
+
+    it "returns all mods" do
+      expect(described_class.all.size).to eq(3)
     end
   end
 
