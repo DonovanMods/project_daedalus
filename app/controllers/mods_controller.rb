@@ -57,12 +57,8 @@ class ModsController < ApplicationController
     @mods.find_all { |mod| mod.author.casecmp(author).zero? }
   end
 
-  def firestore
-    @firestore ||= Firestore.new
-  end
-
   def fetch_mods
-    @mods = firestore.mods
+    @mods = Mod.all
     @authors = @mods.map(&:author).uniq.sort
   end
 end

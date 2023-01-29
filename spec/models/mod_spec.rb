@@ -11,6 +11,59 @@ RSpec.describe Mod do
     end
   end
 
+  describe "#self.all" do
+    let(:firestore_exmod) do
+      instance_double(Google::Cloud::Firestore::DocumentSnapshot,
+                      document_id: SecureRandom.uuid,
+                      create_time: Time.now.utc,
+                      update_time: Time.now.utc,
+                      data: {
+                        name: Faker::App.name,
+                        author: Faker::App.author,
+                        description: Faker::Lorem.sentence,
+                        version: Faker::App.version,
+                        compatibility: "w#{Random.rand(1..5)}",
+                        fileType: "EXMOD",
+                        fileURL: Faker::Internet.url,
+                        imageURL: Faker::Internet.url,
+                        readmeURL: Faker::Internet.url
+                      })
+    end
+    let(:firestore_mod) do
+      instance_double(Google::Cloud::Firestore::DocumentSnapshot,
+                      document_id: SecureRandom.uuid,
+                      create_time: Time.now.utc,
+                      update_time: Time.now.utc,
+                      data: {
+                        name: Faker::App.name,
+                        author: Faker::App.author,
+                        description: Faker::Lorem.sentence,
+                        version: Faker::App.version,
+                        compatibility: "w#{Random.rand(1..5)}",
+                        fileType: "ZIP",
+                        fileURL: Faker::Internet.url,
+                        imageURL: Faker::Internet.url,
+                        readmeURL: Faker::Internet.url
+                      })
+    end
+    let(:client) { instance_double(Google::Cloud::Firestore::Client) }
+    let(:collection) { instance_double(Google::Cloud::Firestore::CollectionReference) }
+
+    before do
+      allow(described_class).to receive(:firestore).and_return(client)
+      allow(collection).to receive(:get).and_return([firestore_mod, firestore_exmod, firestore_mod])
+      allow(client).to receive(:col).with("mods").and_return(collection)
+    end
+
+    it "returns instances of Mod" do
+      expect(described_class.all).to all(be_a(described_class))
+    end
+
+    it "filters EXMOD mods" do
+      expect(described_class.all.count).to eq(2)
+    end
+  end
+
   context "when the readme_url is present" do
     let(:readme_url) { Faker::Internet.url }
     let(:mod) { build(:mod, readme_url:) }
