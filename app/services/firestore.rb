@@ -2,7 +2,7 @@
 
 require "google/cloud/firestore"
 
-# This is a service object that fetches mods from Firestore.
+# This is a service object that fetches mods/tools from Firestore.
 class Firestore
   def initialize
     @client = Google::Cloud::Firestore.new(credentials: Rails.application.credentials.firebase_keyfile.to_h)
@@ -27,6 +27,26 @@ class Firestore
         readme_url: mod.data[:readmeURL],
         created_at: mod.create_time,
         updated_at: mod.update_time
+      )
+    end.sort_by(&:name)
+  end
+
+  def tools
+    @tools ||= @client.col("tools").get.filter_map do |tool|
+      Tool.new(
+        id: tool.document_id,
+        name: tool.data[:name],
+        author: tool.data[:author],
+        description: tool.data[:description],
+        long_description: tool.data[:long_description],
+        version: tool.data[:version],
+        compatibility: tool.data[:compatibility],
+        file_type: tool.data[:fileType],
+        url: tool.data[:fileURL],
+        image_url: tool.data[:imageURL],
+        readme_url: tool.data[:readmeURL],
+        created_at: tool.create_time,
+        updated_at: tool.update_time
       )
     end.sort_by(&:name)
   end

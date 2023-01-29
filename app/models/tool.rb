@@ -2,12 +2,12 @@
 
 require "net/http"
 
-class Mod
+class Tool
   include ActiveModel::Model
   include Convertable
 
   SORTKEYS = %w[author name].freeze
-  ATTRIBUTES = %i[id name author version compatibility description long_description file_type url image_url readme_url created_at updated_at].freeze
+  ATTRIBUTES = %i[id name author version compatibility description file_type url image_url readme_url created_at updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
@@ -18,8 +18,6 @@ class Mod
 
   def details
     return readme if readme.present?
-
-    return long_description if long_description.present?
 
     description
   end
