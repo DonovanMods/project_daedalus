@@ -5,10 +5,13 @@
       <% @tools.each do |tool| %>
         <div class="flex flex-col justify-between p-4 border rounded-xl border-icarus-500 bg-slate-200 dark:bg-slate-800">
           <div class="pb-8">
-            <div class="font-bold text-xxl text-icarus-500"><%= tool.name %></div>
+            <div class="flex items-start justify-between flex-1">
+              <div class="text-2xl font-bold text-icarus-500"><%= tool.name %></div>
+              <div class="text-sm text-slate-500 text">version <%= tool.version %></div>
+            </div>
             <p class="px-2 text-base text-blue-500"><%= markdown(tool.details) %></p>
           </div>
-          <div class="flex items-center">
+          <div class="flex items-center justify-between flex-1">
             <button
               data-action="mods#download"
               data-mods-url-param="<%= raw_url(tool.url) %>"
@@ -17,7 +20,7 @@
               class="inline-flex items-center p-2 mr-3 text-sm text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
               DOWNLOAD
             </button>
-            <div class="text-sm">
+            <div class="flex flex-col items-end text-sm">
               <div class="py-1 leading-none text-blue-400">by <%= tool.author %></div>
               <div class="py-1 text-xs text-slate-500"><%= tool.updated_string %></div>
             </div>
