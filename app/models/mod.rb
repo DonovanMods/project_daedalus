@@ -13,7 +13,7 @@ class Mod
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def self.all
-    @all ||= firestore.col("mods").get.filter_map do |mod|
+    firestore.col("mods").get.filter_map do |mod|
       new(
         id: mod.document_id,
         name: mod.data[:name],

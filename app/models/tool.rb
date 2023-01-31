@@ -13,20 +13,20 @@ class Tool
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def self.all
-    @all ||= firestore.col("tools").get.filter_map do |mod|
+    firestore.col("tools").get.filter_map do |tool|
       new(
-        id: mod.document_id,
-        name: mod.data[:name],
-        author: mod.data[:author],
-        description: mod.data[:description],
-        version: mod.data[:version],
-        compatibility: mod.data[:compatibility],
-        file_type: mod.data[:fileType],
-        url: mod.data[:fileURL],
-        image_url: mod.data[:imageURL],
-        readme_url: mod.data[:readmeURL],
-        created_at: mod.create_time,
-        updated_at: mod.update_time
+        id: tool.document_id,
+        name: tool.data[:name],
+        author: tool.data[:author],
+        description: tool.data[:description],
+        version: tool.data[:version],
+        compatibility: tool.data[:compatibility],
+        file_type: tool.data[:fileType],
+        url: tool.data[:fileURL],
+        image_url: tool.data[:imageURL],
+        readme_url: tool.data[:readmeURL],
+        created_at: tool.create_time,
+        updated_at: tool.update_time
       )
     end.sort_by(&:name)
   end
