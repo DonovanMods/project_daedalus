@@ -46,8 +46,16 @@ class Tool
     url.split("/").last
   end
 
-  def slug
+  def name_slug
     name.parameterize
+  end
+
+  def author_slug
+    author.parameterize
+  end
+
+  def slug
+    "#{author_slug}-#{name_slug}"
   end
 
   def updated_string

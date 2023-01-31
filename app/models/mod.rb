@@ -49,6 +49,10 @@ class Mod
     url.split("/").last
   end
 
+  def author_slug
+    author.parameterize
+  end
+
   def slug
     name.parameterize
   end
