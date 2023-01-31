@@ -10,7 +10,7 @@ class ToolsController < ApplicationController
   private
 
   def fetch_tools
-    @tools = Tool.all
+    @tools ||= Tool.all
     @authors = @tools.map(&:author).uniq.sort
   end
 

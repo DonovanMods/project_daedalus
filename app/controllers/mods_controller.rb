@@ -58,7 +58,7 @@ class ModsController < ApplicationController
   end
 
   def fetch_mods
-    @mods = Mod.all
+    @mods ||= Mod.all
     @authors = @mods.map(&:author).uniq.sort
   end
 end

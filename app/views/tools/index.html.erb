@@ -1,27 +1,29 @@
 <div data-controller="mods" class="container">
   <h1 class="p-2 font-extrabold text-blue-700 no-underline dark:text-blue-500">Icarus Modding Tools</h1>
-  <div class="flex flex-1 md:py-8">
-    <div class="flex items-start flex-auto space-x-2 md:space-x-4 justify-evenly md:px-2 items-middle">
+  <div class="flex flex-1">
+    <div class="flex flex-wrap items-start justify-between flex-auto space-x-2 md:space-x-4 md:p-2 items-middle">
       <% @tools.each do |tool| %>
-        <div class="flex flex-col justify-between flex-1 p-4 border rounded-xl border-icarus-500 bg-slate-200 dark:bg-slate-800">
-          <div class="pb-8">
-            <div class="flex items-start justify-between flex-1">
-              <div class="text-2xl font-bold text-icarus-500"><%= tool.name %></div>
-              <div class="text-sm text-slate-500 text">version <%= tool.version %></div>
+        <div class="flex flex-col justify-between flex-1 p-2 my-2 border min-w-96 min-h-96 rounded-xl border-icarus-500 bg-slate-200 dark:bg-slate-800">
+          <div>
+            <div id="<%= tool.slug %>-header" class="flex items-start justify-between flex-1">
+              <div class="flex flex-col items-start flex-1">
+                <div class="font-bold md:text-2xl text-icarus-500"><%= tool.name %></div>
+                <div class="text-sm text-blue-400">by <%= tool.author %></div>
+              </div>
+              <div class="flex flex-col items-end flex-0">
+                <button
+                  data-action="mods#download"
+                  data-mods-url-param="<%= raw_url(tool.url) %>"
+                  data-mods-file-name-param="<%= tool.filename %>"
+                  type="button"
+                  class="inline-flex items-center p-2 text-sm text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  DOWNLOAD
+                </button>
+                <div class="text-sm leading-6 text-slate-500 text">version <%= tool.version %></div>
+              </div>
             </div>
-            <p class="px-2 text-base text-blue-500"><%= markdown(tool.details) %></p>
-          </div>
-          <div class="flex items-center justify-between flex-1">
-            <button
-              data-action="mods#download"
-              data-mods-url-param="<%= raw_url(tool.url) %>"
-              data-mods-file-name-param="<%= tool.filename %>"
-              type="button"
-              class="inline-flex items-center p-2 mr-3 text-sm text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-              DOWNLOAD
-            </button>
-            <div class="flex flex-col items-end text-sm">
-              <div class="py-1 leading-none text-blue-400">by <%= tool.author %></div>
+            <div id="<%= tool.slug %>-body"><%= markdown(tool.details) %></div>
+            <div id="<%= tool.slug %>-footer" class="flex flex-col items-end text-sm">
               <div class="py-1 text-xs text-slate-500"><%= tool.updated_string %></div>
             </div>
           </div>
