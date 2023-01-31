@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Tool do
-  let(:client) { double }
-  let(:collection) { double }
-  let(:firestore_obj) do
+  let(:firestore_client) { instance_double(Google::Cloud::Firestore::Client) }
+  let(:firestore_collection) { instance_double(Google::Cloud::Firestore::CollectionReference) }
+  let(:tool_firestore_obj) do
     instance_double(Google::Cloud::Firestore::DocumentSnapshot,
                     document_id: SecureRandom.uuid,
                     create_time: Time.now.utc,
@@ -22,9 +22,9 @@ RSpec.describe Tool do
   end
 
   before do
-    allow(collection).to receive(:get).and_return(Array.new(3, firestore_obj))
-    allow(client).to receive(:col).with("tools").and_return(collection)
-    allow(Google::Cloud::Firestore).to receive(:new).and_return(client)
+    allow(Google::Cloud::Firestore).to receive(:new).and_return(firestore_client)
+    allow(firestore_client).to receive(:col).with("tools").and_return(firestore_collection)
+    allow(firestore_collection).to receive(:get).and_return(Array.new(3, tool_firestore_obj))
   end
 
   described_class::ATTRIBUTES.each do |attr|
@@ -38,19 +38,22 @@ RSpec.describe Tool do
   end
 
   describe "#self.all" do
-    it "returns instances of Mod" do
+    it "responds to all" do
+      expect(described_class).to respond_to(:all)
+    end
+
+    it "returns instances of Tool" do
       expect(described_class.all).to all(be_a(described_class))
     end
 
-    # foo
-    it "returns all mods", skip: "This spec fails for unknown reasons when the full suite is run" do
-      expect(described_class.all.size).to eq(3)
+    it "returns all tools" do
+      expect(described_class.all.count).to eq(3)
     end
   end
 
   context "when the readme_url is present" do
     let(:readme_url) { Faker::Internet.url }
-    let(:tool) { build(:tool, readme_url:) }
+    let(:tool) { build(:tool, readme_url: readme_url) }
     let(:readme) { Faker::Lorem.paragraph }
 
     before do
@@ -116,7 +119,7 @@ RSpec.describe Tool do
 
   describe "#filename" do
     let(:url) { Faker::Internet.url }
-    let(:tool) { build(:tool, url:) }
+    let(:tool) { build(:tool, url: url) }
 
     it "returns the filename" do
       expect(tool.filename).to eq(url.split("/").last)
@@ -125,7 +128,7 @@ RSpec.describe Tool do
 
   describe "#updated_string" do
     let(:updated_at) { Faker::Date.backward }
-    let(:tool) { build(:tool, updated_at:) }
+    let(:tool) { build(:tool, updated_at: updated_at) }
 
     it "returns the updated string" do
       expect(tool.updated_string).to eq("Last Updated on #{updated_at.strftime('%B %d, %Y')}")
@@ -135,7 +138,7 @@ RSpec.describe Tool do
   describe "#version_string" do
     let(:version) { Faker::App.version }
     let(:compatibility) { Faker::App.version }
-    let(:tool) { build(:tool, version:, compatibility:) }
+    let(:tool) { build(:tool, version: version, compatibility: compatibility) }
 
     it "returns the version and compatibility string" do
       expect(tool.version_string).to eq("v#{version} / #{compatibility}")

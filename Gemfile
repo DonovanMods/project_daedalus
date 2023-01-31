@@ -68,6 +68,10 @@ group :development do
   gem "brakeman", "~> 5.4"
   gem "bundler-audit", "~> 0.9.1"
 
+  # Debugging
+  gem "pry", "~> 0.14.2"
+  gem "pry-rails", "~> 0.3.9"
+
   # Ruby Linter [https://github.com/rubocop/rubocop-rails]
   gem "rubocop-performance", "~> 1.15", require: false
   gem "rubocop-rails", "~> 2.17", require: false

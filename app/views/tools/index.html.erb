@@ -1,9 +1,9 @@
 <div data-controller="mods" class="container">
   <h1 class="p-2 font-extrabold text-blue-700 no-underline dark:text-blue-500">Icarus Modding Tools</h1>
   <div class="flex flex-1 md:py-8">
-    <div class="flex flex-auto justify-evenly md:px-2 items-middle">
+    <div class="flex items-start flex-auto space-x-2 md:space-x-4 justify-evenly md:px-2 items-middle">
       <% @tools.each do |tool| %>
-        <div class="flex flex-col justify-between p-4 border rounded-xl border-icarus-500 bg-slate-200 dark:bg-slate-800">
+        <div class="flex flex-col justify-between flex-1 p-4 border rounded-xl border-icarus-500 bg-slate-200 dark:bg-slate-800">
           <div class="pb-8">
             <div class="flex items-start justify-between flex-1">
               <div class="text-2xl font-bold text-icarus-500"><%= tool.name %></div>

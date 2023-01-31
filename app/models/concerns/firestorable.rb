@@ -7,7 +7,7 @@ module Firestorable
 
   included do
     def self.firestore
-      @firestore ||= Google::Cloud::Firestore.new(credentials: Rails.application.credentials.firebase_keyfile.to_h)
+      Google::Cloud::Firestore.new(credentials: Rails.application.credentials.firebase_keyfile.to_h)
     end
   end
 end
