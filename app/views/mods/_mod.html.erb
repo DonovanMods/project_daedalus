@@ -1,6 +1,9 @@
-<tr id="<%= dom_id mod %>" data-action="click->mods#navigateTo" data-mods-path-param="<%= mod_detail_path(author: mod.author, slug: mod.slug) %>" class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700">
-  <td><%= mod.name %></td>
-  <td>
+<tr id="<%= dom_id mod %>"
+    data-action="click->mods#navigateTo"
+    data-mods-path-param="<%= mod_detail_path(author: mod.author, slug: mod.slug) %>"
+    class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700">
+  <td class="p-2"><%= mod.name %></td>
+  <td class="p-2">
     <% if mod.url && mod.file_type !~ /exmod/i %>
       <button
         data-action="mods#download"
@@ -12,9 +15,9 @@
       </button>
     <% end %>
   </td>
-  <td class="hidden sm:table-cell"><%= mod.author %></td>
-  <td class="hidden md:table-cell"><%= mod.version %></td>
-  <td class="hidden md:table-cell"><%= mod.compatibility.downcase %></td>
-  <td class="hidden xl:table-cell"><%= mod.file_type.upcase %></td>
-  <td class="hidden lg:table-cell"><%= mod.description %></td>
+  <td class="hidden p-2 sm:table-cell"><%= mod.author %></td>
+  <td class="hidden p-2 md:table-cell"><%= mod.version %></td>
+  <td class="hidden p-2 md:table-cell"><%= mod.compatibility.downcase %></td>
+  <td class="hidden p-2 xl:table-cell"><%= mod.file_type.upcase %></td>
+  <td class="hidden p-2 lg:table-cell"><%= mod.description %></td>
 </tr>
