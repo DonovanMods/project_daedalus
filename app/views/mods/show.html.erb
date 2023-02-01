@@ -1,6 +1,6 @@
 <section class="px-5" data-controller="mods">
   <div class="flex items-center justify-between flex-auto mt-5">
-    <div class="flex-1 min-w-0 text-2xl font-bold md:text-4xl"><%= @mod.name %></div>
+    <div class="flex-1 min-w-0 text-2xl font-bold text-icarus-500 md:text-4xl"><%= @mod.name %></div>
     <% if @mod.file_type !~ /exmod/i %>
       <button
         data-action="mods#download"
