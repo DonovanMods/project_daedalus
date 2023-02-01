@@ -1,5 +1,5 @@
 <div data-controller="mods" class="container">
-  <h1 class="p-2 font-extrabold text-blue-700 no-underline dark:text-blue-500">Icarus Modding Tools</h1>
+  <h1 class="mb-2 text-xl font-extrabold text-blue-700 no-underline md:mb-4 md:text-2xl lg:text-6xl dark:text-blue-500">Icarus Modding Tools</h1>
   <div class="flex flex-1">
     <div class="flex flex-wrap items-start justify-between flex-auto space-x-2 md:space-x-4 md:p-2 items-middle">
       <% @tools.each do |tool| %>
@@ -21,7 +21,7 @@
               <div class="text-sm leading-6 text-slate-500 text">version <%= tool.version %></div>
             </div>
           </div>
-          <div id="<%= tool.slug %>-body"><%= markdown(tool.details) %></div>
+          <div id="<%= tool.slug %>-body" class="prose dark:prose-invert lg:prose-xl"><%= markdown(tool.details) %></div>
           <div id="<%= tool.slug %>-footer" class="flex flex-col items-end text-sm">
             <div class="py-1 text-xs text-slate-500"><%= tool.updated_string %></div>
           </div>

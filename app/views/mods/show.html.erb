@@ -1,6 +1,6 @@
 <section class="px-5" data-controller="mods">
   <div class="flex items-center justify-between flex-auto mt-5">
-    <div class="flex-1 min-w-0 text-2xl font-bold md:text-4xl"><%= @mod.name %></div>
+    <div class="flex-1 min-w-0 text-2xl font-bold text-icarus-500 md:text-4xl"><%= @mod.name %></div>
     <% if @mod.file_type !~ /exmod/i %>
       <button
         data-action="mods#download"
@@ -17,15 +17,15 @@
     <% end %>
   </div>
   <div class="flex items-center justify-between flex-auto">
-    <div>By <%= @mod.author %></div>
-    <div><%= @mod.version_string %></div>
+    <div class="pt-2 text-xl text-blue-500 lg:text-2xl">By <%= @mod.author %></div>
+    <div class="text-slate-500"><%= @mod.version_string %></div>
   </div>
-  <div class="float-right"><%= @mod.updated_string %></div>
+  <div class="float-right text-sm text-slate-500"><%= @mod.updated_string %></div>
   <div class="mt-12 min-h-48">
     <% if @mod.image_url.present? %>
       <img class="hidden float-right w-48 h-48 mb-5 ml-5 rounded md:block" src="<%= raw_url(@mod.image_url) %>">
     <% end %>
-    <div class="pt-5 pb-24"><%= markdown(@mod.details) %></div>
+    <div class="pt-5 pb-12 prose dark:prose-invert lg:prose-xl"><%= markdown(@mod.details) %></div>
   </div>
   <button
     data-action="mods#navigateTo"

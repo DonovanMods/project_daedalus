@@ -11,13 +11,13 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="min-h-screen prose bg-fixed min-w-screen bg-topo-light dark:bg-topo-dark prose-slate dark:prose-invert lg:prose-xl text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800">
+  <body class="min-h-screen bg-fixed min-w-screen lg:text-xl bg-topo-light dark:bg-topo-dark text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800">
     <%= render "shared/flashes" %>
     <header class="w-screen">
       <%= render "layouts/header" %></header>
     </header>
     <main class="flex flex-row justify-center w-screen">
-      <div class="container p-2 mt-5 mb-12 rounded paper bg-slate-100 dark:bg-slate-900">
+      <div class="container p-2 mt-5 mb-12 rounded bg-gradient-to-b from-slate-300 to-slate-100 dark:from-slate-900 dark:to-slate-700 drop-shadow-xl paper bg-slate-300 dark:bg-slate-900">
         <%= yield %>
       </div>
     </main>
