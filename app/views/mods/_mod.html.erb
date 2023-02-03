@@ -4,20 +4,19 @@
     class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700">
   <td class="p-2 border-t border-slate-600"><%= mod.name %></td>
   <td class="p-2 border-t border-slate-600">
-    <% if mod.url && mod.file_type !~ /exmod/i %>
+    <% if type = mod.preferred_type %>
       <button
         data-action="mods#download"
-        data-mods-url-param="<%= raw_url(mod.url) %>"
-        data-mods-file-name-param="<%= mod.filename %>"
+        data-mods-url-param="<%= raw_url(mod.get_url(type)) %>"
+        data-mods-file-name-param="<%= mod.get_name(type) %>"
         type="button"
         class="z-10 inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-        Download
+        Download <%= type.to_s.upcase %>
       </button>
     <% end %>
   </td>
   <td class="hidden p-2 border-t sm:table-cell border-slate-600"><%= mod.author %></td>
   <td class="hidden p-2 text-right border-t md:table-cell border-slate-600"><%= mod.version %></td>
-  <td class="hidden p-2 text-center border-t md:table-cell border-slate-600"><%= mod.compatibility.downcase %></td>
-  <td class="hidden p-2 text-center border-t xl:table-cell border-slate-600"><%= mod.file_type.upcase %></td>
+  <td class="hidden p-2 text-center border-t xl:table-cell border-slate-600"><%= mod.compatibility.downcase %></td>
   <td class="hidden p-2 border-t lg:table-cell border-slate-600"><%= mod.description %></td>
 </tr>

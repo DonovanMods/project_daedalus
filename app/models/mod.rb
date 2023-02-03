@@ -8,7 +8,7 @@ class Mod
   include Firestorable
 
   SORTKEYS = %w[author name].freeze
-  ATTRIBUTES = %i[id name author version compatibility description long_description file_type url image_url readme_url created_at updated_at].freeze
+  ATTRIBUTES = %i[id name author version compatibility description long_description files file_type url image_url readme_url created_at updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
@@ -22,7 +22,8 @@ class Mod
         long_description: mod.data[:long_description],
         version: mod.data[:version],
         compatibility: mod.data[:compatibility],
-        file_type: mod.data[:fileType],
+        files: mod.data[:files] || {},
+        file_type: mod.data[:fileType]&.downcase&.to_sym,
         url: mod.data[:fileURL],
         image_url: mod.data[:imageURL],
         readme_url: mod.data[:readmeURL],
@@ -45,8 +46,59 @@ class Mod
     description
   end
 
-  def filename
-    url.split("/").last
+  def files?
+    files.keys.any?
+  end
+
+  def pak?
+    !!(files[:pak] || file_type == :pak)
+  end
+
+  def zip?
+    !!(files[:zip] || file_type == :zip)
+  end
+
+  def exmodz?
+    !!(files[:exmodz] || file_type == :exmodz)
+  end
+
+  # Determins which file types can be downloaded from the index page
+  def preferred_type
+    return :pak if pak?
+    return :zip if zip?
+  end
+
+  # Determins which file types can be downloaded from the show page
+  def download_types
+    file_types.map(&:to_sym) & %i[pak zip exmodz]
+  end
+
+  def file_types
+    return files.keys if files?
+
+    [file_type]
+  end
+
+  def urls
+    return files.values if files.present?
+
+    [url]
+  end
+
+  def get_url(type)
+    return files[type.to_sym] if files?
+
+    file_type == type.to_sym ? url : nil
+  end
+
+  def get_name(type)
+    return filename(files[type.to_sym]) if files?
+
+    file_type == type.to_sym ? filename(url) : nil
+  end
+
+  def types_string
+    file_types.map(&:upcase).sort.join(" / ")
   end
 
   def author_slug
@@ -67,5 +119,17 @@ class Mod
     v << compatibility if compatibility.present?
 
     v.join(" / ")
+  end
+
+  private
+
+  def filename(url)
+    return unless url
+
+    URI(url).path.split("/").last
+  end
+
+  def exmod_type
+    files.key?(:exmodz) ? :exmodz : :exmod
   end
 end
