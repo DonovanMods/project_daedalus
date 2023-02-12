@@ -1,0 +1,17 @@
+<div class="p-2 mb-4 border-2 border-icarus-500">
+  <h3 class="px-2 pb-3 text-blue-500">Analytics</h3>
+  <div class="flex flex-col flex-auto">
+    <% %i[errors warnings].each do |type| %>
+      <% if metadata[type].count.positive? %>
+        <ul class="p-2 ml-5 <%= type == :error ? 'text-red-500' : 'text-yellow-500' %>">
+          <% metadata[type].each do |string| %>
+            <li class="p-2"><%= string %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% end %>
+    <% if metadata[:warnings].count.zero? && metadata[:errors].count.zero? %>
+      <div class="px-2 ml-5 text-green-500">All Clear</div>
+    <% end %>
+  </div>
+</div>

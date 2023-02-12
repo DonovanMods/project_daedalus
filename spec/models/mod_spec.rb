@@ -14,8 +14,7 @@ RSpec.describe Mod do
                       description: Faker::Lorem.sentence,
                       version: Faker::App.version,
                       compatibility: "w#{Random.rand(1..5)}",
-                      fileType: "ZIP",
-                      fileURL: Faker::Internet.url,
+                      files: { zip: Faker::Internet.url },
                       imageURL: Faker::Internet.url,
                       readmeURL: Faker::Internet.url
                     })
@@ -105,27 +104,14 @@ RSpec.describe Mod do
     end
 
     describe "#details" do
-      context "when the long_description is present" do
-        let(:long_description) { Faker::Lorem.paragraph }
+      let(:description) { Faker::Lorem.paragraph }
 
-        before { mod.long_description = long_description }
-
-        it "returns the long_description" do
-          expect(mod.details).to eq(long_description)
-        end
+      before do
+        mod.description = description
       end
 
-      context "when the long_description is not present" do
-        let(:description) { Faker::Lorem.paragraph }
-
-        before do
-          mod.long_description = ""
-          mod.description = description
-        end
-
-        it "returns the description" do
-          expect(mod.details).to eq(description)
-        end
+      it "returns the description" do
+        expect(mod.details).to eq(description)
       end
     end
   end
@@ -189,14 +175,6 @@ RSpec.describe Mod do
     context "when given a files object" do
       it "returns true" do
         expect(mod.files?).to be true
-      end
-    end
-
-    context "when not given a files object" do
-      let(:mod) { build(:mod, :old_type) }
-
-      it "returns false" do
-        expect(mod.files?).to be false
       end
     end
   end
@@ -273,14 +251,6 @@ RSpec.describe Mod do
         expect(mod.file_types).to eq(%i[zip pak exmodz])
       end
     end
-
-    context "when not given a files object" do
-      let(:mod) { build(:mod, :old_type) }
-
-      it "returns the fileType as an array" do
-        expect(mod.file_types).to eq([:zip])
-      end
-    end
   end
 
   describe "#urls" do
@@ -294,15 +264,6 @@ RSpec.describe Mod do
         expect(mod.urls).to eq([zip_url, pak_url, exmod_url])
       end
     end
-
-    context "when not given a files object" do
-      let(:pak_url) { Faker::Internet.url }
-      let(:mod) { build(:mod, :old_type, file_type: :zip, url: pak_url) }
-
-      it "returns the url as an array" do
-        expect(mod.urls).to eq([pak_url])
-      end
-    end
   end
 
   describe "#get_url" do
@@ -311,14 +272,6 @@ RSpec.describe Mod do
 
       it "returns the url" do
         expect(mod.get_url(:zip)).to eq(mod.files[:zip])
-      end
-    end
-
-    context "when not given a files object" do
-      let(:mod) { build(:mod, :old_type) }
-
-      it "returns the url" do
-        expect(mod.get_url(:zip)).to eq(mod.url)
       end
     end
   end
@@ -331,14 +284,6 @@ RSpec.describe Mod do
         expect(mod.get_name(:zip)).to eq(mod.files[:zip].split("/").last)
       end
     end
-
-    context "when not given a files object" do
-      let(:mod) { build(:mod, :old_type) }
-
-      it "returns the url" do
-        expect(mod.get_name(:zip)).to eq(mod.url.split("/").last)
-      end
-    end
   end
 
   describe "#types_string" do
@@ -347,14 +292,6 @@ RSpec.describe Mod do
 
       it "returns the types string" do
         expect(mod.types_string).to eq("EXMODZ / PAK / ZIP")
-      end
-    end
-
-    context "when not given a files object" do
-      let(:mod) { build(:mod, :old_type) }
-
-      it "returns the types string" do
-        expect(mod.types_string).to eq("ZIP")
       end
     end
   end

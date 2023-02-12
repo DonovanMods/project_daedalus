@@ -8,25 +8,23 @@ class Mod
   include Firestorable
 
   SORTKEYS = %w[author name].freeze
-  ATTRIBUTES = %i[id name author version compatibility description long_description files file_type url image_url readme_url created_at updated_at].freeze
+  ATTRIBUTES = %i[author compatibility description files id image_url metadata name readme_url timestamps version created_at updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def self.all
     firestore.col("mods").get.filter_map do |mod|
       new(
-        id: mod.document_id,
-        name: mod.data[:name],
         author: mod.data[:author],
-        description: mod.data[:description],
-        long_description: mod.data[:long_description],
-        version: mod.data[:version],
         compatibility: mod.data[:compatibility],
+        description: mod.data[:description],
         files: mod.data[:files] || {},
-        file_type: mod.data[:fileType]&.downcase&.to_sym,
-        url: mod.data[:fileURL],
+        id: mod.document_id,
         image_url: mod.data[:imageURL],
+        metadata: mod.data[:meta],
+        name: mod.data[:name],
         readme_url: mod.data[:readmeURL],
+        version: mod.data[:version],
         created_at: mod.create_time,
         updated_at: mod.update_time
       )
@@ -41,8 +39,6 @@ class Mod
   def details
     return readme if readme.present?
 
-    return long_description if long_description.present?
-
     description
   end
 
@@ -51,15 +47,15 @@ class Mod
   end
 
   def pak?
-    !!(files[:pak] || file_type == :pak)
+    files.key?(:pak)
   end
 
   def zip?
-    !!(files[:zip] || file_type == :zip)
+    files.key?(:zip)
   end
 
   def exmodz?
-    !!(files[:exmodz] || file_type == :exmodz)
+    files.key?(:exmodz)
   end
 
   # Determins which file types can be downloaded from the index page
@@ -74,27 +70,19 @@ class Mod
   end
 
   def file_types
-    return files.keys if files?
-
-    [file_type]
+    files.keys
   end
 
   def urls
-    return files.values if files.present?
-
-    [url]
+    files.values
   end
 
   def get_url(type)
-    return files[type.to_sym] if files?
-
-    file_type == type.to_sym ? url : nil
+    files[type.to_sym]
   end
 
   def get_name(type)
-    return filename(files[type.to_sym]) if files?
-
-    file_type == type.to_sym ? filename(url) : nil
+    filename(files[type.to_sym])
   end
 
   def types_string
