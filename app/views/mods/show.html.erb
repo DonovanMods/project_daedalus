@@ -18,26 +18,36 @@
     <div class="pt-2 text-xl text-blue-500 lg:text-2xl">By <%= @mod.author %></div>
     <div class="text-slate-500"><%= @mod.version_string %></div>
   </div>
-  <div class="flex flex-col justify-between flex-0">
-    <div class="text-sm text-right text-slate-500"><%= @mod.updated_string %></div>
-    <% if @mod.exmodz? %>
-      <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+  <div class="flex items-start justify-between flex-auto">
+    <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+      <% if @mod.exmodz? %>
         This Mod includes an EXMOD formatted file, which doesn't need updates each week.<br />
         We recommend you use a Mod Manager to install this mod
-      </div>
-    <% end %>
+      <% end %>
+    </div>
+    <div class="text-sm text-right text-slate-500"><%= @mod.updated_string %></div>
   </div>
+  <button
+    data-action="mods#navigateTo"
+    data-mods-path-param="<%= mod_detail_path(@mod.author, analytics: true) %>"
+    class="float-right text-xs text-right anchor-blue"
+    type="button">
+    Analytics for Mod Authors
+  </button>
   <div class="mt-12 min-h-48">
+    <%= render("analytics", metadata: @mod.metadata[:status]) if params[:analytics] %>
     <% if @mod.image_url.present? %>
       <img class="hidden float-right w-48 h-48 mb-5 ml-5 rounded md:block" src="<%= raw_url(@mod.image_url) %>">
     <% end %>
     <div class="pt-5 pb-12 prose dark:prose-invert lg:prose-xl"><%= markdown(@mod.details) %></div>
   </div>
-  <button
-    data-action="mods#navigateTo"
-    data-mods-path-param="<%= url_for :back %>"
-    type="button"
-    class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-    Back to List
-  </button>
+  <div class="flex justify-between flex-auto">
+    <button
+      data-action="mods#navigateTo"
+      data-mods-path-param="<%= url_for :back %>"
+      type="button"
+      class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+      Back to List
+    </button>
+  </div>
 </section>

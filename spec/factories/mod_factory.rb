@@ -1,12 +1,12 @@
 FactoryBot.define do
   factory :mod do
-    id { SecureRandom.uuid }
-    name { Faker::App.name }
     author { Faker::App.author }
+    compatibility { Faker::App.version }
     description { Faker::Lorem.sentence }
     files { { zip: Faker::Internet.url } }
+    id { SecureRandom.uuid }
+    name { Faker::App.name }
     version { Faker::App.version }
-    compatibility { Faker::App.version }
     image_url { Faker::Internet.url }
     readme_url { Faker::Internet.url }
     created_at { Time.now.utc - 1.day }
