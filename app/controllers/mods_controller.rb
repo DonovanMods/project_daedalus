@@ -3,6 +3,7 @@
 class ModsController < ApplicationController
   before_action :authors, only: %i[index show]
   before_action :mods, only: %i[index show]
+  before_action :set_session, only: %i[index]
 
   def index
     @mods = find_mods_by_author(sanitize(params[:author])) if params[:author].present?
@@ -48,8 +49,7 @@ class ModsController < ApplicationController
       mod.name               =~ /#{query}/i ||
         mod.author           =~ /#{query}/i ||
         mod.compatibility    =~ /#{query}/i ||
-        mod.description      =~ /#{query}/i ||
-        mod.long_description =~ /#{query}/i
+        mod.description      =~ /#{query}/i
     end
   end
 
@@ -63,5 +63,9 @@ class ModsController < ApplicationController
 
   def mods
     @mods ||= Mod.all
+  end
+
+  def set_session
+    session[:origin_url] = request.original_url
   end
 end
