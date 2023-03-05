@@ -5,21 +5,22 @@ RSpec.describe Tool do
   let(:firestore_collection) { instance_double(Google::Cloud::Firestore::CollectionReference) }
   let(:tool_firestore_obj) do
     instance_double(Google::Cloud::Firestore::DocumentSnapshot,
-                    document_id: SecureRandom.uuid,
-                    create_time: Time.now.utc,
-                    update_time: Time.now.utc,
-                    data: {
-                      name: Faker::App.name,
-                      author: Faker::App.author,
-                      description: Faker::Lorem.sentence,
-                      version: Faker::App.version,
-                      compatibility: "w#{Random.rand(1..5)}",
-                      fileType: "ZIP",
-                      fileURL: Faker::Internet.url,
-                      imageURL: Faker::Internet.url,
-                      readmeURL: Faker::Internet.url
-                    })
+      document_id: SecureRandom.uuid,
+      create_time: Time.now.utc,
+      update_time: Time.now.utc,
+      data: {
+        name: Faker::App.name,
+        author: Faker::App.author,
+        description: Faker::Lorem.sentence,
+        version: Faker::App.version,
+        compatibility: "w#{Random.rand(1..5)}",
+        fileType: "ZIP",
+        fileURL: Faker::Internet.url,
+        imageURL: Faker::Internet.url,
+        readmeURL: Faker::Internet.url
+      })
   end
+  let(:tool) { build :tool }
 
   before do
     allow(Google::Cloud::Firestore).to receive(:new).and_return(firestore_client)
@@ -52,45 +53,33 @@ RSpec.describe Tool do
   end
 
   context "when the readme_url is present" do
-    let(:readme_url) { Faker::Internet.url }
-    let(:tool) { build(:tool, readme_url: readme_url) }
-    let(:readme) { Faker::Lorem.paragraph }
-
     before do
-      allow(Net::HTTP).to receive(:get).and_return(readme)
+      allow(Net::HTTP).to receive(:get).and_return("foo")
     end
 
     describe "#readme" do
       it "returns the readme" do
-        expect(tool.readme).to eq(readme)
+        expect(tool.readme).to eq("foo")
       end
 
-      context "when readme_url is not a GitHub URL" do
-        let(:readme_url) { Faker::Internet.url }
+      it "uses the given readme_url when not a GitHub URL" do
+        tool.readme_url = Faker::Internet.url
+        tool.readme
 
-        it "uses the given readme_url" do
-          tool.readme
-
-          expect(Net::HTTP).to have_received(:get).with(URI(readme_url))
-        end
+        expect(Net::HTTP).to have_received(:get).with(URI(tool.readme_url))
       end
 
-      context "when readme_url is a GitHub URL" do
-        let(:readme_url) { "https://github.com/username/repo/raw/master/README.md" }
+      it "uses the corrected readme_url when given a GitHub URL" do
+        tool.readme_url = "https://github.com/username/repo/raw/master/README.md"
+        tool.readme
 
-        before { tool.readme_url = readme_url }
-
-        it "uses the corrected readme_url" do
-          tool.readme
-
-          expect(Net::HTTP).to have_received(:get).with(URI("https://raw.githubusercontent.com/username/repo/master/README.md"))
-        end
+        expect(Net::HTTP).to have_received(:get).with(URI("https://raw.githubusercontent.com/username/repo/master/README.md"))
       end
     end
 
     describe "#details" do
       it "returns the readme" do
-        expect(tool.details).to eq(readme)
+        expect(tool.details).to eq("foo")
       end
     end
   end
@@ -119,44 +108,49 @@ RSpec.describe Tool do
 
   describe "#filename" do
     let(:url) { Faker::Internet.url }
-    let(:tool) { build(:tool, url: url) }
 
     it "returns the filename" do
+      tool.url = url
+
       expect(tool.filename).to eq(url.split("/").last)
     end
   end
 
   describe "#updated_string" do
     let(:updated_at) { Faker::Date.backward }
-    let(:tool) { build(:tool, updated_at: updated_at) }
 
     it "returns the updated string" do
-      expect(tool.updated_string).to eq("Last Updated on #{updated_at.strftime('%B %d, %Y')}")
+      tool.updated_at = updated_at
+
+      expect(tool.updated_string).to eq("Last Updated on #{updated_at.strftime("%B %d, %Y")}")
     end
   end
 
   describe "#version_string" do
-    let(:version) { Faker::App.version }
-    let(:compatibility) { Faker::App.version }
-    let(:tool) { build(:tool, version: version, compatibility: compatibility) }
+    context "when the version and compatability is present" do
+      it "returns the version and compatibility string" do
+        tool.compatibility = Faker::App.version
+        tool.version = Faker::App.version
 
-    it "returns the version and compatibility string" do
-      expect(tool.version_string).to eq("v#{version} / #{compatibility}")
+        expect(tool.version_string).to eq("v#{tool.version} / #{tool.compatibility}")
+      end
     end
 
     context "when the version is not present" do
-      let(:version) { "" }
-
       it "returns only the compatibility string" do
-        expect(tool.version_string).to eq(compatibility)
+        tool.compatibility = Faker::App.version
+        tool.version = ""
+
+        expect(tool.version_string).to eq(tool.compatibility)
       end
     end
 
     context "when the compatibility is not present" do
-      let(:compatibility) { "" }
-
       it "returns only the version string" do
-        expect(tool.version_string).to eq("v#{version}")
+        tool.compatibility = ""
+        tool.version = Faker::App.version
+
+        expect(tool.version_string).to eq("v#{tool.version}")
       end
     end
   end

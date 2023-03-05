@@ -24,7 +24,7 @@ class ModsController < ApplicationController
     @total_mods = @mods.size
 
     if turbo_frame_request?
-      render partial: "mods", locals: { mods: @mods }
+      render partial: "mods", locals: {mods: @mods}
     else
       render :index
     end
@@ -46,10 +46,10 @@ class ModsController < ApplicationController
 
   def find_mods(query)
     mods.find_all do |mod|
-      mod.name               =~ /#{query}/i ||
-        mod.author           =~ /#{query}/i ||
-        mod.compatibility    =~ /#{query}/i ||
-        mod.description      =~ /#{query}/i
+      mod.name =~ /#{query}/i ||
+        mod.author =~ /#{query}/i ||
+        mod.compatibility =~ /#{query}/i ||
+        mod.description =~ /#{query}/i
     end
   end
 

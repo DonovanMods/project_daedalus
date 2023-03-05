@@ -5,20 +5,21 @@ RSpec.describe Mod do
   let(:firestore_collection) { instance_double(Google::Cloud::Firestore::CollectionReference) }
   let(:mod_firestore_obj) do
     instance_double(Google::Cloud::Firestore::DocumentSnapshot,
-                    document_id: SecureRandom.uuid,
-                    create_time: Time.now.utc,
-                    update_time: Time.now.utc,
-                    data: {
-                      name: Faker::App.name,
-                      author: Faker::App.author,
-                      description: Faker::Lorem.sentence,
-                      version: Faker::App.version,
-                      compatibility: "w#{Random.rand(1..5)}",
-                      files: { zip: Faker::Internet.url },
-                      imageURL: Faker::Internet.url,
-                      readmeURL: Faker::Internet.url
-                    })
+      document_id: SecureRandom.uuid,
+      create_time: Time.now.utc,
+      update_time: Time.now.utc,
+      data: {
+        name: Faker::App.name,
+        author: Faker::App.author,
+        description: Faker::Lorem.sentence,
+        version: Faker::App.version,
+        compatibility: "w#{Random.rand(1..5)}",
+        files: {zip: Faker::Internet.url},
+        imageURL: Faker::Internet.url,
+        readmeURL: Faker::Internet.url
+      })
   end
+  let(:mod) { build :mod }
 
   before do
     allow(Google::Cloud::Firestore).to receive(:new).and_return(firestore_client)
@@ -51,51 +52,39 @@ RSpec.describe Mod do
   end
 
   context "when the readme_url is present" do
-    let(:readme_url) { Faker::Internet.url }
-    let(:mod) { build(:mod, readme_url: readme_url) }
-    let(:readme) { Faker::Lorem.paragraph }
-
-    before do
-      allow(Net::HTTP).to receive(:get).and_return(readme)
-    end
+    before { allow(Net::HTTP).to receive(:get).and_return("foo") }
 
     describe "#readme" do
+      let(:readme_url) { Faker::Internet.url }
+
       it "returns the readme" do
-        expect(mod.readme).to eq(readme)
+        expect(mod.readme).to eq("foo")
       end
 
-      context "when readme_url is not a GitHub URL" do
-        let(:readme_url) { Faker::Internet.url }
+      it "uses the given readme_url" do
+        mod.readme_url = readme_url
+        mod.readme
 
-        it "uses the given readme_url" do
-          mod.readme
-
-          expect(Net::HTTP).to have_received(:get).with(URI(readme_url))
-        end
+        expect(Net::HTTP).to have_received(:get).with(URI(readme_url))
       end
 
-      context "when readme_url is a GitHub URL" do
-        let(:readme_url) { "https://github.com/username/repo/raw/master/README.md" }
+      it "uses the corrected readme_url" do
+        mod.readme_url = "https://github.com/username/repo/raw/master/README.md"
+        mod.readme
 
-        before { mod.readme_url = readme_url }
-
-        it "uses the corrected readme_url" do
-          mod.readme
-
-          expect(Net::HTTP).to have_received(:get).with(URI("https://raw.githubusercontent.com/username/repo/master/README.md"))
-        end
+        expect(Net::HTTP).to have_received(:get).with(URI("https://raw.githubusercontent.com/username/repo/master/README.md"))
       end
     end
 
     describe "#details" do
       it "returns the readme" do
-        expect(mod.details).to eq(readme)
+        expect(mod.details).to eq("foo")
       end
     end
   end
 
   context "when the readme_url is not present" do
-    let(:mod) { build(:mod, readme_url: "") }
+    before { mod.readme_url = "" }
 
     describe "#readme" do
       it "returns nil" do
@@ -118,7 +107,8 @@ RSpec.describe Mod do
 
   describe "#slug" do
     let(:name) { Faker::App.name }
-    let(:mod) { build(:mod, name: name) }
+
+    before { mod.name = name }
 
     it "returns mod name as a slug" do
       expect(mod.slug).to eq(name.parameterize)
@@ -127,7 +117,8 @@ RSpec.describe Mod do
 
   describe "#author_slug" do
     let(:author) { Faker::App.author }
-    let(:mod) { build(:mod, author: author) }
+
+    before { mod.author = author }
 
     it "returns the author name as a slug" do
       expect(mod.author_slug).to eq(author.parameterize)
@@ -136,42 +127,44 @@ RSpec.describe Mod do
 
   describe "#updated_string" do
     let(:updated_at) { Faker::Date.backward }
-    let(:mod) { build(:mod, updated_at: updated_at) }
+
+    before { mod.updated_at = updated_at }
 
     it "returns the updated string" do
-      expect(mod.updated_string).to eq("Last Updated on #{updated_at.strftime('%B %d, %Y')}")
+      expect(mod.updated_string).to eq("Last Updated on #{updated_at.strftime("%B %d, %Y")}")
     end
   end
 
   describe "#version_string" do
-    let(:version) { Faker::App.version }
-    let(:compatibility) { Faker::App.version }
-    let(:mod) { build(:mod, version: version, compatibility: compatibility) }
+    context "when the version and compatability is present" do
+      it "returns the version and compatibility string" do
+        mod.compatibility = Faker::App.version
+        mod.version = Faker::App.version
 
-    it "returns the version and compatibility string" do
-      expect(mod.version_string).to eq("v#{version} / #{compatibility}")
+        expect(mod.version_string).to eq("v#{mod.version} / #{mod.compatibility}")
+      end
     end
 
     context "when the version is not present" do
-      let(:version) { "" }
-
       it "returns only the compatibility string" do
-        expect(mod.version_string).to eq(compatibility)
+        mod.compatibility = Faker::App.version
+        mod.version = ""
+
+        expect(mod.version_string).to eq(mod.compatibility)
       end
     end
 
     context "when the compatibility is not present" do
-      let(:compatibility) { "" }
-
       it "returns only the version string" do
-        expect(mod.version_string).to eq("v#{version}")
+        mod.compatibility = ""
+        mod.version = Faker::App.version
+
+        expect(mod.version_string).to eq("v#{mod.version}")
       end
     end
   end
 
   describe "#files?" do
-    let(:mod) { build(:mod) }
-
     context "when given a files object" do
       it "returns true" do
         expect(mod.files?).to be true
@@ -182,7 +175,7 @@ RSpec.describe Mod do
   %i[pak zip exmodz].each do |file_type|
     describe "##{file_type}?" do
       context "when given a #{file_type} object" do
-        let(:mod) { build(:mod, files: { file_type.to_sym => Faker::Internet.url }) }
+        before { mod.files = {file_type.to_sym => Faker::Internet.url} }
 
         it "returns true" do
           expect(mod.send("#{file_type}?")).to be true
@@ -190,7 +183,7 @@ RSpec.describe Mod do
       end
 
       context "when not given a pak object" do
-        let(:mod) { build(:mod, files: {}) }
+        before { mod.files = {} }
 
         it "returns false" do
           expect(mod.send("#{file_type}?")).to be false
@@ -201,7 +194,7 @@ RSpec.describe Mod do
 
   context "when given a exmodz object" do
     describe "#exmodz?" do
-      let(:mod) { build(:mod, files: { exmodz: Faker::Internet.url }) }
+      before { mod.files = {exmodz: Faker::Internet.url} }
 
       it "returns true" do
         expect(mod.exmodz?).to be true
@@ -211,7 +204,9 @@ RSpec.describe Mod do
 
   describe "#preferred_type" do
     context "when given a pak object" do
-      let(:mod) { build(:mod, files: { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }) }
+      before do
+        mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url}
+      end
 
       it "returns the preferred type" do
         expect(mod.preferred_type).to eq(:pak)
@@ -219,7 +214,7 @@ RSpec.describe Mod do
     end
 
     context "when given a zip object" do
-      let(:mod) { build(:mod, files: { zip: Faker::Internet.url, exmodz: Faker::Internet.url }) }
+      before { mod.files = {zip: Faker::Internet.url, exmodz: Faker::Internet.url} }
 
       it "returns the preferred type" do
         expect(mod.preferred_type).to eq(:zip)
@@ -227,7 +222,7 @@ RSpec.describe Mod do
     end
 
     context "when only given an exmod object" do
-      let(:mod) { build(:mod, files: { exmod: Faker::Internet.url }) }
+      before { mod.files = {exmod: Faker::Internet.url} }
 
       it "returns the preferred type" do
         expect(mod.preferred_type).to be_nil
@@ -235,7 +230,7 @@ RSpec.describe Mod do
     end
 
     context "when only given an exmodz object" do
-      let(:mod) { build(:mod, files: { exmodz: Faker::Internet.url }) }
+      before { mod.files = {exmodz: Faker::Internet.url} }
 
       it "returns the preferred type" do
         expect(mod.preferred_type).to be_nil
@@ -245,7 +240,7 @@ RSpec.describe Mod do
 
   describe "#file_types" do
     context "when given a files object" do
-      let(:mod) { build(:mod, files: { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }) }
+      before { mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url} }
 
       it "returns the file types" do
         expect(mod.file_types).to eq(%i[zip pak exmodz])
@@ -255,20 +250,17 @@ RSpec.describe Mod do
 
   describe "#urls" do
     context "when given a files object" do
-      let(:zip_url) { Faker::Internet.url }
-      let(:pak_url) { Faker::Internet.url }
-      let(:exmod_url) { Faker::Internet.url }
-      let(:mod) { build(:mod, files: { zip: zip_url, pak: pak_url, exmodz: exmod_url }) }
-
       it "returns an array of urls" do
-        expect(mod.urls).to eq([zip_url, pak_url, exmod_url])
+        mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url}
+
+        expect(mod.urls).to eq([mod.files[:zip], mod.files[:pak], mod.files[:exmodz]])
       end
     end
   end
 
   describe "#get_url" do
     context "when given a files object" do
-      let(:mod) { build(:mod, files: { zip: Faker::Internet.url }) }
+      before { mod.files = {zip: Faker::Internet.url} }
 
       it "returns the url" do
         expect(mod.get_url(:zip)).to eq(mod.files[:zip])
@@ -278,7 +270,7 @@ RSpec.describe Mod do
 
   describe "#get_name" do
     context "when given a files object" do
-      let(:mod) { build(:mod, files: { zip: Faker::Internet.url }) }
+      before { mod.files = {zip: Faker::Internet.url} }
 
       it "returns the name" do
         expect(mod.get_name(:zip)).to eq(mod.files[:zip].split("/").last)
@@ -288,7 +280,7 @@ RSpec.describe Mod do
 
   describe "#types_string" do
     context "when given a files object" do
-      let(:mod) { build(:mod, files: { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }) }
+      before { mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url} }
 
       it "returns the types string" do
         expect(mod.types_string).to eq("EXMODZ / PAK / ZIP")
