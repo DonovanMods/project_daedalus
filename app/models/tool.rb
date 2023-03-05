@@ -59,7 +59,7 @@ class Tool
   end
 
   def updated_string
-    "Last Updated on #{updated_at.strftime('%B %d, %Y')}"
+    "Last Updated on #{updated_at.strftime("%B %d, %Y")}"
   end
 
   def version_string
