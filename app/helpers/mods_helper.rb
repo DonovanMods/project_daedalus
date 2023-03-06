@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ModHelper
+module ModsHelper
   def raw_url(url)
     return url unless url&.include?("github.com")
 
