@@ -2,6 +2,9 @@
 
 # Icarus Character
 class Character
+  include ActiveModel::Model
+  include ActionView::Helpers::NumberHelper
+
   @characters = []
 
   ##
@@ -9,6 +12,7 @@ class Character
   ##
   class << self
     def all
+      parse File.read(Rails.root.join("spec/fixtures/characters.json"))
       @characters
     end
 
@@ -20,7 +24,7 @@ class Character
       JSON.generate({"Characters.json": all.map(&:to_json)}, {
         array_nl: "\r\n",
         object_nl: "\r\n",
-        indent: "  ",
+        indent: "\t",
         space_before: "",
         space: " "
       })
@@ -36,36 +40,36 @@ class Character
     @data = JSON.parse(data)
   end
 
-  def name
-    @data["CharacterName"]
+  def abandoned?
+    @data["IsAbandoned"]
   end
 
-  def xp
-    @data["XP"].to_i
+  def abandoned=(value)
+    @data["IsAbandoned"] = !!value
   end
 
-  def xp_debt
-    @data["XP_Debt"].to_i
-  end
-
-  def xp_string
-    "#{xp} #{xp_debt.positive? ? "(#{xp_debt} debt)" : ""}"
+  def credits
+    @credits ||= @data["MetaResources"].find { |r| r["MetaRow"] == "Credits" }&.dig("Count").to_i
   end
 
   def dead?
     @data["IsDead"]
   end
 
-  def abandoned?
-    @data["IsAbandoned"]
+  def dead=(value)
+    @data["IsDead"] = !!value
+  end
+
+  def exotics
+    @credits ||= @data["MetaResources"].find { |r| r["MetaRow"] == "Exotic1" }&.dig("Count").to_i
   end
 
   def location
     @data["Location"]
   end
 
-  def credits
-    @credits ||= @data["MetaResources"].find { |r| r["MetaRow"] == "Credits" }&.dig("Count")&.to_i
+  def name
+    @data["CharacterName"]
   end
 
   def refund
@@ -91,24 +95,24 @@ class Character
       space: " "
     })
   end
+
+  def xp
+    @data["XP"].to_i
+  end
+
+  def xp=(value)
+    @data["XP"] = value.to_i
+  end
+
+  def xp_debt
+    @data["XP_Debt"].to_i
+  end
+
+  def xp_debt=(value)
+    @data["XP_Debt"] = value.to_i
+  end
+
+  def xp_string
+    [number_with_delimiter(xp), xp_debt.positive? ? "(#{number_with_delimiter(xp_debt)} debt)" : nil].compact.join(" ")
+  end
 end
-
-
-# characters = JSON.parse(ARGF.read)["Characters.json"].map { |c| IcarusCharacter.new(c) }
-
-# puts characters[0].data.keys
-
-# characters.each do |character|
-#   puts character.print + "\n\n"
-# end
-
-# File.write(
-#   "characters.test.json",
-#   JSON.generate({"Characters.json": characters.map(&:to_json)}, {
-#     array_nl: "\r\n",
-#     object_nl: "\r\n",
-#     indent: "  ",
-#     space_before: "",
-#     space: " "
-#   })
-# )
