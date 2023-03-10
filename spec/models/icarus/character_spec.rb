@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe Character do
+RSpec.describe Icarus::Character do
   subject { character }
 
   let(:character) { described_class.parse(raw_json).first }
-  let(:raw_json) { File.read(Rails.root.join("spec/fixtures/characters.json")) }
+  let(:raw_json) { File.read(Rails.root.join("spec/fixtures/Characters.json")) }
 
   describe "Class Methods" do
     subject { described_class }
@@ -55,15 +55,24 @@ RSpec.describe Character do
   describe "#abandoned=" do
     it "sets the value" do
       character.abandoned = true
-      expect(character.abandoned?).to eq(true)
+      expect(character.data["IsAbandoned"]).to eq(true)
     end
   end
 
   describe "#credits" do
+    before { character.instance_variable_set(:@data, {"MetaResources" => [{"MetaRow" => "Credits", "Count" => 1_000}]}) }
+
     it { expect(character.credits).to be_a(Integer) }
 
     it "returns the count" do
-      expect(character.credits).to eq(10_000)
+      expect(character.credits).to eq(1_000)
+    end
+  end
+
+  describe "#credits=" do
+    it "Updates the credit value" do
+      character.credits = 100_000
+      expect(character.data["MetaResources"].find { |r| r["MetaRow"] == "Credits" }["Count"]).to eq(100_000)
     end
   end
 
@@ -82,15 +91,65 @@ RSpec.describe Character do
   describe "#dead=" do
     it "sets the value" do
       character.dead = true
-      expect(character.dead?).to eq(true)
+      expect(character.data["IsDead"]).to eq(true)
     end
   end
 
   describe "#exotics" do
+    before { character.instance_variable_set(:@data, {"MetaResources" => [{"MetaRow" => "Exotic1", "Count" => 800}]}) }
+
     it { expect(character.exotics).to be_a(Integer) }
 
     it "Returns the count" do
-      expect(character.exotics).to eq(0)
+      expect(character.exotics).to eq(800)
+    end
+  end
+
+  describe "#exotics=" do
+    it "Updates the exotics value" do
+      character.exotics = 8_000
+      expect(character.data["MetaResources"].find { |r| r["MetaRow"] == "Exotic1" }["Count"]).to eq(8_000)
+    end
+  end
+
+  describe "#level" do
+    it "returns the current level" do
+      expect(character.level).to eq(25)
+    end
+
+    context "when level is 0" do
+      before { character.instance_variable_set(:@data, {"XP" => nil}) }
+
+      it "returns zero" do
+        expect(character.level).to eq(0)
+      end
+    end
+
+    context "when level is maxed" do
+      before { character.instance_variable_set(:@data, {"XP" => 10_000_000}) }
+
+      it "returns the max level" do
+        expect(character.level).to eq(60)
+      end
+    end
+  end
+
+  describe "#level=" do
+    it "updates XP" do
+      character.level = 30
+      expect(character.data["XP"]).to eq(1_400_001) # 1,400,000 + 1
+    end
+
+    context "when level is 0" do
+      it "does not update XP" do
+        expect { character.level = 0 }.not_to change { character.data["XP"] }
+      end
+    end
+
+    context "when level is exceeded" do
+      it "does not update XP" do
+        expect { character.level = 100 }.not_to change { character.data["XP"] }
+      end
     end
   end
 
