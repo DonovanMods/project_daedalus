@@ -122,6 +122,9 @@ GEM
       faraday (~> 2.0)
     ffi (1.15.5)
     formatador (1.1.0)
+    fuubar (2.5.1)
+      rspec-core (~> 3.0)
+      ruby-progressbar (~> 1.4)
     gapic-common (0.18.0)
       faraday (>= 1.9, < 3.a)
       faraday-retry (>= 1.0, < 3.a)
@@ -424,6 +427,7 @@ DEPENDENCIES
   erb_lint (~> 0.3.1)
   factory_bot_rails
   faker
+  fuubar
   google-cloud-firestore (~> 2.8)
   google-cloud-storage (~> 1.44)
   guard (~> 2.18)
