@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
   get "home", to: "home#index"
   get "info", to: "info#index"
+  get "characters", to: "characters#index"
 
   scope :mods do
     get "/:author/:slug", to: "mods#show", as: "mod_detail"

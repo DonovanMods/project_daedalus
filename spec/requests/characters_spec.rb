@@ -1,7 +1,13 @@
-require 'rails_helper'
+# frozen_string_literal: true
 
-RSpec.describe "Characters", type: :request do
-  describe "GET /index" do
-    pending "add some examples (or delete) #{__FILE__}"
+require "rails_helper"
+
+RSpec.describe "Characters" do
+  describe "GET /characters" do
+    it "returns http success" do
+      get "/characters"
+
+      expect(response).to have_http_status(:success)
+    end
   end
 end
