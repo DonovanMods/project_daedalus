@@ -8,19 +8,22 @@ module Icarus
       194_400 => 11, 227_300 => 12, 260_200 => 13, 293_100 => 14, 326_000 => 15, 380_800 => 16, 435_600 => 17, 490_400 => 18, 545_200 => 19, 600_000 => 20,
       975_000 => 25, 1_400_000 => 30, 1_942_000 => 35, 2_550_000 => 40, 3_200_000 => 45, 3_890_000 => 50, 4_625_000 => 55, 5_400_000 => 60
     }.freeze
-    @characters = []
+    @@characters = []
 
     ##
     ## Class methods
     ##
     class << self
       def all
-        # FIXME: This is where we should be reading the users Characters.json file
-        @characters = parse(Rails.root.join("spec/fixtures/Characters.json").read)
+        @@characters
+      end
+
+      def loaded?
+        @@characters.any?
       end
 
       def parse(raw_json)
-        JSON.parse(raw_json)["Characters.json"].map { |c| new(c) }
+        @@characters = JSON.parse(raw_json)["Characters.json"].map { |c| new(c) }
       end
 
       def to_json

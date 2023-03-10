@@ -6,11 +6,27 @@ RSpec.describe Icarus::Profile do
   let(:profile) { described_class.parse(raw_json) }
   let(:raw_json) { Rails.root.join("spec/fixtures/Profile.json").read }
 
+  # rubocop:disable RSpec/NestedGroups
   describe "Class Methods" do
     subject { described_class }
 
     it { is_expected.to respond_to(:parse) }
     it { is_expected.to respond_to(:to_json) }
+
+    describe ".loaded?" do
+      context "when the data is loaded" do
+        before { profile.instance_variable_set(:@data, {"UserID" => 1}) }
+
+        it { expect(described_class).to be_loaded }
+      end
+
+      context "when the data is not loaded" do
+        before { profile.instance_variable_set(:@data, nil) }
+
+        it { expect(described_class).not_to be_loaded }
+      end
+    end
+    # rubocop:enable RSpec/NestedGroups
 
     describe ".parse" do
       subject { described_class.parse(raw_json) }
@@ -19,7 +35,7 @@ RSpec.describe Icarus::Profile do
     end
 
     describe ".to_json" do
-      subject { described_class.to_json }
+      subject { described_class.parse(raw_json).to_json }
 
       it { is_expected.to be_a(String) }
       it { is_expected.to match(/"UserID":/) }

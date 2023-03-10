@@ -20,6 +20,22 @@ RSpec.describe Icarus::Character do
       it { is_expected.to all(be_a(described_class)) }
     end
 
+    # rubocop:disable RSpec/NestedGroups
+    describe ".loaded?" do
+      context "when the data is loaded" do
+        before { described_class.class_variable_set(:@@characters, [character]) }
+
+        it { expect(described_class).to be_loaded }
+      end
+
+      context "when the data is not loaded" do
+        before { described_class.class_variable_set(:@@characters, []) }
+
+        it { expect(described_class).not_to be_loaded }
+      end
+    end
+    # rubocop:enable RSpec/NestedGroups
+
     describe ".parse" do
       subject { described_class.parse(raw_json) }
 
@@ -28,7 +44,7 @@ RSpec.describe Icarus::Character do
     end
 
     describe ".to_json" do
-      subject { described_class.to_json }
+      subject { described_class.parse(raw_json).to_json }
 
       it { is_expected.to be_a(String) }
 
