@@ -1,0 +1,142 @@
+{
+	"UserID": "76561197973635811",
+	"MetaResources": [
+		{
+			"MetaRow": "Credits",
+			"Count": 5950
+		},
+		{
+			"MetaRow": "Refund",
+			"Count": 28
+		}
+	],
+	"UnlockedFlags": [],
+	"Talents": [
+		{
+			"RowName": "Workshop_Food",
+			"Rank": 1
+		},
+		{
+			"RowName": "Prospect_OLY_Forest_Recon",
+			"Rank": 1
+		},
+		{
+			"RowName": "Prospect_OLY_Forest_Scan",
+			"Rank": 1
+		},
+		{
+			"RowName": "Prospect_OLY_Forest_Research",
+			"Rank": 1
+		},
+		{
+			"RowName": "Prospect_OLY_Forest_Exploration",
+			"Rank": 1
+		},
+		{
+			"RowName": "Prospect_OLY_Forest_Extermination",
+			"Rank": 1
+		},
+		{
+			"RowName": "Prospect_OLY_Forest_Survey",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Canteen_Shengong",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Pickaxe_Shengong",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Deluxe_Envirosuit",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Envirosuit",
+			"Rank": 1
+		},
+		{
+			"RowName": "Prospect_OLY_Forest_Construction",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Oxygen_Tank_Shengong",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Envirosuit_1",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Envirosuit_6",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Survival_Backpack",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Module_Movement",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Axe_Printed",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Pickaxe_Shengong_Alpha",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Axe_Shengong_Beta",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Firewhacker_Printed",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Hammer_Printed",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Hammer_Shengong_Beta",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Hammer_Larkwell",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Envirosuit_3",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Knife_Printed",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Knife_Shengong_Beta_0",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Sickle_Printed",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Envirosuit_7",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Bow_Shengong_Beta",
+			"Rank": 1
+		},
+		{
+			"RowName": "Workshop_Bow_Shengong_Alpha",
+			"Rank": 1
+		}
+	],
+	"NextChrSlot": 3,
+	"DataVersion": 2
+}
