@@ -19,7 +19,7 @@ RSpec.describe Mod do
         readmeURL: Faker::Internet.url
       })
   end
-  let(:mod) { build :mod }
+  let(:mod) { build(:mod) }
 
   before do
     allow(Google::Cloud::Firestore).to receive(:new).and_return(firestore_client)

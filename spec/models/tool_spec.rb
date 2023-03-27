@@ -20,7 +20,7 @@ RSpec.describe Tool do
         readmeURL: Faker::Internet.url
       })
   end
-  let(:tool) { build :tool }
+  let(:tool) { build(:tool) }
 
   before do
     allow(Google::Cloud::Firestore).to receive(:new).and_return(firestore_client)

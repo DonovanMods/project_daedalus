@@ -4,7 +4,7 @@ RSpec.describe Icarus::Profile do
   subject { profile }
 
   let(:profile) { described_class.parse(raw_json) }
-  let(:raw_json) { File.read(Rails.root.join("spec/fixtures/Profile.json")) }
+  let(:raw_json) { Rails.root.join("spec/fixtures/Profile.json").read }
 
   describe "Class Methods" do
     subject { described_class }

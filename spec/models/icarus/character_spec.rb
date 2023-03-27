@@ -4,7 +4,7 @@ RSpec.describe Icarus::Character do
   subject { character }
 
   let(:character) { described_class.parse(raw_json).first }
-  let(:raw_json) { File.read(Rails.root.join("spec/fixtures/Characters.json")) }
+  let(:raw_json) { Rails.root.join("spec/fixtures/Characters.json").read }
 
   describe "Class Methods" do
     subject { described_class }
@@ -42,20 +42,20 @@ RSpec.describe Icarus::Character do
     it { is_expected.to respond_to(:abandoned?) }
 
     context "when not abandoned" do
-      it { expect(character.abandoned?).to eq(false) }
+      it { expect(character.abandoned?).to be(false) }
     end
 
     context "when abandoned" do
       before { character.instance_variable_set(:@data, {"IsAbandoned" => true}) }
 
-      it { expect(character.abandoned?).to eq(true) }
+      it { expect(character.abandoned?).to be(true) }
     end
   end
 
   describe "#abandoned=" do
     it "sets the value" do
       character.abandoned = true
-      expect(character.data["IsAbandoned"]).to eq(true)
+      expect(character.data["IsAbandoned"]).to be(true)
     end
   end
 
@@ -78,20 +78,20 @@ RSpec.describe Icarus::Character do
 
   describe "#dead?" do
     context "when not dead" do
-      it { expect(character.dead?).to eq(false) }
+      it { expect(character.dead?).to be(false) }
     end
 
     context "when dead" do
       before { character.instance_variable_set(:@data, {"IsDead" => true}) }
 
-      it { expect(character.dead?).to eq(true) }
+      it { expect(character.dead?).to be(true) }
     end
   end
 
   describe "#dead=" do
     it "sets the value" do
       character.dead = true
-      expect(character.data["IsDead"]).to eq(true)
+      expect(character.data["IsDead"]).to be(true)
     end
   end
 

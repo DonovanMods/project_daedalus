@@ -4,3 +4,11 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.1
+  NewCops: enable
+  SuggestExtensions: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
