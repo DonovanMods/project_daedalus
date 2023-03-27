@@ -15,12 +15,12 @@ module Icarus
     ##
     class << self
       def all
-        parse File.read(Rails.root.join("spec/fixtures/Characters.json"))
-        @characters
+        # FIXME: This is where we should be reading the users Characters.json file
+        @characters = parse(Rails.root.join("spec/fixtures/Characters.json").read)
       end
 
       def parse(raw_json)
-        @characters = JSON.parse(raw_json)["Characters.json"].map { |c| new(c) }
+        JSON.parse(raw_json)["Characters.json"].map { |c| new(c) }
       end
 
       def to_json
