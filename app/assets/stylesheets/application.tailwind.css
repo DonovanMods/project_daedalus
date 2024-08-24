@@ -13,3 +13,39 @@
     @apply text-blue-500 dark:text-blue-300 no-underline
   }
 }
+
+@import "dropzone/dist/min/dropzone.min.css";
+@import "dropzone/dist/min/basic.min.css";
+
+.input {
+  @apply block w-full px-4 py-3 leading-tight text-gray-700 bg-gray-100 border border-gray-300 rounded appearance-none;
+}
+
+.input:focus {
+  @apply bg-white border-gray-400 outline-none;
+}
+
+.label {
+  @apply block mb-2 text-sm font-bold text-gray-700;
+}
+
+.select {
+  @apply block w-full px-4 py-3 pr-8 leading-tight text-gray-700 bg-gray-100 border border-gray-300 rounded appearance-none;
+  -webkit-appearance: none;
+}
+
+.select:focus {
+  @apply bg-white border-gray-400 outline-none;
+}
+
+.dropzone {
+  @apply border-2 border-gray-400 border-dashed rounded-lg;
+
+  &.dz-drag-hover {
+    @apply border-2 border-gray-200 border-dashed rounded-lg;
+
+    .dz-message {
+      opacity: 0.9;
+    }
+  }
+}

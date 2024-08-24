@@ -8,4 +8,10 @@ class CharactersController < ApplicationController
       render "icarus/characters/index"
     end
   end
+
+  private
+
+  def character_params
+    params.require(:character).permit(:character, :profile)
+  end
 end

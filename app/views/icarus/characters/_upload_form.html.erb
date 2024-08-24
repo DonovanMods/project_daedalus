@@ -1,0 +1,16 @@
+<%= form_with(local: true) do |form| %>
+  <div class="mb-6">
+    <%= form.label :icarus_data, class: "label" %>
+    <div class="dropzone dropzone-default dz-clickable" data-controller="dropzone" data-dropzone-max-file-size="2" data-dropzone-max-files="2">
+    <%= form.file_field :icarus_data, direct_upload: true, data: { "dropzone-target" => "input" } %>
+    <div class="text-gray-600 dropzone-msg dz-message needsclick">
+      <h3 class="dropzone-msg-title">Drag here to upload or click here to browse</h3>
+      <span class="text-sm dropzone-msg-desc">2 MB file size maximum. Only JSON file types allowed.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-6">
+    <%= form.submit  class: "btn-default btn" %>
+  </div>
+<% end %>
