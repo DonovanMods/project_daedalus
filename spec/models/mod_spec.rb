@@ -178,7 +178,7 @@ RSpec.describe Mod do
         before { mod.files = {file_type.to_sym => Faker::Internet.url} }
 
         it "returns true" do
-          expect(mod.send("#{file_type}?")).to be true
+          expect(mod.send(:"#{file_type}?")).to be true
         end
       end
 
@@ -186,7 +186,7 @@ RSpec.describe Mod do
         before { mod.files = {} }
 
         it "returns false" do
-          expect(mod.send("#{file_type}?")).to be false
+          expect(mod.send(:"#{file_type}?")).to be false
         end
       end
     end

@@ -61,7 +61,7 @@ class Mod
   # Determins which file types can be downloaded from the index page
   def preferred_type
     return :pak if pak?
-    return :zip if zip?
+    :zip if zip?
   end
 
   # Determins which file types can be downloaded from the show page
