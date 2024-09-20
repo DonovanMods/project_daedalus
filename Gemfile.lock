@@ -302,7 +302,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
-    puma (5.6.8)
+    puma (5.6.9)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.9)
@@ -488,7 +488,7 @@ DEPENDENCIES
   propshaft
   pry (~> 0.14.2)
   pry-rails (~> 0.3.9)
-  puma (~> 5.0)
+  puma (~> 5.6)
   rails (~> 7.0.4)
   redcarpet (~> 3.5)
   rspec-rails
