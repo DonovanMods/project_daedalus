@@ -3,7 +3,7 @@
 
 # Pinning the OS to buster because the nodejs install script is buster-specific.
 # Be sure to update the nodejs install command if the base image OS is updated.
-FROM ruby:3.1-buster
+FROM ruby:3.4-bookworm
 
 RUN (curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | apt-key add -) && \
   echo "deb https://deb.nodesource.com/node_14.x buster main"      > /etc/apt/sources.list.d/nodesource.list && \
@@ -26,14 +26,17 @@ RUN gem install bundler && \
 # Copy application code to the container image
 COPY . /app
 
-ARG MASTER_KEY
-ENV RAILS_MASTER_KEY=$MASTER_KEY
+ARG RAILS_MASTER_KEY
+ENV RAILS_MASTER_KEY=$RAILS_MASTER_KEY
 ENV RAILS_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_LOG_TO_STDOUT=true
 
-# pre-compile Rails assets with master key
-RUN bundle exec rails assets:precompile
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rake assets:precompile
 
-EXPOSE 8080
-CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "8080"]
+# pre-compile Rails assets with master key
+# RUN bundle exec rails assets:precompile
+
+EXPOSE 3000
+CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]

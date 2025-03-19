@@ -1,0 +1,58 @@
+# Name of your application. Used to uniquely configure containers.
+service: project-daedalus
+
+# Name of the container image.
+image: dyoung522/project-daedalus
+
+# Deploy to these servers.
+servers:
+  web:
+    - 10.30.11.2
+
+# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
+# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
+#
+# Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
+proxy:
+  ssl: false
+  app_port: 3000
+  forward_headers: true
+
+logging:
+  driver: json-file
+  options:
+    max-size: 10m
+
+# Credentials for your image host.
+registry:
+  username: dyoung522
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Configure builder setup.
+builder:
+  arch: amd64
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+env:
+  clear:
+    PRODUCTION_DB_NAME: project_daedalus_production
+    PRODUCTION_DB_USER: daedalus
+    CLOUD_SQL_CONNECTION_NAME: projectdaedalus-fb09f:us-central1:project-daedalus
+    GOOGLE_PROJECT_ID: projectdaedalus-fb09f
+    STORAGE_BUCKET_NAME: project-daedalus-public
+    GOOGLE_REGION: us-central1
+    GOOGLE_SERVICE_NAME: project-daedalus
+    GOOGLE_INSTANCE_NAME: project-daedalus
+  secret:
+    - RAILS_MASTER_KEY
+
+# Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
+# "bin/kamal app logs -r job" will tail logs from the first server in the job section.
+aliases:
+  shell: app exec --interactive --reuse "bash"
+  console: app exec --interactive --reuse "rails console"
+
+# Use a persistent storage volume.
+volumes:
+  - rails_tmp:/rails/tmp

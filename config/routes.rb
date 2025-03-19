@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  Healthcheck.routes(self)
+
   get "home", to: "home#index"
   get "info", to: "info#index"
 
