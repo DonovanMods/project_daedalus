@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bundle:*)",
+      "Bash(cat:*)",
+      "Bash(gem search:*)",
+      "Bash(git commit:*)",
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
