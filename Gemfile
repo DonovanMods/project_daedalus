@@ -1,22 +1,22 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.1.3"
+ruby "3.4.7"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.4"
+gem "rails", "~> 8.1"
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 
 # Use sqlite3 as the database for Active Record in Test and Development
-gem "sqlite3", "~> 1.4"
+gem "sqlite3", "~> 2.0"
 
 # Use postgresql as the database for Active Record in Production
 gem "pg", "~> 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+gem "puma", "~> 6.0"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
@@ -28,7 +28,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails"
+gem "tailwindcss-rails", "~> 3.0"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -91,5 +91,6 @@ end
 gem "coderay", "~> 1.1"
 gem "dotenv-rails", "~> 2.8"
 gem "google-cloud-firestore", "~> 2.8"
-gem "google-cloud-storage", "~> 1.44"
+gem "google-cloud-storage", "~> 1.0"
+gem "grpc", "~> 1.76"
 gem "redcarpet", "~> 3.5"
