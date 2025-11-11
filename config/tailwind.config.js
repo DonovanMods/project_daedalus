@@ -1,20 +1,20 @@
-const defaultTheme = require("tailwindcss/defaultTheme")
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   content: [
     "./public/*.html",
     "./app/helpers/**/*.rb",
     "./app/javascript/**/*.js",
-    "./app/views/**/*.{erb,haml,html,slim}"
+    "./app/views/**/*.{erb,haml,html,slim}",
   ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter var", ...defaultTheme.fontFamily.sans]
+        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
       backgroundImage: {
         "topo-light": "url('/bg-topography-light.svg')",
-        "topo-dark": "url('/bg-topography-dark.svg')"
+        "topo-dark": "url('/bg-topography-dark.svg')",
       },
       colors: {
         icarus: {
@@ -26,14 +26,14 @@ module.exports = {
           600: "#c18a16",
           700: "#916811",
           800: "#60450b",
-          900: "#302306"
-        }
-      }
-    }
+          900: "#302306",
+        },
+      },
+    },
   },
   plugins: [
     require("@tailwindcss/forms"),
     require("@tailwindcss/aspect-ratio"),
     require("@tailwindcss/typography"),
-  ]
-}
+  ],
+};

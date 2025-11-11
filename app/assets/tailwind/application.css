@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .anchor-blue {
+    color: hsl(217, 91%, 60%);
+    text-decoration: none;
+  }
+  .dark .anchor-blue {
+    color: hsl(217, 98%, 61%);
+  }
+  .anchor-blue:visited {
+    color: hsl(217, 91%, 60%);
+    text-decoration: none;
+  }
+  .dark .anchor-blue:visited {
+    color: hsl(217, 98%, 61%);
+  }
+  .anchor-blue:hover {
+    color: hsl(217, 100%, 59%);
+    text-decoration: none;
+  }
+  .dark .anchor-blue:hover {
+    color: hsl(217, 98%, 68%);
+  }
+}
