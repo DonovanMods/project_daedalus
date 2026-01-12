@@ -3,24 +3,24 @@
 require "rails_helper"
 
 RSpec.describe "tools/index.html.erb", type: :view do
-  let(:tool1) {
+  let(:tool1) do
     build(:tool,
-      name: "Mod Manager",
-      author: "John Doe",
-      version: "1.0.0",
-      description: "Manages mods for the game",
-      url: "https://example.com/tool.exe",
-      updated_at: Time.zone.parse("2025-01-01"))
-  }
-  let(:tool2) {
+          name: "Mod Manager",
+          author: "John Doe",
+          version: "1.0.0",
+          description: "Manages mods for the game",
+          url: "https://example.com/tool.exe",
+          updated_at: Time.zone.parse("2025-01-01"))
+  end
+  let(:tool2) do
     build(:tool,
-      name: "Asset Editor",
-      author: "Jane Smith",
-      version: "2.5.1",
-      description: "Edit game assets",
-      url: "https://example.com/editor.zip",
-      updated_at: Time.zone.parse("2025-02-15"))
-  }
+          name: "Asset Editor",
+          author: "Jane Smith",
+          version: "2.5.1",
+          description: "Edit game assets",
+          url: "https://example.com/editor.zip",
+          updated_at: Time.zone.parse("2025-02-15"))
+  end
 
   before do
     assign(:tools, [tool1, tool2])
@@ -108,12 +108,12 @@ RSpec.describe "tools/index.html.erb", type: :view do
   end
 
   context "with tool using raw_url helper" do
-    let(:github_tool) {
+    let(:github_tool) do
       build(:tool,
-        name: "GitHub Tool",
-        author: "Dev",
-        url: "https://github.com/user/repo/blob/main/tool.exe")
-    }
+            name: "GitHub Tool",
+            author: "Dev",
+            url: "https://github.com/user/repo/blob/main/tool.exe")
+    end
 
     before do
       assign(:tools, [github_tool])

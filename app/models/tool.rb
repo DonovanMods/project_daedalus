@@ -8,7 +8,8 @@ class Tool
   include Firestorable
 
   SORTKEYS = %w[author name].freeze
-  ATTRIBUTES = %i[id name author version compatibility description file_type url image_url readme_url created_at updated_at].freeze
+  ATTRIBUTES = %i[id name author version compatibility description file_type url image_url readme_url created_at
+                  updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
@@ -78,7 +79,7 @@ class Tool
     # We strip out the first # line of the README, as it's usually a title
     Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip
   rescue SocketError, Errno::ECONNREFUSED, Timeout::Error,
-    Net::HTTPError, Net::HTTPClientException, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
+         Net::HTTPError, Net::HTTPClientException, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
     Rails.logger.error("Failed to fetch README for tool '#{name}' from #{readme_url}: #{e.class} - #{e.message}")
     nil
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe Mod do
@@ -5,19 +7,19 @@ RSpec.describe Mod do
   let(:firestore_collection) { instance_double(Google::Cloud::Firestore::CollectionReference) }
   let(:mod_firestore_obj) do
     instance_double(Google::Cloud::Firestore::DocumentSnapshot,
-      document_id: SecureRandom.uuid,
-      create_time: Time.now.utc,
-      update_time: Time.now.utc,
-      data: {
-        name: Faker::App.name,
-        author: Faker::App.author,
-        description: Faker::Lorem.sentence,
-        version: Faker::App.version,
-        compatibility: "w#{Random.rand(1..5)}",
-        files: {zip: Faker::Internet.url},
-        imageURL: Faker::Internet.url,
-        readmeURL: Faker::Internet.url
-      })
+                    document_id: SecureRandom.uuid,
+                    create_time: Time.now.utc,
+                    update_time: Time.now.utc,
+                    data: {
+                      name: Faker::App.name,
+                      author: Faker::App.author,
+                      description: Faker::Lorem.sentence,
+                      version: Faker::App.version,
+                      compatibility: "w#{Random.rand(1..5)}",
+                      files: { zip: Faker::Internet.url },
+                      imageURL: Faker::Internet.url,
+                      readmeURL: Faker::Internet.url
+                    })
   end
   let(:mod) { build :mod }
 
@@ -175,7 +177,7 @@ RSpec.describe Mod do
   %i[pak zip exmodz].each do |file_type|
     describe "##{file_type}?" do
       context "when given a #{file_type} object" do
-        before { mod.files = {file_type.to_sym => Faker::Internet.url} }
+        before { mod.files = { file_type.to_sym => Faker::Internet.url } }
 
         it "returns true" do
           expect(mod.send(:"#{file_type}?")).to be true
@@ -194,7 +196,7 @@ RSpec.describe Mod do
 
   context "when given a exmodz object" do
     describe "#exmodz?" do
-      before { mod.files = {exmodz: Faker::Internet.url} }
+      before { mod.files = { exmodz: Faker::Internet.url } }
 
       it "returns true" do
         expect(mod.exmodz?).to be true
@@ -205,7 +207,7 @@ RSpec.describe Mod do
   describe "#preferred_type" do
     context "when given a pak object" do
       before do
-        mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url}
+        mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }
       end
 
       it "returns the preferred type" do
@@ -214,7 +216,7 @@ RSpec.describe Mod do
     end
 
     context "when given a zip object" do
-      before { mod.files = {zip: Faker::Internet.url, exmodz: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url, exmodz: Faker::Internet.url } }
 
       it "returns the preferred type" do
         expect(mod.preferred_type).to eq(:zip)
@@ -222,7 +224,7 @@ RSpec.describe Mod do
     end
 
     context "when only given an exmod object" do
-      before { mod.files = {exmod: Faker::Internet.url} }
+      before { mod.files = { exmod: Faker::Internet.url } }
 
       it "returns the preferred type" do
         expect(mod.preferred_type).to be_nil
@@ -230,7 +232,7 @@ RSpec.describe Mod do
     end
 
     context "when only given an exmodz object" do
-      before { mod.files = {exmodz: Faker::Internet.url} }
+      before { mod.files = { exmodz: Faker::Internet.url } }
 
       it "returns the preferred type" do
         expect(mod.preferred_type).to be_nil
@@ -240,7 +242,7 @@ RSpec.describe Mod do
 
   describe "#file_types" do
     context "when given a files object" do
-      before { mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url } }
 
       it "returns the file types" do
         expect(mod.file_types).to eq(%i[zip pak exmodz])
@@ -251,7 +253,7 @@ RSpec.describe Mod do
   describe "#urls" do
     context "when given a files object" do
       it "returns an array of urls" do
-        mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url}
+        mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }
 
         expect(mod.urls).to eq([mod.files[:zip], mod.files[:pak], mod.files[:exmodz]])
       end
@@ -260,7 +262,7 @@ RSpec.describe Mod do
 
   describe "#get_url" do
     context "when given a files object" do
-      before { mod.files = {zip: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url } }
 
       it "returns the url" do
         expect(mod.get_url(:zip)).to eq(mod.files[:zip])
@@ -270,7 +272,7 @@ RSpec.describe Mod do
 
   describe "#get_name" do
     context "when given a files object" do
-      before { mod.files = {zip: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url } }
 
       it "returns the name" do
         expect(mod.get_name(:zip)).to eq(mod.files[:zip].split("/").last)
@@ -280,7 +282,7 @@ RSpec.describe Mod do
 
   describe "#types_string" do
     context "when given a files object" do
-      before { mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url } }
 
       it "returns the types string" do
         expect(mod.types_string).to eq("EXMODZ / PAK / ZIP")

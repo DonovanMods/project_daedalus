@@ -24,14 +24,16 @@ class ModsController < ApplicationController
     @total_mods = @mods.size
 
     if turbo_frame_request?
-      render partial: "mods", locals: {mods: @mods}
+      render partial: "mods", locals: { mods: @mods }
     else
       render :index
     end
   end
 
   def show
-    @mod = mods.find { |mod| mod.author_slug.casecmp(params[:author].parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero? }
+    @mod = mods.find do |mod|
+      mod.author_slug.casecmp(params[:author].parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
+    end
 
     return unless @mod.nil?
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe Firestorable do
@@ -9,9 +11,9 @@ RSpec.describe Firestorable do
     context "when credentials are properly configured" do
       before do
         allow(Rails.application.credentials).to receive(:firebase_keyfile).and_return({
-          type: "service_account",
-          project_id: "test-project"
-        })
+                                                                                        type: "service_account",
+                                                                                        project_id: "test-project"
+                                                                                      })
         allow(Google::Cloud::Firestore).to receive(:new)
       end
 
@@ -36,15 +38,15 @@ RSpec.describe Firestorable do
       end
 
       it "raises a descriptive error" do
-        expect {
+        expect do
           test_class.firestore
-        }.to raise_error(RuntimeError, /Firebase credentials not configured/)
+        end.to raise_error(RuntimeError, /Firebase credentials not configured/)
       end
 
       it "includes helpful setup instructions in error message" do
-        expect {
+        expect do
           test_class.firestore
-        }.to raise_error(/credentials:edit/)
+        end.to raise_error(/credentials:edit/)
       end
     end
 

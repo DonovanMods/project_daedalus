@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe Tool do
@@ -5,20 +7,20 @@ RSpec.describe Tool do
   let(:firestore_collection) { instance_double(Google::Cloud::Firestore::CollectionReference) }
   let(:tool_firestore_obj) do
     instance_double(Google::Cloud::Firestore::DocumentSnapshot,
-      document_id: SecureRandom.uuid,
-      create_time: Time.now.utc,
-      update_time: Time.now.utc,
-      data: {
-        name: Faker::App.name,
-        author: Faker::App.author,
-        description: Faker::Lorem.sentence,
-        version: Faker::App.version,
-        compatibility: "w#{Random.rand(1..5)}",
-        fileType: "ZIP",
-        fileURL: Faker::Internet.url,
-        imageURL: Faker::Internet.url,
-        readmeURL: Faker::Internet.url
-      })
+                    document_id: SecureRandom.uuid,
+                    create_time: Time.now.utc,
+                    update_time: Time.now.utc,
+                    data: {
+                      name: Faker::App.name,
+                      author: Faker::App.author,
+                      description: Faker::Lorem.sentence,
+                      version: Faker::App.version,
+                      compatibility: "w#{Random.rand(1..5)}",
+                      fileType: "ZIP",
+                      fileURL: Faker::Internet.url,
+                      imageURL: Faker::Internet.url,
+                      readmeURL: Faker::Internet.url
+                    })
   end
   let(:tool) { build :tool }
 

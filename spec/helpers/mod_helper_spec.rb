@@ -19,9 +19,9 @@ RSpec.describe ModHelper, type: :helper do
     end
 
     it "requires both author and slug parameters" do
-      expect {
+      expect do
         mod_detail_path(mod.author, analytics: true)
-      }.to raise_error(ActionController::UrlGenerationError)
+      end.to raise_error(ActionController::UrlGenerationError)
     end
   end
 
