@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    abbrev (0.1.2)
     actioncable (7.2.3)
       actionpack (= 7.2.3)
       activesupport (= 7.2.3)
@@ -518,6 +519,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  abbrev
   bootsnap
   brakeman (~> 5.4)
   bundler-audit (~> 0.9.1)

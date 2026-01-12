@@ -117,7 +117,7 @@ class Mod
     # We strip out the first # line of the README, as it's usually a title
     Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip
   rescue SocketError, Errno::ECONNREFUSED, Timeout::Error,
-         Net::HTTPError, Net::HTTPClientException, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
+    Net::HTTPError, Net::HTTPClientException, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
     Rails.logger.error("Failed to fetch README for mod '#{name}' from #{readme_url}: #{e.class} - #{e.message}")
     nil
   end

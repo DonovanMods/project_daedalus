@@ -313,7 +313,7 @@ RSpec.describe Mod do
       end
 
       it "returns nil on Net::HTTPServerException" do
-        allow(Net::HTTP).to receive(:get).and_raise(Net::HTTPServerException.new("404 Not Found", nil))
+        allow(Net::HTTP).to receive(:get).and_raise(Net::HTTPClientException.new("404 Not Found", nil))
 
         expect(mod.readme).to be_nil
       end

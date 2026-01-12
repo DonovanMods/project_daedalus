@@ -65,7 +65,7 @@ RSpec.describe "tools/index.html.erb", type: :view do
   it "shows download button with correct URL" do
     render
     expect(rendered).to include("DOWNLOAD")
-    expect(rendered).to include('data-mods-url-param')
+    expect(rendered).to include("data-mods-url-param")
   end
 
   it "triggers download Stimulus action on button click" do

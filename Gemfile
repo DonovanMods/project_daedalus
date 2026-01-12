@@ -42,6 +42,7 @@ group :development do
   gem "erb_lint", "~> 0.3.1"
 
   # Auditing
+  gem "abbrev" # Required for brakeman with Ruby 3.4+
   gem "brakeman", "~> 5.4"
   gem "bundler-audit", "~> 0.9.1"
 
