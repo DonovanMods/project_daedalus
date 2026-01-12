@@ -33,7 +33,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "renders code blocks with CodeRay syntax highlighting" do
         code = "```ruby\ndef hello\n  puts 'world'\nend\n```"
         result = helper.markdown(code)
-        expect(result).to include("<div class=\"CodeRay\">")
+        expect(result).to include('<div class="CodeRay">')
         expect(result).to include("def")
         expect(result).to include("hello")
       end
@@ -41,13 +41,13 @@ RSpec.describe ApplicationHelper, type: :helper do
       it "renders fenced code blocks with language specification" do
         code = "```javascript\nconst x = 42;\n```"
         result = helper.markdown(code)
-        expect(result).to include("<div class=\"CodeRay\">")
+        expect(result).to include('<div class="CodeRay">')
       end
 
       it "renders code blocks without language as plain text" do
         code = "```\nplain text\n```"
         result = helper.markdown(code)
-        expect(result).to include("<div class=\"CodeRay\">")
+        expect(result).to include('<div class="CodeRay">')
         expect(result).to include("plain text")
       end
 
@@ -120,7 +120,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       end
 
       it "handles very long text" do
-        long_text = "word " * 10000
+        long_text = "word " * 10_000
         expect { helper.markdown(long_text) }.not_to raise_error
       end
 
@@ -135,12 +135,12 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#current_path" do
     it "returns PATH_INFO from request" do
-      allow(request).to receive(:env).and_return({"PATH_INFO" => "/test/path"})
+      allow(request).to receive(:env).and_return({ "PATH_INFO" => "/test/path" })
       expect(helper.current_path).to eq("/test/path")
     end
 
     it "returns correct path for root" do
-      allow(request).to receive(:env).and_return({"PATH_INFO" => "/"})
+      allow(request).to receive(:env).and_return({ "PATH_INFO" => "/" })
       expect(helper.current_path).to eq("/")
     end
   end

@@ -8,7 +8,8 @@ class Mod
   include Firestorable
 
   SORTKEYS = %w[author name].freeze
-  ATTRIBUTES = %i[author compatibility description files id image_url metadata name readme_url timestamps version created_at updated_at].freeze
+  ATTRIBUTES = %i[author compatibility description files id image_url metadata name readme_url timestamps version
+                  created_at updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
@@ -63,6 +64,7 @@ class Mod
   # Determins which file types can be downloaded from the index page
   def preferred_type
     return :pak if pak?
+
     :zip if zip?
   end
 
@@ -117,7 +119,7 @@ class Mod
     # We strip out the first # line of the README, as it's usually a title
     Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip
   rescue SocketError, Errno::ECONNREFUSED, Timeout::Error,
-    Net::HTTPError, Net::HTTPClientException, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
+         Net::HTTPError, Net::HTTPClientException, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
     Rails.logger.error("Failed to fetch README for mod '#{name}' from #{readme_url}: #{e.class} - #{e.message}")
     nil
   end

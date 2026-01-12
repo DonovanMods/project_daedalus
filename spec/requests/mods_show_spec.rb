@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Mods Show", type: :request do
-  let(:mod1) { build(:mod, name: "Super Mod", author: "John Doe", description: "A great mod", files: {pak: "https://example.com/mod.pak"}) }
-  let(:mod2) { build(:mod, name: "Test Mod", author: "Jane Smith", description: "Test description", files: {zip: "https://example.com/mod.zip"}) }
+  let(:mod1) { build(:mod, name: "Super Mod", author: "John Doe", description: "A great mod", files: { pak: "https://example.com/mod.pak" }) }
+  let(:mod2) { build(:mod, name: "Test Mod", author: "Jane Smith", description: "Test description", files: { zip: "https://example.com/mod.zip" }) }
 
   before do
     allow(Mod).to receive(:all).and_return([mod1, mod2])
@@ -39,7 +39,7 @@ RSpec.describe "Mods Show", type: :request do
       end
 
       it "handles mods with multiple file types" do
-        mod_multi = build(:mod, name: "Multi", author: "Author", files: {pak: "url1", zip: "url2"})
+        mod_multi = build(:mod, name: "Multi", author: "Author", files: { pak: "url1", zip: "url2" })
         allow(Mod).to receive(:all).and_return([mod_multi])
 
         get mod_detail_path(author: mod_multi.author_slug, slug: mod_multi.slug)
@@ -77,7 +77,7 @@ RSpec.describe "Mods Show", type: :request do
 
     context "with analytics parameter" do
       it "renders analytics section when analytics=true param" do
-        mod_with_meta = build(:mod, name: "Meta Mod", author: "Author", metadata: {status: {errors: [], warnings: []}})
+        mod_with_meta = build(:mod, name: "Meta Mod", author: "Author", metadata: { status: { errors: [], warnings: [] } })
         allow(Mod).to receive(:all).and_return([mod_with_meta])
 
         get mod_detail_path(author: mod_with_meta.author_slug, slug: mod_with_meta.slug, analytics: true)
@@ -88,7 +88,7 @@ RSpec.describe "Mods Show", type: :request do
       it "does not render analytics section without param" do
         get mod_detail_path(author: mod1.author_slug, slug: mod1.slug)
         # The word "analytics" appears in a link, but the analytics partial should not render
-        expect(response.body).not_to include("render(\"analytics\"")
+        expect(response.body).not_to include('render("analytics"')
       end
     end
 

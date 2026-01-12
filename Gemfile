@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -51,10 +53,10 @@ group :development do
   gem "pry-rails", "~> 0.3.9"
 
   # Ruby Linter [https://github.com/rubocop/rubocop-rails]
-  gem "rubocop-performance", "~> 1.15", require: false
-  gem "rubocop-rails", "~> 2.17", require: false
-  gem "rubocop-rspec", "~> 2.16", require: false
-  gem "standard", "~> 1.20"
+  gem "rubocop", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rspec", require: false
 
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"

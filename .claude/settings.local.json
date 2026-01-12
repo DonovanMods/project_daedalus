@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bin/rspec)",
+      "Bash(bin/rspec:*)",
+      "Bash(RAILS_ENV=test bin/rails:*)",
+      "Bash(bin/rails runner:*)",
+      "Bash(if [ -f bin/spring ])",
+      "Bash(then bin/spring stop)",
+      "Bash(else echo \"No Spring\")",
+      "Bash(fi)",
+      "Bash(bundle exec standardrb:*)",
+      "Bash(bin/audit:*)",
+      "Bash(bundle exec brakeman:*)",
+      "Bash(gem list:*)",
+      "Bash(bundle install:*)",
+      "Bash(python3:*)",
+      "Bash(bundle info:*)",
+      "Bash(bundle exec rubocop:*)"
+    ]
+  }
+}

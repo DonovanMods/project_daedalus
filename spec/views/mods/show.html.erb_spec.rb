@@ -3,18 +3,18 @@
 require "rails_helper"
 
 RSpec.describe "mods/show.html.erb", type: :view do
-  let(:mod) {
+  let(:mod) do
     build(:mod,
-      name: "Test Mod",
-      author: "Test Author",
-      description: "Test description",
-      files: {pak: "https://example.com/test.pak"},
-      metadata: {status: {}})
-  }
+          name: "Test Mod",
+          author: "Test Author",
+          description: "Test description",
+          files: { pak: "https://example.com/test.pak" },
+          metadata: { status: {} })
+  end
 
   before do
     assign(:mod, mod)
-    allow(view).to receive(:session).and_return({origin_url: "/mods"})
+    allow(view).to receive(:session).and_return({ origin_url: "/mods" })
   end
 
   it "renders without errors" do

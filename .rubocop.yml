@@ -1,0 +1,88 @@
+# RuboCop configuration for Project Daedalus
+# Reasonable defaults following Ruby and Rails best practices
+
+plugins:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.4
+  Exclude:
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+
+# Layout Cops
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'config/**/*'
+    - 'spec/**/*'
+
+# Metrics Cops - Reasonable limits for readability
+Metrics/BlockLength:
+  Max: 30
+  Exclude:
+    - 'spec/**/*'
+    - 'config/**/*'
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/AbcSize:
+  Max: 35
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+# Style Cops
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+
+# RSpec Cops - Relaxed for integration/request specs
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/IndexedLet:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
+
+# Rails Cops
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+# Our models use Firestore, not ActiveRecord, so disable ActiveRecord-specific optimizations
+Rails/FindEach:
+  Enabled: false
+
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: false
