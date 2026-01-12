@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe ModsHelper, type: :helper do
+RSpec.describe ModHelper, type: :helper do
   describe "mod_detail_path routing" do
     let(:mod) { build(:mod, name: "Test Mod", author: "Test Author") }
 

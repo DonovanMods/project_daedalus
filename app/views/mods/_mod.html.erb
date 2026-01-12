@@ -17,6 +17,6 @@
   </td>
   <td class="hidden p-2 border-t sm:table-cell border-slate-600"><%= mod.author %></td>
   <td class="hidden p-2 text-right border-t md:table-cell border-slate-600"><%= mod.version %></td>
-  <td class="hidden p-2 text-center border-t xl:table-cell border-slate-600"><%= mod.compatibility.downcase %></td>
+  <td class="hidden p-2 text-center border-t xl:table-cell border-slate-600"><%= mod.compatibility&.downcase %></td>
   <td class="hidden p-2 border-t lg:table-cell border-slate-600"><%= mod.description %></td>
 </tr>
