@@ -287,4 +287,69 @@ RSpec.describe Mod do
       end
     end
   end
+
+  describe "#readme error handling" do
+    let(:readme_url) { "https://example.com/README.md" }
+
+    before { mod.readme_url = readme_url }
+
+    context "when network errors occur" do
+      it "returns nil on SocketError (DNS failure)" do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError, "getaddrinfo: Name or service not known")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on Errno::ECONNREFUSED" do
+        allow(Net::HTTP).to receive(:get).and_raise(Errno::ECONNREFUSED, "Connection refused")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on Timeout::Error" do
+        allow(Net::HTTP).to receive(:get).and_raise(Timeout::Error, "execution expired")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on Net::HTTPServerException" do
+        allow(Net::HTTP).to receive(:get).and_raise(Net::HTTPServerException.new("404 Not Found", nil))
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on URI::InvalidURIError" do
+        allow(Net::HTTP).to receive(:get).and_raise(URI::InvalidURIError, "bad URI")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on OpenSSL::SSL::SSLError" do
+        allow(Net::HTTP).to receive(:get).and_raise(OpenSSL::SSL::SSLError, "SSL_connect error")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "logs the error when fetch fails" do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError, "Network error")
+        allow(Rails.logger).to receive(:error)
+
+        mod.readme
+
+        expect(Rails.logger).to have_received(:error).with(/Failed to fetch README/)
+      end
+    end
+
+    context "when readme fetch fails" do
+      before do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError)
+      end
+
+      it "details falls back to description" do
+        mod.description = "Fallback description"
+
+        expect(mod.details).to eq("Fallback description")
+      end
+    end
+  end
 end

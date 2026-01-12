@@ -32,8 +32,10 @@ class Tool
   end
 
   def readme
-    # We stip out the first # line of the README, as it's usually a title
-    @readme ||= Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip if readme_url.present?
+    return @readme if defined?(@readme)
+
+    @readme = readme_url.present? ? fetch_readme : nil
+    @readme
   end
 
   def details
@@ -68,5 +70,16 @@ class Tool
     v << compatibility if compatibility.present?
 
     v.join(" / ")
+  end
+
+  private
+
+  def fetch_readme
+    # We strip out the first # line of the README, as it's usually a title
+    Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip
+  rescue SocketError, Errno::ECONNREFUSED, Timeout::Error,
+         Net::HTTPError, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
+    Rails.logger.error("Failed to fetch README for tool '#{name}' from #{readme_url}: #{e.class} - #{e.message}")
+    nil
   end
 end

@@ -154,4 +154,50 @@ RSpec.describe Tool do
       end
     end
   end
+
+  describe "#readme error handling" do
+    let(:readme_url) { "https://example.com/README.md" }
+
+    before { tool.readme_url = readme_url }
+
+    context "when network errors occur" do
+      it "returns nil on SocketError" do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError)
+        expect(tool.readme).to be_nil
+      end
+
+      it "returns nil on Errno::ECONNREFUSED" do
+        allow(Net::HTTP).to receive(:get).and_raise(Errno::ECONNREFUSED)
+        expect(tool.readme).to be_nil
+      end
+
+      it "returns nil on Timeout::Error" do
+        allow(Net::HTTP).to receive(:get).and_raise(Timeout::Error)
+        expect(tool.readme).to be_nil
+      end
+
+      it "returns nil on URI::InvalidURIError" do
+        allow(Net::HTTP).to receive(:get).and_raise(URI::InvalidURIError)
+        expect(tool.readme).to be_nil
+      end
+
+      it "logs the error" do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError, "Network error")
+        allow(Rails.logger).to receive(:error)
+
+        tool.readme
+
+        expect(Rails.logger).to have_received(:error).with(/Failed to fetch README/)
+      end
+    end
+
+    context "when readme fetch fails" do
+      before { allow(Net::HTTP).to receive(:get).and_raise(SocketError) }
+
+      it "details falls back to description" do
+        tool.description = "Fallback description"
+        expect(tool.details).to eq("Fallback description")
+      end
+    end
+  end
 end
