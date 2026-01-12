@@ -29,7 +29,7 @@
   </div>
   <button
     data-action="mods#navigateTo"
-    data-mods-path-param="<%= mod_detail_path(@mod.author, analytics: true) %>"
+    data-mods-path-param="<%= mod_detail_path(author: @mod.author_slug, slug: @mod.slug, analytics: true) %>"
     class="float-right text-xs text-right anchor-blue"
     type="button">
     Analytics for Mod Authors
