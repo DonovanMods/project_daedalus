@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.4.2"
+ruby "3.4.8"
 
 gem "rails", "~> 7.1"
 
@@ -14,7 +14,7 @@ gem "google-cloud-storage", "~> 1.44"
 gem "importmap-rails"
 gem "jbuilder"
 gem "propshaft"
-gem "puma", "~> 5.0"
+gem "puma", "~> 6.0"
 gem "rails-healthcheck", "~>1.4"
 gem "redcarpet", "~> 3.5"
 gem "sqlite3", "~> 1.4"
