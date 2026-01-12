@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Project Daedalus is a Rails 7.1 application that serves as a website for the Icarus Modding Tools community, featuring mod and tool listings. The application uses Ruby 3.4.2 and Google Cloud Firestore as its data backend.
+Project Daedalus is a Rails 7.1 application that serves as a website for the Icarus Modding Tools community, featuring mod and tool listings. The application uses Ruby 3.4.8 and Google Cloud Firestore as its data backend.
 
 ## Architecture
 
