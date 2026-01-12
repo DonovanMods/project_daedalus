@@ -45,11 +45,15 @@ class ModsController < ApplicationController
   private
 
   def find_mods(query)
+    # Escape regex special characters to prevent injection
+    escaped_query = Regexp.escape(query)
+    pattern = /#{escaped_query}/i
+
     mods.find_all do |mod|
-      mod.name =~ /#{query}/i ||
-        mod.author =~ /#{query}/i ||
-        mod.compatibility =~ /#{query}/i ||
-        mod.description =~ /#{query}/i
+      mod.name.match?(pattern) ||
+        mod.author.match?(pattern) ||
+        mod.compatibility&.match?(pattern) ||
+        mod.description.match?(pattern)
     end
   end
 
