@@ -38,6 +38,11 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
+  # Set default host for request specs to avoid host authorization errors
+  config.before(:each, type: :request) do
+    host! "localhost"
+  end
+
   # Not using ActiveRecord fixtures since this project uses Firestore
   # config.fixture_path = Rails.root.join("/spec/fixtures")
 
