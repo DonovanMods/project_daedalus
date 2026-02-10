@@ -58,8 +58,7 @@ RSpec.describe "mods/show.html.erb", type: :view do
 
     before do
       assign(:mod, mod)
-      allow(view).to receive(:session).and_return({ origin_url: "/mods" })
-      allow(view).to receive(:params).and_return({ analytics: "true" })
+      allow(view).to receive_messages(session: { origin_url: "/mods" }, params: { analytics: "true" })
     end
 
     it "renders without error when metadata is nil and analytics requested" do

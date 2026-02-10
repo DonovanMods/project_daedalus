@@ -29,24 +29,24 @@ RSpec.describe "mods/_analytics.html.erb", type: :view do
 
   context "with nil metadata" do
     it "handles nil gracefully" do
-      expect {
+      expect do
         render partial: "mods/analytics", locals: { metadata: nil }
-      }.not_to raise_error
+      end.not_to raise_error
       expect(rendered).to include("No analytics data available")
     end
   end
 
   context "with missing keys" do
     it "handles metadata without errors key" do
-      expect {
+      expect do
         render partial: "mods/analytics", locals: { metadata: { warnings: ["test"] } }
-      }.not_to raise_error
+      end.not_to raise_error
     end
 
     it "handles metadata without warnings key" do
-      expect {
+      expect do
         render partial: "mods/analytics", locals: { metadata: { errors: ["test"] } }
-      }.not_to raise_error
+      end.not_to raise_error
     end
   end
 end
