@@ -35,7 +35,7 @@
     Analytics for Mod Authors
   </button>
   <div class="mt-12 min-h-48">
-    <%= render("analytics", metadata: @mod.metadata[:status]) if params[:analytics] %>
+    <%= render("analytics", metadata: @mod.metadata&.dig(:status)) if params[:analytics] && @mod.metadata.present? %>
     <% if @mod.image_url.present? %>
       <img class="hidden float-right w-48 h-48 mb-5 ml-5 rounded md:block" src="<%= raw_url(@mod.image_url) %>">
     <% end %>

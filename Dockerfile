@@ -1,42 +1,52 @@
-# Use the official Ruby image from Docker Hub
-# https://hub.docker.com/_/ruby
+# syntax=docker/dockerfile:1
 
-# Pinning the OS to buster because the nodejs install script is buster-specific.
-# Be sure to update the nodejs install command if the base image OS is updated.
-FROM ruby:3.4-bookworm
+# Stage 1: Build
+FROM ruby:3.4-bookworm AS build
 
-RUN (curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | apt-key add -) && \
-  echo "deb https://deb.nodesource.com/node_14.x buster main"      > /etc/apt/sources.list.d/nodesource.list && \
-  apt-get update && apt-get install -y nodejs lsb-release
+WORKDIR /rails
 
-RUN (curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -) && \
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-  apt-get update && apt-get install -y yarn
+# Install build dependencies
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential libsqlite3-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
-# Application dependencies
+# Install gems
 COPY Gemfile Gemfile.lock ./
+RUN bundle config set --local deployment true && \
+    bundle config set --local without "development test" && \
+    bundle install && \
+    rm -rf ~/.bundle/cache
 
-RUN gem install bundler && \
-  bundle config set --local deployment 'true' && \
-  bundle config set --local without 'development test' && \
-  bundle install
+# Copy application code
+COPY . .
 
-# Copy application code to the container image
-COPY . /app
+# Precompile assets
+RUN SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 
-ARG RAILS_MASTER_KEY
-ENV RAILS_MASTER_KEY=$RAILS_MASTER_KEY
+# Stage 2: Runtime
+FROM ruby:3.4-slim-bookworm
+
+WORKDIR /rails
+
+# Install runtime dependencies only
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y libsqlite3-0 curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy built artifacts from build stage
+COPY --from=build /rails /rails
+COPY --from=build /usr/local/bundle /usr/local/bundle
+
+# Set production environment
 ENV RAILS_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_LOG_TO_STDOUT=true
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rake assets:precompile
-
-# pre-compile Rails assets with master key
-# RUN bundle exec rails assets:precompile
+# Run as non-root user
+RUN groupadd --system rails && \
+    useradd rails --system --gid rails --home /rails && \
+    chown -R rails:rails /rails
+USER rails:rails
 
 EXPOSE 3000
 CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
