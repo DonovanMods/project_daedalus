@@ -18,7 +18,7 @@ class Mod
     end
   end
 
-  def self.fetch_all
+  def self.fetch_all # :nodoc:
     firestore.col("mods").get.filter_map do |mod|
       new(
         author: mod.data[:author],
@@ -36,6 +36,7 @@ class Mod
       )
     end.sort_by(&:name)
   end
+  private_class_method :fetch_all
 
   def self.expire_cache
     Rails.cache.delete("firestore/mods")

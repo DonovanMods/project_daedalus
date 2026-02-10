@@ -18,7 +18,7 @@ class Tool
     end
   end
 
-  def self.fetch_all
+  def self.fetch_all # :nodoc:
     firestore.col("tools").get.filter_map do |tool|
       new(
         id: tool.document_id,
@@ -36,6 +36,7 @@ class Tool
       )
     end.sort_by(&:name)
   end
+  private_class_method :fetch_all
 
   def self.expire_cache
     Rails.cache.delete("firestore/tools")

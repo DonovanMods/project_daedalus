@@ -204,23 +204,23 @@ RSpec.describe Tool do
   end
 
   describe "caching" do
-    around do |example|
-      original_store = Rails.cache
-      Rails.cache = ActiveSupport::Cache::MemoryStore.new
-      example.run
-    ensure
-      Rails.cache = original_store
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
     end
 
-    it "caches results from .all" do
+    it "caches results and skips Firestore on subsequent calls" do
+      allow(described_class).to receive(:fetch_all).and_call_original
       described_class.all
-      expect(Rails.cache.exist?("firestore/tools")).to be true
+      described_class.all
+      expect(described_class).to have_received(:fetch_all).once
     end
 
     it "clears cache with .expire_cache" do
       described_class.all
       described_class.expire_cache
-      expect(Rails.cache.exist?("firestore/tools")).to be false
+      expect(memory_store.exist?("firestore/tools")).to be false
     end
   end
 end
