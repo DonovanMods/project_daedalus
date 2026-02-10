@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require "net/http"
-
 class Mod
   include ActiveModel::Model
   include Convertable
+  include Displayable
   include Firestorable
 
   SORTKEYS = %w[author name].freeze
@@ -32,19 +31,6 @@ class Mod
     end.sort_by(&:name)
   end
 
-  def readme
-    return @readme if defined?(@readme)
-
-    @readme = readme_url.present? ? fetch_readme : nil
-    @readme
-  end
-
-  def details
-    return readme if readme.present?
-
-    description
-  end
-
   def files?
     files.keys.any?
   end
@@ -61,14 +47,14 @@ class Mod
     files.key?(:exmodz)
   end
 
-  # Determins which file types can be downloaded from the index page
+  # Determines which file types can be downloaded from the index page
   def preferred_type
     return :pak if pak?
 
     :zip if zip?
   end
 
-  # Determins which file types can be downloaded from the show page
+  # Determines which file types can be downloaded from the show page
   def download_types
     file_types.map(&:to_sym) & %i[pak zip exmodz]
   end
@@ -93,36 +79,11 @@ class Mod
     file_types.map(&:upcase).sort.join(" / ")
   end
 
-  def author_slug
-    author.parameterize
-  end
-
   def slug
     name.parameterize
   end
 
-  def updated_string
-    "Last Updated on #{updated_at.strftime("%B %d, %Y")}"
-  end
-
-  def version_string
-    v = []
-    v << "v#{version}" if version.present?
-    v << compatibility if compatibility.present?
-
-    v.join(" / ")
-  end
-
   private
-
-  def fetch_readme
-    # We strip out the first # line of the README, as it's usually a title
-    Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip
-  rescue SocketError, Errno::ECONNREFUSED, Timeout::Error,
-         Net::HTTPError, Net::HTTPClientException, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
-    Rails.logger.error("Failed to fetch README for mod '#{name}' from #{readme_url}: #{e.class} - #{e.message}")
-    nil
-  end
 
   def filename(url)
     return unless url
