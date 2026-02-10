@@ -9,10 +9,10 @@ servers:
   web:
     - 10.30.11.2
 
-# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
-# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
-#
-# Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
+# Proxy configuration.
+# SSL/TLS is terminated by Cloudflare (HTTPS on :443 from clients),
+# which forwards plain HTTP to Kamal's proxy on port 80.
+# The proxy then forwards to the app on app_port (3000).
 proxy:
   ssl: false
   app_port: 3000
@@ -36,14 +36,9 @@ builder:
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
   clear:
-    PRODUCTION_DB_NAME: project_daedalus_production
-    PRODUCTION_DB_USER: daedalus
-    CLOUD_SQL_CONNECTION_NAME: projectdaedalus-fb09f:us-central1:project-daedalus
     GOOGLE_PROJECT_ID: projectdaedalus-fb09f
     STORAGE_BUCKET_NAME: project-daedalus-public
     GOOGLE_REGION: us-central1
-    GOOGLE_SERVICE_NAME: project-daedalus
-    GOOGLE_INSTANCE_NAME: project-daedalus
   secret:
     - RAILS_MASTER_KEY
 
