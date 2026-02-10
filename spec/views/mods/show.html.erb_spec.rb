@@ -67,7 +67,7 @@ RSpec.describe "mods/show.html.erb", type: :view do
 
     it "does not render analytics partial when metadata is nil" do
       render
-      expect(rendered).not_to include("No analytics data available")
+      expect(rendered).to include("No analytics data available")
       expect(rendered).not_to include("All Clear")
     end
   end

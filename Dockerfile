@@ -45,8 +45,10 @@ ENV RAILS_LOG_TO_STDOUT=true
 # Run as non-root user
 RUN groupadd --system rails && \
     useradd rails --system --gid rails --home /rails && \
+    mkdir -p tmp/pids tmp/cache tmp/sockets && \
     chown -R rails:rails /rails
 USER rails:rails
 
+ENTRYPOINT ["/rails/docker-entrypoint.sh"]
 EXPOSE 3000
 CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
