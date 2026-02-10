@@ -5,12 +5,14 @@
 
 require_relative "config/application"
 
-if Rails.env.development?
+begin
   require "rubocop/rake_task"
 
   RuboCop::RakeTask.new do |task|
     task.requires << "rubocop-rails"
   end
+rescue LoadError
+  # RuboCop not available in production
 end
 
 Rails.application.load_tasks
