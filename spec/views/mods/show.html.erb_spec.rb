@@ -45,4 +45,31 @@ RSpec.describe "mods/show.html.erb", type: :view do
     expect(path).to include(mod.slug)
     expect(path).to include("analytics=true")
   end
+
+  context "with nil metadata" do
+    let(:mod) do
+      build(:mod,
+            name: "Nil Meta Mod",
+            author: "Author",
+            description: "A mod with no metadata",
+            files: { pak: "https://example.com/test.pak" },
+            metadata: nil)
+    end
+
+    before do
+      assign(:mod, mod)
+      allow(view).to receive(:session).and_return({ origin_url: "/mods" })
+      allow(view).to receive(:params).and_return({ analytics: "true" })
+    end
+
+    it "renders without error when metadata is nil and analytics requested" do
+      expect { render }.not_to raise_error
+    end
+
+    it "does not render analytics partial when metadata is nil" do
+      render
+      expect(rendered).not_to include("No analytics data available")
+      expect(rendered).not_to include("All Clear")
+    end
+  end
 end
