@@ -1,3 +1,6 @@
+<% content_for(:title) { "#{@mod.name} by #{@mod.author}" } %>
+<% content_for(:meta_description) { truncate(@mod.description.to_s, length: 160) } %>
+<% content_for(:og_image) { @mod.image_url } if @mod.image_url.present? %>
 <section class="px-5" data-controller="mods">
   <div class="flex items-center justify-between flex-auto mt-5">
     <div class="flex-1 min-w-0 text-2xl font-bold text-icarus-500 md:text-4xl"><%= @mod.name %></div>

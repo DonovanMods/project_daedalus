@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ProjectDaedalus</title>
+    <title><%= content_for?(:title) ? "#{yield(:title)} | ProjectDaedalus" : "ProjectDaedalus — Icarus Mods & Tools" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Browse and download mods and tools for the Icarus survival game." %>">
+    <meta property="og:title" content="<%= content_for?(:title) ? yield(:title) : "ProjectDaedalus" %>">
+    <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Browse and download mods and tools for the Icarus survival game." %>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ProjectDaedalus">
+    <% if content_for?(:og_image) %><meta property="og:image" content="<%= yield(:og_image) %>"><% end %>
     <%= favicon_link_tag asset_path("favicon.png") %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
