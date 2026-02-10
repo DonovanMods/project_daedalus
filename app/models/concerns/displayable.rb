@@ -37,8 +37,8 @@ module Displayable
   private
 
   def fetch_readme
-    # We strip out the first # line of the README, as it's usually a title
-    Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip
+    # Strip only the leading H1 title line of the README, as it's usually a title
+    Net::HTTP.get(raw_uri(readme_url)).sub(/\A#\s+.*\n?/, "").strip
   rescue SocketError, Errno::ECONNREFUSED, Timeout::Error,
          Net::HTTPError, Net::HTTPClientException, URI::InvalidURIError, OpenSSL::SSL::SSLError => e
     Rails.logger.error("Failed to fetch README for '#{name}' from #{readme_url}: #{e.class} - #{e.message}")
