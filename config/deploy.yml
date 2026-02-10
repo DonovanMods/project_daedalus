@@ -9,7 +9,10 @@ servers:
   web:
     - 10.30.11.2
 
-# Proxy configuration (SSL terminated externally)
+# Proxy configuration.
+# SSL/TLS is terminated by Cloudflare (HTTPS on :443 from clients),
+# which forwards plain HTTP to Kamal's proxy on port 80.
+# The proxy then forwards to the app on app_port (3000).
 proxy:
   ssl: false
   app_port: 3000
