@@ -13,6 +13,12 @@ class Tool
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def self.all
+    Rails.cache.fetch("firestore/tools", expires_in: 5.minutes) do
+      fetch_all
+    end
+  end
+
+  def self.fetch_all # :nodoc:
     firestore.col("tools").get.filter_map do |tool|
       new(
         id: tool.document_id,
@@ -29,6 +35,11 @@ class Tool
         updated_at: tool.update_time
       )
     end.sort_by(&:name)
+  end
+  private_class_method :fetch_all
+
+  def self.expire_cache
+    Rails.cache.delete("firestore/tools")
   end
 
   def filename
