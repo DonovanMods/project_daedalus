@@ -42,3 +42,4 @@
 
 # Claude Code local settings
 .claude/
+firebase-debug.log
