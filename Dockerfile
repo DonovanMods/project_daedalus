@@ -33,22 +33,24 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y libsqlite3-0 curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy built artifacts from build stage
-COPY --from=build /rails /rails
-COPY --from=build /usr/local/bundle /usr/local/bundle
-
 # Set production environment
 ENV RAILS_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_LOG_TO_STDOUT=true
 
 # Run as non-root user
-RUN groupadd --system rails && \
-    useradd rails --system --gid rails --home /rails && \
+RUN groupadd --system rails --gid 1000 && \
+    useradd rails --system --uid 1000 --gid 1000 --home /rails && \
     mkdir -p tmp/pids tmp/cache tmp/sockets && \
-    chown -R rails:rails /rails
+    chown -R rails:rails /tmp
+
+# Copy built artifacts from build stage
+COPY --chown=rails:rails --from=build /rails /rails
+COPY --chown=rails:rails --from=build /usr/local/bundle /usr/local/bundle
+
 USER rails:rails
 
 ENTRYPOINT ["/rails/docker-entrypoint.sh"]
 EXPOSE 3000
 CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+
