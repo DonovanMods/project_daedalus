@@ -1,6 +1,6 @@
 <tr id="<%= dom_id mod %>" class="cursor-pointer row-lift border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/70"
     data-action="click->mods#navigateTo"
-    data-mods-path-param="<%= mod_detail_path(author: mod.author, slug: mod.slug) %>">
+    data-mods-path-param="<%= mod_detail_path(author: mod.author_slug, slug: mod.slug) %>">
   <td class="p-3 font-medium text-slate-800 dark:text-slate-200"><%= mod.name %></td>
   <td class="p-3">
     <% if type = mod.preferred_type %>
@@ -25,5 +25,6 @@
       <span class="text-xs text-slate-500">&mdash;</span>
     <% end %>
   </td>
+<<<<<<< HEAD
   <td class="hidden p-3 text-sm xl:table-cell text-slate-600 dark:text-slate-400 max-w-md truncate" title="<%= mod.description %>"><%= truncate(mod.description.to_s, length: 120) %></td>
 </tr>

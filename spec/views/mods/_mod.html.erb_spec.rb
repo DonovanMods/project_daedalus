@@ -51,8 +51,8 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
 
   it "includes correct mod_detail_path in data attribute" do
     render partial: "mods/mod", locals: { mod: mod }
-    # Path uses mod.author (which gets URL encoded), not author_slug
-    expect(rendered).to include('data-mods-path-param="/mods/Test%20Author/test-mod"')
+    # Path uses mod.author_slug (parameterized) for cleaner URLs
+    expect(rendered).to include('data-mods-path-param="/mods/test-author/test-mod"')
   end
 
   it "triggers download Stimulus action on button click" do

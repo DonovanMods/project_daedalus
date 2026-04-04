@@ -14,15 +14,23 @@ module ApplicationHelper
   def markdown(text)
     return if text.blank?
 
-    coderayified = CodeRayify.new(filter_html: true, hard_wrap: true)
+    sanitize(markdown_renderer.render(text))
+  end
 
-    options = {
-      fenced_code_blocks: true,
-      no_intra_emphasis: true,
-      autolink: true,
-      lax_html_blocks: true
-    }
-    markdown_to_html = Redcarpet::Markdown.new(coderayified, options)
-    sanitize(markdown_to_html.render(text))
+  private
+
+  def markdown_renderer
+    @markdown_renderer ||= begin
+      coderayified = CodeRayify.new(filter_html: true, hard_wrap: true)
+
+      options = {
+        fenced_code_blocks: true,
+        no_intra_emphasis: true,
+        autolink: true,
+        lax_html_blocks: true
+      }
+
+      Redcarpet::Markdown.new(coderayified, options)
+    end
   end
 end
