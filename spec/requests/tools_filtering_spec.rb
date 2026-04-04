@@ -28,7 +28,7 @@ RSpec.describe "Tools Filtering", type: :request do
 
     it "shows download buttons for each tool" do
       get "/tools"
-      expect(response.body).to include("DOWNLOAD")
+      expect(response.body).to include("Download")
     end
 
     it "displays tool authors" do

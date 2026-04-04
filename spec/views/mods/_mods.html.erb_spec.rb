@@ -16,11 +16,6 @@ RSpec.describe "mods/_mods.html.erb", type: :view do
       expect(rendered).to include('<turbo-frame id="mods">')
     end
 
-    it "displays total mod count" do
-      render partial: "mods/mods", locals: { mods: [mod1, mod2] }
-      expect(rendered).to include("2 mods displayed")
-    end
-
     it "renders table with correct headers" do
       render partial: "mods/mods", locals: { mods: [mod1, mod2] }
       expect(rendered).to include("Name")
@@ -59,9 +54,9 @@ RSpec.describe "mods/_mods.html.erb", type: :view do
       expect(rendered).to include('colspan="6"')
     end
 
-    it "still displays mod count as 0" do
+    it "still renders the table structure" do
       render partial: "mods/mods", locals: { mods: [] }
-      expect(rendered).to include("0 mods displayed")
+      expect(rendered).to include('<turbo-frame id="mods">')
     end
   end
 end

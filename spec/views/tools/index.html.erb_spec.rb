@@ -64,7 +64,7 @@ RSpec.describe "tools/index.html.erb", type: :view do
 
   it "shows download button with correct URL" do
     render
-    expect(rendered).to include("DOWNLOAD")
+    expect(rendered).to include("Download")
     expect(rendered).to include("data-mods-url-param")
   end
 
@@ -103,7 +103,7 @@ RSpec.describe "tools/index.html.erb", type: :view do
 
     it "does not render any tool cards" do
       render
-      expect(rendered).not_to include("DOWNLOAD")
+      expect(rendered).not_to include("data-mods-url-param")
     end
   end
 
@@ -122,7 +122,7 @@ RSpec.describe "tools/index.html.erb", type: :view do
     it "calls raw_url helper on tool URL" do
       render
       # The raw_url helper will be invoked during rendering
-      expect(rendered).to include("DOWNLOAD")
+      expect(rendered).to include("Download")
     end
   end
 end

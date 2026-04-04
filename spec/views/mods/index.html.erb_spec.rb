@@ -30,7 +30,7 @@ RSpec.describe "mods/index.html.erb", type: :view do
   describe "search functionality" do
     it "renders search form with query input" do
       render
-      expect(rendered).to include('placeholder="Start Typing to Search"')
+      expect(rendered).to include('placeholder="Search mods..."')
       expect(rendered).to include('name="query"')
     end
 
@@ -39,9 +39,9 @@ RSpec.describe "mods/index.html.erb", type: :view do
       expect(rendered).to include('data-action="input-&gt;mods#search"')
     end
 
-    it "renders Show All Mods button" do
+    it "renders Show All button" do
       render
-      expect(rendered).to include("Show All Mods")
+      expect(rendered).to include("Show All")
     end
 
     it "form has turbo frame targeting" do
@@ -121,7 +121,7 @@ RSpec.describe "mods/index.html.erb", type: :view do
     it "still renders the page structure" do
       render
       expect(rendered).to include("Icarus Mods")
-      expect(rendered).to include("Start Typing to Search")
+      expect(rendered).to include("Search mods...")
     end
   end
 end

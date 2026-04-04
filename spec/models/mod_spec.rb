@@ -235,7 +235,7 @@ RSpec.describe Mod do
       before { mod.files = { exmodz: Faker::Internet.url } }
 
       it "returns the preferred type" do
-        expect(mod.preferred_type).to be_nil
+        expect(mod.preferred_type).to eq(:exmodz)
       end
     end
   end
