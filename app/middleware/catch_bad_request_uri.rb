@@ -11,8 +11,8 @@ class CatchBadRequestUri
   def call(env)
     begin
       validate_uri(env["PATH_INFO"].to_s)
-      validate_uri(env["QUERY_STRING"].to_s) if env["QUERY_STRING"].present?
-      validate_uri(env["REQUEST_URI"].to_s) if env["REQUEST_URI"].present?
+      validate_uri(env["QUERY_STRING"].to_s) unless env["QUERY_STRING"].nil? || env["QUERY_STRING"].empty?
+      validate_uri(env["REQUEST_URI"].to_s) unless env["REQUEST_URI"].nil? || env["REQUEST_URI"].empty?
     rescue URI::InvalidURIError, Encoding::CompatibilityError, ArgumentError
       return [400, { "content-type" => "text/plain" }, ["Bad Request"]]
     end
