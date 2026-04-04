@@ -43,9 +43,9 @@ class Tool
   end
 
   def filename
-    return nil unless url
+    return if url.blank?
 
-    URI(url).path.split("/").last
+    url.split("?").first.split("/").last
   end
 
   def name_slug
