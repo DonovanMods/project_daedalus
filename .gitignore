@@ -38,7 +38,9 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+.env
 .env.*
+!.env.example
 
 # Claude Code local settings
 .claude/
