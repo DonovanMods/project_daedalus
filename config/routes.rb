@@ -6,8 +6,11 @@ Rails.application.routes.draw do
   get "home", to: "home#index"
   get "info", to: "info#index"
 
-  # Admin routes (HTTP Basic Auth protected)
+  # Admin routes (session-based auth with ADMIN_PASSWORD)
   namespace :admin do
+    get "login", to: "sessions#new", as: "login"
+    post "login", to: "sessions#create"
+    delete "logout", to: "sessions#destroy", as: "logout"
     get "info", to: "info#edit", as: "info_edit"
     patch "info", to: "info#update", as: "info_update"
     post "info/sections", to: "info#add_section", as: "info_add_section"
