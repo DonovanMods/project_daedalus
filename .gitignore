@@ -42,4 +42,10 @@
 
 # Claude Code local settings
 .claude/
+
+# Serena MCP plugin
+.serena/
+
+# Playwright MCP plugin
+.playwright-mcp/
 firebase-debug.log
