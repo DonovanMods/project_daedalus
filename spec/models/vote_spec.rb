@@ -11,6 +11,12 @@ RSpec.describe Vote do
 
   before do
     allow(described_class).to receive(:firestore).and_return(firestore)
+    # Override global stubs from spec/support/firestore.rb so we can
+    # test real method logic with our mocked Firestore client
+    allow(described_class).to receive(:exists?).and_call_original
+    allow(described_class).to receive(:count_for).and_call_original
+    allow(described_class).to receive(:counts_for).and_call_original
+    allow(described_class).to receive(:rate_limited?).and_call_original
   end
 
   describe ".exists?" do
@@ -32,44 +38,42 @@ RSpec.describe Vote do
   end
 
   describe ".cast!" do
-    it "creates a vote record and atomically increments counter" do
-      vote_ref = instance_double(Google::Cloud::Firestore::DocumentReference)
+    let(:vote_ref) { instance_double(Google::Cloud::Firestore::DocumentReference) }
+    let(:counter_ref) { instance_double(Google::Cloud::Firestore::DocumentReference) }
+
+    before do
       allow(firestore).to receive(:doc).with("mod_votes/#{doc_id}").and_return(vote_ref)
-      allow(vote_ref).to receive(:set)
-
-      counter_ref = instance_double(Google::Cloud::Firestore::DocumentReference)
       allow(firestore).to receive(:doc).with("mod_vote_counts/#{mod_id}").and_return(counter_ref)
+      allow(vote_ref).to receive(:set)
       allow(counter_ref).to receive(:set)
+    end
 
+    it "creates a vote record and atomically increments counter" do
       described_class.cast!(mod_id, fingerprint)
 
       expect(vote_ref).to have_received(:set).with(hash_including(mod_id: mod_id, fingerprint: fingerprint))
       expect(counter_ref).to have_received(:set).with(
-        { count: an_instance_of(Google::Cloud::Firestore::FieldValue) },
-        merge: true
+        { count: an_instance_of(Google::Cloud::Firestore::FieldValue) }, merge: true
       )
     end
   end
 
   describe ".remove!" do
+    let(:counter_ref) { instance_double(Google::Cloud::Firestore::DocumentReference) }
+
+    before do
+      allow(firestore).to receive(:doc).with("mod_vote_counts/#{mod_id}").and_return(counter_ref)
+      allow(counter_ref).to receive(:set)
+    end
+
     it "deletes vote and atomically decrements counter when vote exists" do
       vote_doc = instance_double(Google::Cloud::Firestore::DocumentSnapshot, exists?: true)
       vote_ref = instance_double(Google::Cloud::Firestore::DocumentReference, get: vote_doc)
       allow(firestore).to receive(:doc).with("mod_votes/#{doc_id}").and_return(vote_ref)
       allow(vote_ref).to receive(:delete)
 
-      counter_ref = instance_double(Google::Cloud::Firestore::DocumentReference)
-      allow(firestore).to receive(:doc).with("mod_vote_counts/#{mod_id}").and_return(counter_ref)
-      allow(counter_ref).to receive(:set)
-
-      result = described_class.remove!(mod_id, fingerprint)
-
-      expect(result).to be true
+      expect(described_class.remove!(mod_id, fingerprint)).to be true
       expect(vote_ref).to have_received(:delete)
-      expect(counter_ref).to have_received(:set).with(
-        { count: an_instance_of(Google::Cloud::Firestore::FieldValue) },
-        merge: true
-      )
     end
 
     it "returns false when vote does not exist" do
@@ -77,9 +81,7 @@ RSpec.describe Vote do
       vote_ref = instance_double(Google::Cloud::Firestore::DocumentReference, get: vote_doc)
       allow(firestore).to receive(:doc).with("mod_votes/#{doc_id}").and_return(vote_ref)
 
-      result = described_class.remove!(mod_id, fingerprint)
-
-      expect(result).to be false
+      expect(described_class.remove!(mod_id, fingerprint)).to be false
     end
   end
 

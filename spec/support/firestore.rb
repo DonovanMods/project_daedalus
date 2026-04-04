@@ -18,10 +18,7 @@ RSpec.configure do |config|
     # Stub Vote model methods globally so specs that render mod pages
     # don't hit Firestore for vote counts
     if defined?(Vote)
-      allow(Vote).to receive(:count_for).and_return(0)
-      allow(Vote).to receive(:counts_for).and_return({})
-      allow(Vote).to receive(:exists?).and_return(false)
-      allow(Vote).to receive(:rate_limited?).and_return(false)
+      allow(Vote).to receive_messages(count_for: 0, counts_for: {}, exists?: false, rate_limited?: false)
     end
   end
 

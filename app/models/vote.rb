@@ -74,9 +74,9 @@ class Vote
   def self.rate_limited?(fingerprint)
     cutoff = RATE_LIMIT_WINDOW.ago.utc
     recent = firestore.col(COLLECTION)
-      .where(:fingerprint, :==, fingerprint)
-      .where(:created_at, :>=, cutoff)
-      .get
+                      .where(:fingerprint, :==, fingerprint)
+                      .where(:created_at, :>=, cutoff)
+                      .get
 
     recent.count >= RATE_LIMIT_MAX
   end
