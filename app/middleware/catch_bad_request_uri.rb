@@ -9,19 +9,21 @@ class CatchBadRequestUri
   end
 
   def call(env)
-    validate_uri(env["PATH_INFO"].to_s)
-    validate_uri(env["QUERY_STRING"].to_s) if env["QUERY_STRING"].present?
-    validate_uri(env["REQUEST_URI"].to_s) if env["REQUEST_URI"].present?
+    begin
+      validate_uri(env["PATH_INFO"].to_s)
+      validate_uri(env["QUERY_STRING"].to_s) if env["QUERY_STRING"].present?
+      validate_uri(env["REQUEST_URI"].to_s) if env["REQUEST_URI"].present?
+    rescue URI::InvalidURIError, Encoding::CompatibilityError, ArgumentError
+      return [400, {"content-type" => "text/plain"}, ["Bad Request"]]
+    end
 
     @app.call(env)
-  rescue URI::InvalidURIError, Encoding::CompatibilityError, ArgumentError
-    [400, {"content-type" => "text/plain"}, ["Bad Request"]]
   end
 
   private
 
   def validate_uri(value)
     decoded = URI.decode_www_form_component(value)
-    raise ArgumentError, "Invalid encoding in URI" unless decoded.valid_encoding?
+    raise URI::InvalidURIError, "Invalid encoding in URI" unless decoded.valid_encoding?
   end
 end

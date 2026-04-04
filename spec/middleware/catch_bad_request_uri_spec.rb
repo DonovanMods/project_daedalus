@@ -16,8 +16,8 @@ RSpec.describe CatchBadRequestUri do
         expect(body).to eq(["OK"])
       end
 
-      it "handles encoded characters in the path" do
-        env = Rack::MockRequest.env_for("/mods/donovan-young/some-mod")
+      it "handles percent-encoded characters in the path" do
+        env = Rack::MockRequest.env_for("/mods/donovan%20young/some-mod")
         status, _headers, _body = middleware.call(env)
 
         expect(status).to eq(200)
