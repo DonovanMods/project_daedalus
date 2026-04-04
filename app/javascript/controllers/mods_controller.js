@@ -37,7 +37,7 @@ export default class extends Controller {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       event.target.form.requestSubmit();
-    }, 200)
+    }, 400)
   }
 
   submit(event) {
