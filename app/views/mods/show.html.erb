@@ -28,7 +28,7 @@
         We recommend you use a Mod Manager to install this mod
       <% end %>
     </div>
-    <div class="text-sm text-right text-slate-500"><%= @mod.updated_string %></div>
+    <div class="text-sm text-right text-slate-500"><%= @mod.updated_string %> (<%= @mod.updated_ago %>)</div>
   </div>
   <button
     data-action="mods#navigateTo"
