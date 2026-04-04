@@ -59,10 +59,13 @@ class Mod
   end
 
   # Determines which file types can be downloaded from the index page
+  # Priority: pak > zip > exmodz (most common/compatible format first)
   def preferred_type
     return :pak if pak?
+    return :zip if zip?
+    return :exmodz if exmodz?
 
-    :zip if zip?
+    nil
   end
 
   # Determines which file types can be downloaded from the show page
