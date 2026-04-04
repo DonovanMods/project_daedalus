@@ -33,7 +33,7 @@ class Vote
   end
 
   # Remove a vote (unvote) using atomic decrement
-  def self.remove!(mod_id, fingerprint)
+  def self.remove!(mod_id, fingerprint) # rubocop:disable Naming/PredicateMethod
     doc_id = "#{mod_id}_#{fingerprint}"
     doc_ref = firestore.doc("#{COLLECTION}/#{doc_id}")
 
@@ -60,13 +60,10 @@ class Vote
   # Get vote counts for multiple mods at once
   def self.counts_for(mod_ids)
     counts = {}
-    mod_ids.each { |id| counts[id] = 0 }
-
     mod_ids.each do |id|
       counter = firestore.doc("mod_vote_counts/#{id}").get
-      counts[id] = counter[:count].to_i if counter.exists?
+      counts[id] = counter.exists? ? counter[:count].to_i : 0
     end
-
     counts
   end
 

@@ -20,27 +20,11 @@ class ModsController < ApplicationController
   end
 
   def show
-    @mod = mods.find do |mod|
-      mod.author_slug.casecmp(params[:author].parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
-    end
+    @mod = find_mod_by_slug
+    return handle_mod_not_found unless @mod
 
-    if @mod.nil?
-      flash[:error] = t("mod-not-found", author: params[:author], slug: params[:slug])
-
-      return redirect_to mods_author_path(author: params[:author]) if params[:author].present?
-
-      return redirect_to mods_path
-    end
-
-    # Other mods by this author (excluding current mod)
-    @author_mods = mods.select { |m| m.author == @mod.author && m.slug != @mod.slug }
-
-    # Previous/next mod navigation (alphabetical)
-    sorted = mods.sort_by { |m| m.name.downcase }
-    current_index = sorted.index { |m| m.slug == @mod.slug && m.author_slug == @mod.author_slug }
-    @prev_mod = current_index&.positive? ? sorted[current_index - 1] : nil
-    @next_mod = current_index && current_index < sorted.size - 1 ? sorted[current_index + 1] : nil
-
+    @author_mods = other_mods_by_author(@mod)
+    @prev_mod, @next_mod = neighboring_mods(@mod)
     @vote_count = Vote.count_for(@mod.id)
   end
 
@@ -77,6 +61,32 @@ class ModsController < ApplicationController
     else
       render :index
     end
+  end
+
+  def find_mod_by_slug
+    mods.find do |mod|
+      mod.author_slug.casecmp(params[:author].parameterize)&.zero? &&
+        mod.slug.casecmp(params[:slug])&.zero?
+    end
+  end
+
+  def handle_mod_not_found
+    flash[:error] = t("mod-not-found", author: params[:author], slug: params[:slug])
+    return redirect_to mods_author_path(author: params[:author]) if params[:author].present?
+
+    redirect_to mods_path
+  end
+
+  def other_mods_by_author(mod)
+    mods.select { |m| m.author == mod.author && m.slug != mod.slug }
+  end
+
+  def neighboring_mods(mod)
+    sorted = mods.sort_by { |m| m.name.downcase }
+    idx = sorted.index { |m| m.slug == mod.slug && m.author_slug == mod.author_slug }
+    prev_mod = idx&.positive? ? sorted[idx - 1] : nil
+    next_mod = idx && idx < sorted.size - 1 ? sorted[idx + 1] : nil
+    [prev_mod, next_mod]
   end
 
   def find_mods(query)

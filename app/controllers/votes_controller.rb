@@ -6,7 +6,7 @@ class VotesController < ApplicationController
     return render json: { error: "Mod not found" }, status: :not_found unless mod
 
     fingerprint = params[:fingerprint].to_s.strip
-    return render json: { error: "Invalid request" }, status: :unprocessable_entity if fingerprint.blank?
+    return render json: { error: "Invalid request" }, status: :unprocessable_content if fingerprint.blank?
 
     # Rate limiting
     if Vote.rate_limited?(fingerprint)
