@@ -29,27 +29,11 @@ module Displayable
   end
 
   # Returns a human-readable "time ago" string for the last update
-  # e.g. "2 hours ago", "3 days ago", "1 month ago"
+  # Uses Rails built-in time_ago_in_words helper
   def updated_ago
     return "Unknown" unless updated_at
 
-    seconds = (Time.current - updated_at).to_i
-    return "just now" if seconds < 60
-
-    minutes = seconds / 60
-    return "#{minutes} #{"minute".pluralize(minutes)} ago" if minutes < 60
-
-    hours = minutes / 60
-    return "#{hours} #{"hour".pluralize(hours)} ago" if hours < 24
-
-    days = hours / 24
-    return "#{days} #{"day".pluralize(days)} ago" if days < 30
-
-    months = days / 30
-    return "#{months} #{"month".pluralize(months)} ago" if months < 12
-
-    years = months / 12
-    "#{years} #{"year".pluralize(years)} ago"
+    "#{ActionController::Base.helpers.time_ago_in_words(updated_at)} ago"
   end
 
   def version_string
