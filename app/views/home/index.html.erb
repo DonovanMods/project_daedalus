@@ -1,15 +1,76 @@
-<section>
-  <h1 class="mb-4 text-xl font-extrabold text-blue-700 no-underline md:mb-12 md:text-2xl lg:text-6xl dark:text-blue-500">Welcome to Project Daedalus</h1>
+<section class="px-4 py-6 md:py-12">
+  <div class="text-center">
+    <h1 class="mb-4 text-xl font-extrabold text-blue-700 no-underline md:mb-8 md:text-2xl lg:text-6xl dark:text-blue-500">Welcome to Project Daedalus</h1>
+    <p class="max-w-2xl mx-auto text-base md:text-lg lg:text-xl text-slate-600 dark:text-slate-400">
+      The community-driven modding platform for
+      <%= link_to "Icarus", "https://surviveicarus.com/", class: "anchor-blue", target: "_blank" %>.
+      Browse mods, download tools, and join the community.
+    </p>
+  </div>
 
-  <div>
-    <h2 class="px-4 mb-2 text-lg md:mb-8 md:text-xl lg:text-4xl">What is Project Daedalus?</h2>
-    <div class="p-4">
-      <div class="py-4">
-        Project Daedalus is a modding platform for the game <%= link_to "Icarus", "https://surviveicarus.com/", class: "anchor-blue" %>.
+  <%# Main navigation cards — Mods is the primary CTA %>
+  <div class="grid gap-6 mx-auto mt-8 md:mt-12 md:grid-cols-3 max-w-4xl">
+
+    <%# Mods card — largest and most prominent %>
+    <%= link_to mods_path, class: "no-underline group" do %>
+      <div class="flex flex-col items-center p-6 md:p-8 text-center transition-all border-2 rounded-xl border-icarus-500 bg-gradient-to-b from-icarus-100 to-white dark:from-icarus-900 dark:to-slate-800 hover:shadow-lg hover:scale-[1.02] group-hover:border-icarus-400">
+        <div class="mb-3 text-4xl md:text-5xl">🎮</div>
+        <h2 class="mb-2 text-xl font-bold md:text-2xl text-icarus-600 dark:text-icarus-400">Browse Mods</h2>
+        <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
+          Explore the full collection of community-made mods for Icarus. Download and install with one click.
+        </p>
+        <span class="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white rounded-md bg-icarus-500 group-hover:bg-icarus-600">
+          View All Mods →
+        </span>
       </div>
-      <div class="py-4">
-        This is a community-driven project and you can find out more on the unofficial modding <%= link_to "Discord server", "https://discord.gg/linkarus-icarus-modding-936621749733302292", class: "anchor-blue" %>
+    <% end %>
+
+    <%# Tools card %>
+    <%= link_to tools_path, class: "no-underline group" do %>
+      <div class="flex flex-col items-center p-6 text-center transition-all border rounded-xl border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 hover:shadow-lg hover:scale-[1.02] hover:border-blue-400 dark:hover:border-blue-500">
+        <div class="mb-3 text-3xl md:text-4xl">🛠️</div>
+        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400">Modding Tools</h2>
+        <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
+          Download tools and utilities to create and manage your own Icarus mods.
+        </p>
+        <span class="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white bg-blue-600 rounded-md group-hover:bg-blue-700">
+          View Tools →
+        </span>
       </div>
-    </div>
+    <% end %>
+
+    <%# Info card %>
+    <%= link_to info_path, class: "no-underline group" do %>
+      <div class="flex flex-col items-center p-6 text-center transition-all border rounded-xl border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 hover:shadow-lg hover:scale-[1.02] hover:border-blue-400 dark:hover:border-blue-500">
+        <div class="mb-3 text-3xl md:text-4xl">📖</div>
+        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400">Information</h2>
+        <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
+          Learn about Icarus modding, find helpful links, and get started with the community.
+        </p>
+        <span class="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white bg-blue-600 rounded-md group-hover:bg-blue-700">
+          Learn More →
+        </span>
+      </div>
+    <% end %>
+
+  </div>
+
+  <%# Community section %>
+  <div class="max-w-2xl mx-auto mt-10 text-center md:mt-16">
+    <h2 class="mb-4 text-lg font-semibold md:text-xl text-slate-700 dark:text-slate-300">Join the Community</h2>
+    <p class="mb-6 text-slate-600 dark:text-slate-400">
+      Connect with other modders, get help, and share your creations on the unofficial Icarus modding Discord.
+    </p>
+    <%= link_to "https://discord.gg/linkarus-icarus-modding-936621749733302292", target: "_blank", class: "no-underline" do %>
+      <span class="inline-flex items-center px-6 py-3 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700">
+        Join the Discord Server →
+      </span>
+    <% end %>
+  </div>
+
+  <%# Feature request link %>
+  <div class="max-w-2xl mx-auto mt-8 text-sm text-center text-slate-500 dark:text-slate-400">
+    Want to see a new mod?
+    <%= link_to "Submit or upvote mod requests", "https://feedback.projectdaedalus.app/", target: "_blank", class: "anchor-blue" %>
   </div>
 </section>
