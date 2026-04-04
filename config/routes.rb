@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   get "home", to: "home#index"
   get "info", to: "info#index"
+  patch "locale", to: "locales#update", as: "locale"
 
   scope :mods do
     get "/:author/:slug", to: "mods#show", as: "mod_detail"

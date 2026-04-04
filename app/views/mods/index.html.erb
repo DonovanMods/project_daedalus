@@ -1,5 +1,5 @@
-<% content_for(:title) { "Icarus Mods" } %>
-<% content_for(:meta_description) { "Browse #{@total_mods || @mods.size} community mods for the Icarus survival game. Filter by author, search, and download." } %>
+<% content_for(:title) { t('mods.title') } %>
+<% content_for(:meta_description) { t('mods.meta_description', count: @total_mods || @mods.size) } %>
 
 <style>
   .gold-line { height: 2px; background: linear-gradient(90deg, transparent, #f1ad1c, transparent); }
@@ -12,8 +12,9 @@
   <%# Page Header %>
   <div class="mb-6 text-center">
     <h1 class="mb-3 text-3xl font-extrabold tracking-tight md:text-4xl lg:text-5xl text-icarus-500">
-      <%= link_to 'Icarus Mods', mods_path, class: "no-underline text-icarus-500" %>
-    </h1>    <p class="max-w-2xl mx-auto text-base text-slate-600 dark:text-slate-400 md:text-lg">
+      <%= link_to t('mods.title'), mods_path, class: "no-underline text-icarus-500" %>
+    </h1>
+    <p class="max-w-2xl mx-auto text-base text-slate-600 dark:text-slate-400 md:text-lg">
       Browse and download community-made mods for the Icarus survival game.
     </p>
     <div class="mx-auto mt-4 gold-line w-48"></div>
@@ -23,13 +24,13 @@
   <div class="flex flex-col gap-3 p-4 mb-6 border rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 md:flex-row md:items-center md:justify-between">
     <div class="flex flex-col gap-3 md:flex-row md:items-center md:flex-1">
       <%= form_with(url: current_path, method: :get, data: {turbo_frame: "mods", turbo_action: "advance"}) do |form| %>
-        <%= form.text_field :query, placeholder: "Search mods...", data: {action: "input->mods#search"},
+        <%= form.text_field :query, placeholder: t('mods.search_placeholder'), data: {action: "input->mods#search"},
             class: "px-3 py-2 text-sm border rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 ring-0 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-none md:w-64" %>
       <% end %>
       <%= collection_select nil, nil, @authors, :parameterize, :to_s,
                             {
-                              include_blank: "All",
-                              prompt: "Filter By Author",
+                              include_blank: t('mods.filter_all'),
+                              prompt: t('mods.filter_by_author'),
                               selected: params[:author]
                             },
                             data: { action: "change->mods#navigateToAuthor" },
@@ -37,25 +38,19 @@
     </div>
     <div class="flex items-center gap-3">
       <span class="text-sm font-medium text-icarus-500"><%= @total_mods || @mods.size %> mods</span>
-      <%= link_to "Show All", mods_path, class: "text-sm font-medium no-underline text-icarus-500 hover:text-icarus-400" %>
+      <%= link_to t('mods.show_all'), mods_path, class: "text-sm font-medium no-underline text-icarus-500 hover:text-icarus-400" %>
     </div>
   </div>
   <%# Feedback Link %>
   <div class="hidden mb-4 text-sm text-center md:block text-slate-500 dark:text-slate-400">
-    Don't see a feature you're looking for? Go upvote or add it on
-    <a href="https://feedback.projectdaedalus.app" target="_blank" class="font-medium no-underline text-icarus-500 hover:text-icarus-400">
-      the Icarus Modding Upvote Page
-    </a>
+    <%= t('mods.feedback_prompt_html', link: link_to(t('mods.feedback_link'), "https://feedback.projectdaedalus.app", target: "_blank", class: "font-medium no-underline text-icarus-500 hover:text-icarus-400")).html_safe %>
   </div>
-  <p class="mb-4 text-xs text-center text-icarus-500">Click on any row to view additional mod details</p>
+  <p class="mb-4 text-xs text-center text-icarus-500"><%= t('mods.click_hint') %></p>
 
   <%= render "mods", mods: @mods %>
 
   <%# Footer Feedback Link %>
   <div class="mt-6 text-sm text-center text-slate-500 dark:text-slate-400">
-    Want to see a new mod?
-    <a href="https://feedback.projectdaedalus.app" target="_blank" class="font-medium no-underline text-icarus-500 hover:text-icarus-400">
-      Submit or upvote mod requests
-    </a>
+    <%= t('mods.feedback_prompt_html', link: link_to(t('mods.feedback_link'), "https://feedback.projectdaedalus.app", target: "_blank", class: "font-medium no-underline text-icarus-500 hover:text-icarus-400")).html_safe %>
   </div>
 </div>

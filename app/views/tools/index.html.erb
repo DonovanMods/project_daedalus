@@ -1,5 +1,5 @@
-<% content_for(:title) { "Icarus Modding Tools" } %>
-<% content_for(:meta_description) { "Download tools for modding the Icarus survival game." } %>
+<% content_for(:title) { t('tools.title') } %>
+<% content_for(:meta_description) { t('tools.meta_description') } %>
 
 <style>
   .gold-line { height: 2px; background: linear-gradient(90deg, transparent, #f1ad1c, transparent); }
@@ -12,7 +12,7 @@
   <%# Page Header %>
   <div class="mb-8 text-center">
     <h1 class="mb-3 text-3xl font-extrabold tracking-tight md:text-4xl lg:text-5xl text-icarus-500">
-      Icarus Modding Tools
+      <%= t('tools.title') %>
     </h1>
     <p class="max-w-2xl mx-auto text-base text-slate-600 dark:text-slate-400 md:text-lg">
       Download tools and utilities for modding the Icarus survival game.
@@ -30,7 +30,7 @@
         <div id="<%= tool.slug %>-header" class="flex items-start justify-between mb-4">
           <div class="flex-1">
             <h2 class="text-xl font-bold md:text-2xl text-icarus-500"><%= tool.name %></h2>
-            <p class="text-sm text-blue-400">by <%= tool.author %></p>
+            <p class="text-sm text-blue-400"><%= t('tools.by_author', author: tool.author) %></p>
           </div>
           <div class="flex flex-col items-end flex-shrink-0 ml-4">
             <button
@@ -39,9 +39,9 @@
               data-mods-file-name-param="<%= tool.filename %>"
               type="button"
               class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
-              Download
+              <%= t('tools.download') %>
             </button>
-            <span class="mt-1 text-xs text-slate-500">v<%= tool.version %></span>
+            <span class="mt-1 text-xs text-slate-500"><%= t('tools.version', version: tool.version) %></span>
           </div>
         </div>
 
