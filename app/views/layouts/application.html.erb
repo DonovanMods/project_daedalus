@@ -43,28 +43,5 @@
       </div>
     </main>
 
-    <script>
-      function toggleTheme() {
-        var html = document.documentElement;
-        var icon = document.getElementById('theme-icon');
-        if (html.classList.contains('dark')) {
-          html.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
-          if (icon) icon.innerHTML = '\u2600\uFE0F';
-        } else {
-          html.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
-          if (icon) icon.innerHTML = '\uD83C\uDF19';
-        }
-      }
-
-      // Update icon to match current state after page load
-      document.addEventListener('DOMContentLoaded', function() {
-        var icon = document.getElementById('theme-icon');
-        if (icon) {
-          icon.innerHTML = document.documentElement.classList.contains('dark') ? '\uD83C\uDF19' : '\u2600\uFE0F';
-        }
-      });
-    </script>
   </body>
 </html>
