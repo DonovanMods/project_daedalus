@@ -19,6 +19,8 @@ module Displayable
   end
 
   def author_slug
+    return "unknown" unless author
+
     author.parameterize
   end
 
