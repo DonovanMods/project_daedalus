@@ -36,7 +36,7 @@ class ModsController < ApplicationController
   private
 
   def filter_by_author
-    return unless params[:author].present?
+    return if params[:author].blank?
 
     @mods = find_mods_by_author(sanitize(params[:author]))
     @filtered = true
@@ -49,7 +49,7 @@ class ModsController < ApplicationController
   end
 
   def filter_by_query
-    return unless params[:query].present?
+    return if params[:query].blank?
 
     @mods = find_mods(sanitize(params[:query]))
     @filtered = true
