@@ -18,7 +18,7 @@ de:
     meta_description: "Durchsuchen Sie %{count} Community-Mods für das Überlebensspiel Icarus. Filtern Sie nach Autor, suchen Sie und laden Sie herunter."
     filter_all: "Alle"
     filter_by_author: "Nach Autor filtern"
-    search_placeholder: "Zum Suchen eingeben"
+    search_placeholder: "Mods suchen..."
     show_all: "Alle Mods anzeigen"
     feedback_prompt_html: "Vermissen Sie eine Funktion? Stimmen Sie auf %{link} ab oder fügen Sie sie hinzu"
     feedback_link: "der Icarus-Modding-Abstimmungsseite"
@@ -28,6 +28,7 @@ de:
     download: "Download %{type}"
     table:
       name: "Name"
+      download: "Download"
       author: "Autor"
       version: "Version"
       week: "Woche"
