@@ -97,7 +97,7 @@ class Mod
   private
 
   def filename(url)
-    return unless url
+    return if url.blank?
 
     url.split("?").first.split("/").last
   end

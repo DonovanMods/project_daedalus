@@ -286,6 +286,12 @@ RSpec.describe Mod do
         expect(mod.get_name(:pak)).to eq("Mod_P.pak")
       end
     end
+
+    context "when the URL is nil" do
+      it "returns nil" do
+        expect(mod.get_name(:nonexistent)).to be_nil
+      end
+    end
   end
 
   describe "#types_string" do
