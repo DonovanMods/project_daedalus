@@ -13,3 +13,10 @@
     @apply text-blue-500 dark:text-blue-300 no-underline
   }
 }
+
+@layer utilities {
+  .gold-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, theme('colors.icarus.500'), transparent);
+  }
+}

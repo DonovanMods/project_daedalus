@@ -24,13 +24,22 @@ class ModsController < ApplicationController
       mod.author_slug.casecmp(params[:author].parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
     end
 
-    return unless @mod.nil?
+    if @mod.nil?
+      flash[:error] = t("mod-not-found", author: params[:author], slug: params[:slug])
 
-    flash[:error] = t("mod-not-found", author: params[:author], slug: params[:slug])
+      return redirect_to mods_author_path(author: params[:author]) if params[:author].present?
 
-    return redirect_to mods_author_path(author: params[:author]) if params[:author].present?
+      return redirect_to mods_path
+    end
 
-    redirect_to mods_path
+    # Other mods by this author (excluding current mod)
+    @author_mods = mods.select { |m| m.author == @mod.author && m.slug != @mod.slug }
+
+    # Previous/next mod navigation (alphabetical)
+    sorted = mods.sort_by { |m| m.name.downcase }
+    current_index = sorted.index { |m| m.slug == @mod.slug && m.author_slug == @mod.author_slug }
+    @prev_mod = current_index&.positive? ? sorted[current_index - 1] : nil
+    @next_mod = current_index && current_index < sorted.size - 1 ? sorted[current_index + 1] : nil
   end
 
   private
