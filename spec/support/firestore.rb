@@ -14,5 +14,10 @@ RSpec.configure do |config|
         { type: "service_account", project_id: "test-project" }
       )
     end
+
+    # Stub SiteContent.find globally so info page specs don't hit Firestore
+    if defined?(SiteContent)
+      allow(SiteContent).to receive(:find).and_return(nil)
+    end
   end
 end
