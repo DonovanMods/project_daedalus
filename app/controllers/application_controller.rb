@@ -20,8 +20,8 @@ class ApplicationController < ActionController::Base
     return unless request.env["HTTP_ACCEPT_LANGUAGE"]
 
     accepted = request.env["HTTP_ACCEPT_LANGUAGE"]
-                .scan(/[a-z]{2}(?=-|,|;)/)
-                .map(&:to_sym)
+                      .scan(/[a-z]{2}(?=-|,|;)/)
+                      .map(&:to_sym)
 
     accepted.find { |locale| I18n.available_locales.include?(locale) }
   end
