@@ -8,12 +8,15 @@ module PaginationHelper
     page = [page.to_i, 1].max
     total = collection.size
     total_pages = (total / per_page.to_f).ceil
-    page = [page, total_pages].min if total_pages > 0
+    page = [page, total_pages].min if total_pages.positive?
 
     offset = (page - 1) * per_page
     items = collection[offset, per_page] || []
 
-    PaginationResult.new(items: items, current_page: page, total_pages: total_pages, total_count: total, per_page: per_page)
+    PaginationResult.new(
+      items: items, current_page: page, total_pages: total_pages,
+      total_count: total, per_page: per_page
+    )
   end
 
   class PaginationResult

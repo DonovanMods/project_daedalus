@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe PaginationHelper do
-  include PaginationHelper
+  include described_class
 
   let(:items) { (1..50).to_a }
 
@@ -55,14 +55,14 @@ RSpec.describe PaginationHelper do
     end
   end
 
-  describe PaginationHelper::PaginationResult do
+  describe described_class::PaginationResult do
     subject(:result) do
-      PaginationHelper::PaginationResult.new(
+      described_class.new(
         items: [], current_page: current_page, total_pages: 5, total_count: 100, per_page: 20
       )
     end
 
-    context "on the first page" do
+    context "when on the first page" do
       let(:current_page) { 1 }
 
       it { is_expected.to be_first_page }
@@ -72,7 +72,7 @@ RSpec.describe PaginationHelper do
       it { expect(result.next_page).to eq(2) }
     end
 
-    context "on a middle page" do
+    context "when on a middle page" do
       let(:current_page) { 3 }
 
       it { is_expected.not_to be_first_page }
@@ -81,7 +81,7 @@ RSpec.describe PaginationHelper do
       it { expect(result.next_page).to eq(4) }
     end
 
-    context "on the last page" do
+    context "when on the last page" do
       let(:current_page) { 5 }
 
       it { is_expected.not_to be_first_page }
@@ -92,7 +92,7 @@ RSpec.describe PaginationHelper do
 
     context "with a single page" do
       subject(:result) do
-        PaginationHelper::PaginationResult.new(
+        described_class.new(
           items: [], current_page: 1, total_pages: 1, total_count: 5, per_page: 20
         )
       end
@@ -102,14 +102,14 @@ RSpec.describe PaginationHelper do
 
     describe "#page_range" do
       it "returns all pages when total is small" do
-        result = PaginationHelper::PaginationResult.new(
+        result = described_class.new(
           items: [], current_page: 1, total_pages: 5, total_count: 100, per_page: 20
         )
         expect(result.page_range).to eq([1, 2, 3, 4, 5])
       end
 
       it "includes ellipsis for large page counts" do
-        result = PaginationHelper::PaginationResult.new(
+        result = described_class.new(
           items: [], current_page: 10, total_pages: 20, total_count: 400, per_page: 20
         )
         range = result.page_range
