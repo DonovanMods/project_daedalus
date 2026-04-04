@@ -1,21 +1,29 @@
-<tr id="<%= dom_id mod %>" class="z-0 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+<tr id="<%= dom_id mod %>" class="cursor-pointer row-lift border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/70"
     data-action="click->mods#navigateTo"
     data-mods-path-param="<%= mod_detail_path(author: mod.author, slug: mod.slug) %>">
-  <td class="p-2 border-t border-slate-600"><%= mod.name %></td>
-  <td class="p-2 border-t border-slate-600">
+  <td class="p-3 font-medium text-slate-800 dark:text-slate-200"><%= mod.name %></td>
+  <td class="p-3">
     <% if type = mod.preferred_type %>
       <button
         data-action="mods#download"
         data-mods-url-param="<%= raw_url(mod.get_url(type)) %>"
         data-mods-file-name-param="<%= mod.get_name(type) %>"
         type="button"
-        class="z-10 inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        class="z-10 inline-flex items-center px-3 py-1.5 text-xs font-medium text-white rounded-md shadow-sm bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
         Download <%= type.to_s.upcase %>
       </button>
     <% end %>
   </td>
-  <td class="hidden p-2 border-t sm:table-cell border-slate-600"><%= mod.author %></td>
-  <td class="hidden p-2 text-right border-t md:table-cell border-slate-600"><%= mod.version %></td>
-  <td class="hidden p-2 text-center border-t xl:table-cell border-slate-600"><%= mod.compatibility&.downcase %></td>
-  <td class="hidden p-2 border-t lg:table-cell border-slate-600"><%= mod.description %></td>
+  <td class="hidden p-3 text-sm sm:table-cell text-slate-600 dark:text-slate-400"><%= mod.author %></td>
+  <td class="hidden p-3 text-sm text-right md:table-cell text-slate-600 dark:text-slate-400"><%= mod.version %></td>
+  <td class="hidden p-3 text-sm text-center xl:table-cell">
+    <% if mod.compatibility.present? %>
+      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-icarus-500/20 text-icarus-500 dark:bg-icarus-500/10 dark:text-icarus-400">
+        <%= mod.compatibility&.downcase %>
+      </span>
+    <% else %>
+      <span class="text-xs text-slate-500">&mdash;</span>
+    <% end %>
+  </td>
+  <td class="hidden p-3 text-sm lg:table-cell text-slate-600 dark:text-slate-400"><%= mod.description %></td>
 </tr>
