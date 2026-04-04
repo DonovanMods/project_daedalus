@@ -1,0 +1,37 @@
+name: "Update Vulnerable Gems"
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: false
+
+      - name: Update vulnerable gems
+        run: |
+          bundle update
+          echo "=== Key versions after update ==="
+          bundle list | grep -E "rails |activestorage |json |loofah |nokogiri |rack "
+          bundle exec bundle-audit --update || true
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet Gemfile.lock && echo "No changes" && exit 0
+          git add Gemfile.lock
+          git commit -m "Update vulnerable gems via automated workflow
+
+          Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+          git push
