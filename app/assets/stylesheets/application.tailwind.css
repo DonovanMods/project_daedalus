@@ -20,3 +20,13 @@
     background: linear-gradient(90deg, transparent, theme('colors.icarus.500'), transparent);
   }
 }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}

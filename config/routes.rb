@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   scope :mods do
     get "/:author/:slug", to: "mods#show", as: "mod_detail"
+    post "/:author/:slug/vote", to: "votes#create", as: "mod_vote"
     get "/:author", to: "mods#index", as: "mods_author"
     get "/", to: "mods#index", as: "mods"
   end

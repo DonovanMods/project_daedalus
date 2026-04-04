@@ -40,6 +40,8 @@ class ModsController < ApplicationController
     current_index = sorted.index { |m| m.slug == @mod.slug && m.author_slug == @mod.author_slug }
     @prev_mod = current_index&.positive? ? sorted[current_index - 1] : nil
     @next_mod = current_index && current_index < sorted.size - 1 ? sorted[current_index + 1] : nil
+
+    @vote_count = Vote.count_for(@mod.id)
   end
 
   private
