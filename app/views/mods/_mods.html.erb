@@ -7,18 +7,18 @@
       <table class="w-full border-collapse table-auto">
         <thead>
           <tr class="bg-slate-100 dark:bg-slate-800">
-            <th class="p-3 text-left text-sm font-semibold text-icarus-500 w-1/5">Name</th>
-            <th class="p-3 text-left text-sm font-semibold text-icarus-500 w-28">Download</th>
-            <th class="hidden p-3 text-left text-sm font-semibold text-icarus-500 sm:table-cell w-1/6">Author</th>
-            <th class="hidden p-3 text-right text-sm font-semibold text-icarus-500 md:table-cell w-20">Version</th>
-            <th class="hidden p-3 text-center text-sm font-semibold text-icarus-500 xl:table-cell w-20">Week</th>
-            <th class="hidden p-3 text-left text-sm font-semibold text-icarus-500 xl:table-cell">Description</th>
+            <th class="p-3 text-left text-sm font-semibold text-icarus-500 w-1/5"><%= t('mods.table.name') %></th>
+            <th class="p-3 text-left text-sm font-semibold text-icarus-500 w-28"><%= t('mods.table.download') %></th>
+            <th class="hidden p-3 text-left text-sm font-semibold text-icarus-500 sm:table-cell w-1/6"><%= t('mods.table.author') %></th>
+            <th class="hidden p-3 text-right text-sm font-semibold text-icarus-500 md:table-cell w-20"><%= t('mods.table.version') %></th>
+            <th class="hidden p-3 text-center text-sm font-semibold text-icarus-500 xl:table-cell w-20"><%= t('mods.table.week') %></th>
+            <th class="hidden p-3 text-left text-sm font-semibold text-icarus-500 xl:table-cell"><%= t('mods.table.description') %></th>
           </tr>
         </thead>
         <tbody>
           <% if mods.empty? %>
             <tr>
-              <td colspan="6" class="p-6 text-xl text-center text-icarus-500">No mods match your query</td>
+              <td colspan="6" class="p-6 text-xl text-center text-icarus-500"><%= t('mods.no_results') %></td>
             </tr>
           <% else %>
             <%= render mods %>

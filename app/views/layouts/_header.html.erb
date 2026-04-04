@@ -5,14 +5,29 @@
   </div>
   <div class="flex items-center mt-4 md:mt-0 md:ml-4">
     <button type="button" id="mods-button" class="button">
-      <%= link_to "Mods", mods_path, class: "inline-flex items-center px-4 py-2 font-medium no-underline text-icarus-500 hover:text-blue-500" %>
+      <%= link_to t("nav.mods"), mods_path, class: "inline-flex items-center px-4 py-2 font-medium no-underline text-icarus-500 hover:text-blue-500" %>
     </button>
     <button type="button" id="tools-button" class="button">
-      <%= link_to "Tools", tools_path, class: "inline-flex items-center px-4 py-2 font-medium no-underline text-icarus-500 hover:text-blue-500" %>
+      <%= link_to t("nav.tools"), tools_path, class: "inline-flex items-center px-4 py-2 font-medium no-underline text-icarus-500 hover:text-blue-500" %>
     </button>
     <button type="button" id="info-button" class="button">
-      <%= link_to "Info", info_path, class: "inline-flex items-center px-4 py-2 font-medium no-underline text-icarus-500 hover:text-blue-500" %>
+      <%= link_to t("nav.info"), info_path, class: "inline-flex items-center px-4 py-2 font-medium no-underline text-icarus-500 hover:text-blue-500" %>
     </button>
+    <%# Language selector %>
+    <div class="relative ml-2">
+      <%= form_with url: locale_path, method: :patch, local: true do |f| %>
+        <%= f.select :locale,
+          options_for_select([
+            ["🇺🇸 EN", :en], ["🇨🇳 中文", :zh], ["🇪🇸 ES", :es], ["🇸🇦 عربي", :ar],
+            ["🇧🇷 PT", :pt], ["🇫🇷 FR", :fr], ["🇯🇵 日本語", :ja], ["🇷🇺 RU", :ru],
+            ["🇩🇪 DE", :de], ["🇰🇷 한국어", :ko], ["🇮🇩 ID", :id], ["🇹🇷 TR", :tr],
+            ["🇮🇹 IT", :it], ["🇮🇳 हिंदी", :hi], ["🇳🇱 NL", :nl]
+          ], I18n.locale),
+          {},
+          onchange: "this.form.submit()",
+          class: "px-2 py-1 text-sm rounded border border-slate-400 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-none cursor-pointer" %>
+      <% end %>
+    </div>
     <div data-controller="theme">
       <button type="button" data-action="theme#toggle" class="inline-flex items-center justify-center w-9 h-9 ml-2 rounded-lg text-icarus-500 hover:text-icarus-400 hover:bg-slate-700/50 transition-colors" title="Toggle dark/light mode">
         <span data-theme-target="icon" class="text-lg">&#127769;</span>

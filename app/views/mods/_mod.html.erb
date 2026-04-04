@@ -10,7 +10,7 @@
         data-mods-file-name-param="<%= mod.get_name(type) %>"
         type="button"
         class="z-10 inline-flex items-center px-3 py-1.5 text-xs font-medium text-white rounded-md shadow-sm bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
-        Download <%= type.to_s.upcase %>
+        <%= t('mods.download', type: type.to_s.upcase) %>
       </button>
     <% end %>
   </td>

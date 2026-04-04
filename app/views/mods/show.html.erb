@@ -1,4 +1,4 @@
-<% content_for(:title) { "#{@mod.name} by #{@mod.author}" } %>
+<% content_for(:title) { t('mod.title', name: @mod.name, author: @mod.author) } %>
 <% content_for(:meta_description) { truncate(@mod.description.to_s, length: 160) } %>
 <% content_for(:og_image) { @mod.image_url } if @mod.image_url.present? %>
 <section class="px-5" data-controller="mods">
@@ -12,20 +12,20 @@
           data-mods-file-name-param="<%= @mod.get_name(type) %>"
           type="button"
           class="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-          DOWNLOAD <%= type.to_s.upcase %>
+          <%= t('mod.download', type: type.to_s.upcase) %>
         </button>
       <% end %>
     <% end %>
   </div>
   <div class="flex items-center justify-between flex-auto">
-    <div class="pt-2 text-xl text-blue-500 lg:text-2xl">By <%= @mod.author %></div>
+    <div class="pt-2 text-xl text-blue-500 lg:text-2xl"><%= t('mod.by_author', author: @mod.author) %></div>
     <div class="text-slate-500"><%= @mod.version_string %></div>
   </div>
   <div class="flex items-start justify-between flex-auto">
     <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">
       <% if @mod.exmodz? %>
-        This Mod includes an EXMOD formatted file, which doesn't need updates each week.<br />
-        We recommend you use a Mod Manager to install this mod
+        <%= t('mod.exmodz_note') %><br />
+        <%= t('mod.exmodz_recommend') %>
       <% end %>
     </div>
     <div class="text-sm text-right text-slate-500"><%= @mod.updated_string %></div>
@@ -35,7 +35,7 @@
     data-mods-path-param="<%= mod_detail_path(author: @mod.author_slug, slug: @mod.slug, analytics: true) %>"
     class="float-right text-xs text-right anchor-blue"
     type="button">
-    Analytics for Mod Authors
+    <%= t('mod.analytics_link') %>
   </button>
   <div class="mt-12 min-h-48">
     <%= render("analytics", metadata: @mod.metadata&.dig(:status)) if params[:analytics] %>
@@ -51,7 +51,7 @@
         data-mods-path-param="<%= session[:origin_url] %>"
         type="button"
         class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-        Back to List
+        <%= t('mod.back_to_list') %>
       </button>
     </div>
   <% end %>
