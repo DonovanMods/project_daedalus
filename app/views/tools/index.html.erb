@@ -2,17 +2,16 @@
 <% content_for(:meta_description) { "Download tools for modding the Icarus survival game." } %>
 
 <style>
-  .gold-gradient { background: linear-gradient(135deg, #f1ad1c 0%, #f6cf79 50%, #f1ad1c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .gold-line { height: 2px; background: linear-gradient(90deg, transparent, #f1ad1c, transparent); }
   .tool-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
   .tool-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
   .dark .tool-card:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.4); }
 </style>
 
-<div data-controller="mods" class="container px-4 py-6 md:py-10">
+<div data-controller="mods" class="max-w-5xl mx-auto px-4 py-6 md:py-10">
   <%# Page Header %>
   <div class="mb-8 text-center">
-    <h1 class="mb-3 text-3xl font-extrabold tracking-tight gold-gradient md:text-4xl lg:text-5xl">
+    <h1 class="mb-3 text-3xl font-extrabold tracking-tight md:text-4xl lg:text-5xl text-icarus-500">
       Icarus Modding Tools
     </h1>
     <p class="max-w-2xl mx-auto text-base text-slate-600 dark:text-slate-400 md:text-lg">
@@ -22,12 +21,12 @@
   </div>
 
   <%# Tools Grid %>
-  <div class="grid max-w-6xl gap-6 mx-auto md:grid-cols-2 lg:grid-cols-3">
+  <div class="grid gap-6 lg:grid-cols-2">
     <% @tools.each do |tool| %>
       <div id="<%= tool.slug %>"
            class="flex flex-col p-6 border-2 tool-card rounded-xl border-icarus-500 bg-gradient-to-b from-slate-100 to-white dark:from-slate-800 dark:to-slate-900">
 
-        <%# Header: Name + Author %>
+        <%# Header: Name + Author + Download %>
         <div id="<%= tool.slug %>-header" class="flex items-start justify-between mb-4">
           <div class="flex-1">
             <h2 class="text-xl font-bold md:text-2xl text-icarus-500"><%= tool.name %></h2>
