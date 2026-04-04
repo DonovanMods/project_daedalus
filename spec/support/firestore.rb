@@ -14,6 +14,15 @@ RSpec.configure do |config|
         { type: "service_account", project_id: "test-project" }
       )
     end
+
+    # Stub Vote model methods globally so specs that render mod pages
+    # don't hit Firestore for vote counts
+    if defined?(Vote)
+      allow(Vote).to receive(:count_for).and_return(0)
+      allow(Vote).to receive(:counts_for).and_return({})
+      allow(Vote).to receive(:exists?).and_return(false)
+      allow(Vote).to receive(:rate_limited?).and_return(false)
+    end
   end
 
   # Reset memoized Firestore clients after each test to prevent
