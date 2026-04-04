@@ -6,6 +6,14 @@ Rails.application.routes.draw do
   get "home", to: "home#index"
   get "info", to: "info#index"
 
+  # Admin routes (HTTP Basic Auth protected)
+  namespace :admin do
+    get "info", to: "info#edit", as: "info_edit"
+    patch "info", to: "info#update", as: "info_update"
+    post "info/sections", to: "info#add_section", as: "info_add_section"
+    delete "info/sections/:index", to: "info#remove_section", as: "info_remove_section"
+  end
+
   scope :mods do
     get "/:author/:slug", to: "mods#show", as: "mod_detail"
     get "/:author", to: "mods#index", as: "mods_author"

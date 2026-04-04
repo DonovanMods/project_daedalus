@@ -21,34 +21,28 @@
   <%# Section Title %>
   <h2 class="text-xl md:text-2xl font-bold mb-6 text-center text-icarus-500">Icarus Modding Links</h2>
 
-  <%# Link Cards %>
+  <%# Dynamic Link Cards %>
   <div class="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
-
-    <%# Discord Card %>
-    <%= link_to "https://discord.gg/linkarus-icarus-modding-936621749733302292", target: "_blank", class: "info-card block rounded-xl p-6 text-center border-2 border-icarus-500 bg-slate-100 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-900 no-underline" do %>
-      <div class="text-4xl mb-3">&#128172;</div>
-      <h3 class="text-xl font-bold mb-2 text-icarus-500">The Icarus Modding Discord Server</h3>
-      <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-        This is the unofficial modding Discord server for Icarus.
-        It's a great place to get help with modding, ask questions, and meet other modders.
-      </p>
-      <span class="inline-block px-5 py-2 rounded-md font-semibold text-sm text-white bg-icarus-500 hover:bg-icarus-600">
-        Join our Discord
-      </span>
+    <% @sections.each do |section| %>
+      <%= link_to section.link_url.presence || "#", target: "_blank", class: "info-card block rounded-xl p-6 text-center border-2 border-icarus-500 bg-slate-100 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-900 no-underline" do %>
+        <h3 class="text-xl font-bold mb-2 text-icarus-500"><%= section.title %></h3>
+        <% if section.description.present? %>
+          <div class="text-sm text-slate-600 dark:text-slate-400 mb-4 prose dark:prose-invert"><%= markdown(section.description) %></div>
+        <% end %>
+        <% if section.link_text.present? %>
+          <span class="inline-block px-5 py-2 rounded-md font-semibold text-sm text-white bg-icarus-500 hover:bg-icarus-600">
+            <%= section.link_text %>
+          </span>
+        <% end %>
+      <% end %>
     <% end %>
-
-    <%# Upvote Card %>
-    <%= link_to "https://feedback.projectdaedalus.app/", target: "_blank", class: "info-card block rounded-xl p-6 text-center border-2 border-icarus-500 bg-slate-100 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-900 no-underline" do %>
-      <div class="text-4xl mb-3">&#11014;&#65039;</div>
-      <h3 class="text-xl font-bold mb-2 text-icarus-500">The Icarus Modding Upvote Page</h3>
-      <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-        Upvote or add new mods you'd like to see for Icarus.
-        It's a great way to let us know what you want to see in the future.
-      </p>
-      <span class="inline-block px-5 py-2 rounded-md font-semibold text-sm text-white bg-icarus-500 hover:bg-icarus-600">
-        Modding Upvote Page
-      </span>
-    <% end %>
-
   </div>
+
+  <% if @sections.empty? %>
+    <p class="mt-8 text-center text-slate-500">No information available at this time.</p>
+  <% end %>
+
+  <% if @last_updated %>
+    <p class="mt-6 text-center text-xs text-slate-400">Last updated: <%= @last_updated.strftime("%B %d, %Y at %H:%M UTC") %></p>
+  <% end %>
 </div>
