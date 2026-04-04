@@ -13,7 +13,7 @@ class Vote
     firestore.doc("#{COLLECTION}/#{doc_id}").get.exists?
   end
 
-  # Record a vote for a mod
+  # Record a vote for a mod using atomic increment to prevent race conditions
   def self.cast!(mod_id, fingerprint)
     doc_id = "#{mod_id}_#{fingerprint}"
 
@@ -24,18 +24,15 @@ class Vote
       created_at: Time.current.utc
     )
 
-    # Increment the vote count on the mod's vote counter doc
+    # Atomically increment the vote count using Firestore FieldValue
     counter_ref = firestore.doc("mod_vote_counts/#{mod_id}")
-    counter = counter_ref.get
-
-    if counter.exists?
-      counter_ref.update(count: counter[:count].to_i + 1)
-    else
-      counter_ref.set(count: 1)
-    end
+    counter_ref.set(
+      { count: Google::Cloud::Firestore::FieldValue.increment(1) },
+      merge: true
+    )
   end
 
-  # Remove a vote (unvote)
+  # Remove a vote (unvote) using atomic decrement
   def self.remove!(mod_id, fingerprint)
     doc_id = "#{mod_id}_#{fingerprint}"
     doc_ref = firestore.doc("#{COLLECTION}/#{doc_id}")
@@ -44,13 +41,12 @@ class Vote
 
     doc_ref.delete
 
-    # Decrement the vote count
+    # Atomically decrement the vote count
     counter_ref = firestore.doc("mod_vote_counts/#{mod_id}")
-    counter = counter_ref.get
-
-    if counter.exists? && counter[:count].to_i.positive?
-      counter_ref.update(count: counter[:count].to_i - 1)
-    end
+    counter_ref.set(
+      { count: Google::Cloud::Firestore::FieldValue.increment(-1) },
+      merge: true
+    )
 
     true
   end
