@@ -21,6 +21,10 @@ module ProjectDaedalus
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Catch malformed URIs before they reach Rails routing
+    require_relative "../app/middleware/catch_bad_request_uri"
+    config.middleware.insert_before 0, CatchBadRequestUri
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
