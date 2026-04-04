@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 class ModsController < ApplicationController
+  include PaginationHelper
+
   before_action :authors, only: %i[index show]
   before_action :mods, only: %i[index show]
   before_action :set_session, only: %i[index]
 
   def index
-    @mods = find_mods_by_author(sanitize(params[:author])) if params[:author].present?
+    @filtered = false
+
+    if params[:author].present?
+      @mods = find_mods_by_author(sanitize(params[:author]))
+      @filtered = true
+    end
 
     # If we're given a mod ID, try to find it and redirect to the mod's page
     if @mods.empty? && params[:author].present?
@@ -15,13 +22,22 @@ class ModsController < ApplicationController
     end
 
     # Perform a search if we have a query
-    @mods = find_mods(sanitize(params[:query])) if params[:query].present?
+    if params[:query].present?
+      @mods = find_mods(sanitize(params[:query]))
+      @filtered = true
+    end
 
     # Sort the mods if we have a sort key
     # Disabled for now, as it's redundant with the search
     # params[:sort].present? && Mod::SORTKEYS.include?(params[:sort]) && @mods.sort_by! { |mod| [mod.send(sanitize(params[:sort])), mod.name] }
 
     @total_mods = @mods.size
+
+    # Paginate only when listing all mods (no search query or author filter)
+    unless @filtered
+      @pagination = paginate_array(@mods, page: params[:page])
+      @mods = @pagination.items
+    end
 
     if turbo_frame_request?
       render partial: "mods", locals: { mods: @mods }

@@ -1,0 +1,49 @@
+<% if @pagination&.paginated? %>
+  <nav aria-label="Pagination" class="flex items-center justify-between px-2 py-4 mt-4">
+    <div class="text-sm text-slate-600 dark:text-slate-400">
+      Showing
+      <span class="font-medium"><%= (@pagination.current_page - 1) * @pagination.per_page + 1 %></span>
+      to
+      <span class="font-medium"><%= [(@pagination.current_page * @pagination.per_page), @pagination.total_count].min %></span>
+      of
+      <span class="font-medium"><%= @pagination.total_count %></span>
+      mods
+    </div>
+
+    <div class="flex items-center space-x-1">
+      <%# Previous button %>
+      <% if @pagination.first_page? %>
+        <span class="px-3 py-2 text-sm rounded-md text-slate-400 dark:text-slate-600 cursor-default">&laquo; Prev</span>
+      <% else %>
+        <%= link_to mods_path(page: @pagination.previous_page),
+            class: "px-3 py-2 text-sm rounded-md text-blue-600 dark:text-blue-400 hover:bg-slate-200 dark:hover:bg-slate-700 no-underline" do %>
+          &laquo; Prev
+        <% end %>
+      <% end %>
+
+      <%# Page numbers %>
+      <% @pagination.page_range.each do |page_num| %>
+        <% if page_num.nil? %>
+          <span class="px-2 py-2 text-sm text-slate-500">&hellip;</span>
+        <% elsif page_num == @pagination.current_page %>
+          <span class="px-3 py-2 text-sm font-bold text-white rounded-md bg-blue-600">
+            <%= page_num %>
+          </span>
+        <% else %>
+          <%= link_to page_num, mods_path(page: page_num),
+              class: "px-3 py-2 text-sm rounded-md text-blue-600 dark:text-blue-400 hover:bg-slate-200 dark:hover:bg-slate-700 no-underline" %>
+        <% end %>
+      <% end %>
+
+      <%# Next button %>
+      <% if @pagination.last_page? %>
+        <span class="px-3 py-2 text-sm rounded-md text-slate-400 dark:text-slate-600 cursor-default">Next &raquo;</span>
+      <% else %>
+        <%= link_to mods_path(page: @pagination.next_page),
+            class: "px-3 py-2 text-sm rounded-md text-blue-600 dark:text-blue-400 hover:bg-slate-200 dark:hover:bg-slate-700 no-underline" do %>
+          Next &raquo;
+        <% end %>
+      <% end %>
+    </div>
+  </nav>
+<% end %>
