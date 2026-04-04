@@ -34,8 +34,8 @@ RSpec.describe "mods/_mods.html.erb", type: :view do
     it "has responsive table classes for different screen sizes" do
       render partial: "mods/mods", locals: { mods: [mod1, mod2] }
       expect(rendered).to include("sm:table-cell")
+      expect(rendered).to include("md:table-cell")
       expect(rendered).to include("xl:table-cell")
-      expect(rendered).to include("lg:table-cell")
     end
   end
 

@@ -25,5 +25,5 @@
       <span class="text-xs text-slate-500">&mdash;</span>
     <% end %>
   </td>
-  <td class="hidden p-3 text-sm lg:table-cell text-slate-600 dark:text-slate-400"><%= mod.description %></td>
+  <td class="hidden p-3 text-sm xl:table-cell text-slate-600 dark:text-slate-400 max-w-md truncate" title="<%= mod.description %>"><%= truncate(mod.description.to_s, length: 120) %></td>
 </tr>
