@@ -35,13 +35,15 @@ class ModsController < ApplicationController
       mod.author_slug.casecmp(params[:author].parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
     end
 
-    return unless @mod.nil?
+    if @mod.nil?
+      flash[:error] = t("mod-not-found", author: params[:author], slug: params[:slug])
 
-    flash[:error] = t("mod-not-found", author: params[:author], slug: params[:slug])
+      return redirect_to mods_author_path(author: params[:author]) if params[:author].present?
 
-    return redirect_to mods_author_path(author: params[:author]) if params[:author].present?
+      return redirect_to mods_path
+    end
 
-    redirect_to mods_path
+    @vote_count = Vote.count_for(@mod.id)
   end
 
   private
