@@ -23,8 +23,9 @@ RSpec.configure do |config|
     [Mod, Tool].each do |klass|
       klass.instance_variable_set(:@firestore, nil) if klass.instance_variable_defined?(:@firestore)
     end
-    if defined?(SiteContent) && SiteContent.respond_to?(:instance_variable_set)
-      SiteContent.instance_variable_set(:@firestore, nil) if SiteContent.instance_variable_defined?(:@firestore)
+    if defined?(SiteContent) && SiteContent.respond_to?(:instance_variable_set) &&
+       SiteContent.instance_variable_defined?(:@firestore)
+      SiteContent.instance_variable_set(:@firestore, nil)
     end
   end
 end
