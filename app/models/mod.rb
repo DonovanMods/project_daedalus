@@ -99,7 +99,7 @@ class Mod
   def filename(url)
     return unless url
 
-    URI(url).path.split("/").last
+    url.split("?").first.split("/").last
   end
 
   def exmod_type

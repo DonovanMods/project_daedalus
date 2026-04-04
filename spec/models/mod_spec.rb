@@ -278,6 +278,14 @@ RSpec.describe Mod do
         expect(mod.get_name(:zip)).to eq(mod.files[:zip].split("/").last)
       end
     end
+
+    context "when the URL contains spaces" do
+      before { mod.files = { pak: "https://github.com/user/repo/raw/main/No Weather/Mod_P.pak" } }
+
+      it "returns the filename without raising" do
+        expect(mod.get_name(:pak)).to eq("Mod_P.pak")
+      end
+    end
   end
 
   describe "#types_string" do
