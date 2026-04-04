@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe CatchBadRequestUri do
-  let(:app) { ->(env) { [200, {"content-type" => "text/plain"}, ["OK"]] } }
+  let(:app) { ->(_env) { [200, { "content-type" => "text/plain" }, ["OK"]] } }
   let(:middleware) { described_class.new(app) }
 
   describe "#call" do
