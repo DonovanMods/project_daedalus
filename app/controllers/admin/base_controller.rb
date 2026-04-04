@@ -15,7 +15,8 @@ module Admin
       admin_password = ENV.fetch("ADMIN_PASSWORD", nil)
 
       if admin_password.blank?
-        render plain: "Admin access is not configured. Set the ADMIN_PASSWORD environment variable.", status: :service_unavailable
+        render plain: "Admin access is not configured. Set the ADMIN_PASSWORD environment variable.",
+               status: :service_unavailable
         return
       end
 

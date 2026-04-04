@@ -58,13 +58,15 @@ class SiteContent
     [
       Section.new(
         title: "The Icarus Modding Discord Server",
-        description: "This is the unofficial modding Discord server for Icarus. It's a great place to get help with modding, ask questions, and meet other modders.",
+        description: "This is the unofficial modding Discord server for Icarus. " \
+                     "It's a great place to get help with modding, ask questions, and meet other modders.",
         link_text: "Join our Discord",
         link_url: "https://discord.gg/linkarus-icarus-modding-936621749733302292"
       ),
       Section.new(
         title: "The Icarus Modding Upvote Page",
-        description: "This is a page where you can upvote or add new mods you'd like to see for Icarus. It's a great way to let us know what you want to see in the future.",
+        description: "This is a page where you can upvote or add new mods you'd like to see " \
+                     "for Icarus. It's a great way to let us know what you want to see in the future.",
         link_text: "Modding Upvote Page",
         link_url: "https://feedback.projectdaedalus.app/"
       )

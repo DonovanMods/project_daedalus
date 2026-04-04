@@ -38,14 +38,15 @@ module Admin
     def build_sections_from_params
       return [] unless params[:sections].is_a?(ActionController::Parameters)
 
-      params[:sections].values.map do |section_params|
+      sections = params[:sections].values.map do |section_params|
         SiteContent::Section.new(
           title: section_params[:title].to_s.strip,
           description: section_params[:description].to_s.strip,
           link_text: section_params[:link_text].to_s.strip,
           link_url: section_params[:link_url].to_s.strip
         )
-      end.reject { |s| s.title.blank? && s.description.blank? }
+      end
+      sections.reject { |s| s.title.blank? && s.description.blank? }
     end
   end
 end
