@@ -28,12 +28,10 @@ module Displayable
     "Last Updated on #{updated_at.strftime("%B %d, %Y")}"
   end
 
-  # Returns a human-readable "time ago" string for the last update
-  # Uses Rails built-in time_ago_in_words helper
-  def updated_ago
-    return "Unknown" unless updated_at
-
-    "#{ActionController::Base.helpers.time_ago_in_words(updated_at)} ago"
+  # Raw updated_at timestamp — use time_ago_in_words in views/helpers
+  # for human-readable display (e.g., "3 days ago")
+  def updated_ago_timestamp
+    updated_at
   end
 
   def version_string
