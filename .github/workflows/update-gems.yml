@@ -5,33 +5,89 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
+      # Fix #5: Pin Ruby version to match project's .ruby-version
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
+          ruby-version: '.ruby-version'
           bundler-cache: false
 
-      - name: Update vulnerable gems
+      # Fix #2: Only update gems with known vulnerabilities, not all gems
+      - name: Audit and update only vulnerable gems
+        id: audit
         run: |
-          bundle update
-          echo "=== Key versions after update ==="
-          bundle list | grep -E "rails |activestorage |json |loofah |nokogiri |rack "
-          bundle exec bundle-audit --update || true
+          gem install bundler-audit
+          bundle-audit update
 
-      - name: Commit and push if changed
+          # Capture vulnerable gem names
+          VULNERABLE=$(bundle-audit check 2>&1 | grep "Name:" | awk '{print $2}' | sort -u | tr '\n' ' ')
+
+          if [ -z "$VULNERABLE" ]; then
+            echo "No vulnerable gems found."
+            echo "has_updates=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Vulnerable gems found: $VULNERABLE"
+          bundle update $VULNERABLE
+          echo "has_updates=true" >> $GITHUB_OUTPUT
+
+      # Fix #4: Fail if vulnerabilities remain after update
+      - name: Verify vulnerabilities are resolved
+        if: steps.audit.outputs.has_updates == 'true'
         run: |
+          echo "=== Key versions after update ==="
+          bundle list | grep -E "rails |activestorage |json |loofah |nokogiri |rack " || true
+          echo ""
+          echo "=== Re-auditing ==="
+          bundle-audit check
+
+      # Fix #3: Run tests before committing
+      - name: Run tests to verify nothing is broken
+        if: steps.audit.outputs.has_updates == 'true'
+        run: |
+          bundle install
+          bundle exec rails test
+        env:
+          RAILS_ENV: test
+
+      # Fix #1: Push to a branch and open a PR instead of committing to main
+      - name: Create branch and open PR
+        if: steps.audit.outputs.has_updates == 'true'
+        run: |
+          BRANCH="chore/gem-security-update-$(date +%Y%m%d)"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet Gemfile.lock && echo "No changes" && exit 0
+
+          git diff --quiet Gemfile.lock && echo "No changes to Gemfile.lock" && exit 0
+
+          git checkout -b "$BRANCH"
           git add Gemfile.lock
-          git commit -m "Update vulnerable gems via automated workflow
+          git commit -m "Update vulnerable gems via automated audit
 
           Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
-          git push
+          git push -u origin "$BRANCH"
+
+          gh pr create \
+            --title "Security: Update vulnerable gems ($(date +%Y-%m-%d))" \
+            --body "## Automated Security Update
+
+          Vulnerable gems were detected by \`bundle-audit\` and updated to patched versions.
+
+          - Tests have passed against the updated Gemfile.lock
+          - Only vulnerable gems were updated (not all dependencies)
+          - Please review the Gemfile.lock diff before merging
+
+          *Created by the Update Vulnerable Gems workflow*" \
+            --base main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
