@@ -21,27 +21,25 @@ RSpec.describe Mod do
                       readmeURL: Faker::Internet.url
                     })
   end
-  let(:mod_firestore_obj2) do
+  let(:mod) { build :mod }
+
+  # Builds a Firestore document snapshot double with the given name and author
+  def firestore_doc(name: Faker::App.name, author: Faker::App.author)
     instance_double(Google::Cloud::Firestore::DocumentSnapshot,
                     document_id: SecureRandom.uuid,
                     create_time: Time.now.utc,
                     update_time: Time.now.utc,
                     data: {
-                      name: "Beta Mod",
-                      author: "Author Two",
-                      description: Faker::Lorem.sentence,
-                      version: Faker::App.version,
-                      compatibility: "w#{Random.rand(1..5)}",
+                      name: name, author: author, description: Faker::Lorem.sentence,
+                      version: Faker::App.version, compatibility: "w#{Random.rand(1..5)}",
                       files: { zip: Faker::Internet.url },
-                      imageURL: Faker::Internet.url,
-                      readmeURL: Faker::Internet.url
+                      imageURL: Faker::Internet.url, readmeURL: Faker::Internet.url
                     })
   end
-  let(:mod) { build :mod }
 
   before do
     allow(Google::Cloud::Firestore).to receive(:new).and_return(firestore_client)
-    allow(firestore_collection).to receive(:get).and_return([mod_firestore_obj, mod_firestore_obj2])
+    allow(firestore_collection).to receive(:get).and_return([mod_firestore_obj, firestore_doc(name: "Beta Mod", author: "Author Two")])
     allow(firestore_client).to receive(:col).with("mods").and_return(firestore_collection)
   end
 
@@ -69,21 +67,9 @@ RSpec.describe Mod do
     end
 
     it "deduplicates mods with the same name and author" do
-      duplicate = instance_double(Google::Cloud::Firestore::DocumentSnapshot,
-                                  document_id: SecureRandom.uuid,
-                                  create_time: Time.now.utc,
-                                  update_time: Time.now.utc,
-                                  data: {
-                                    name: "Alpha Mod",
-                                    author: "Author One",
-                                    description: Faker::Lorem.sentence,
-                                    version: "2.0.0",
-                                    compatibility: "w3",
-                                    files: { zip: Faker::Internet.url },
-                                    imageURL: Faker::Internet.url,
-                                    readmeURL: Faker::Internet.url
-                                  })
-      allow(firestore_collection).to receive(:get).and_return([mod_firestore_obj, duplicate, mod_firestore_obj2])
+      duplicate = firestore_doc(name: "Alpha Mod", author: "Author One")
+      unique = firestore_doc(name: "Beta Mod", author: "Author Two")
+      allow(firestore_collection).to receive(:get).and_return([mod_firestore_obj, duplicate, unique])
 
       expect(described_class.all.count).to eq(2)
     end

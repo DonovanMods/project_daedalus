@@ -19,7 +19,7 @@ class Mod
   end
 
   def self.fetch_all # :nodoc:
-    firestore.col("mods").get.filter_map do |mod|
+    mods = firestore.col("mods").get.filter_map do |mod|
       new(
         author: mod.data[:author],
         compatibility: mod.data[:compatibility],
@@ -34,7 +34,9 @@ class Mod
         created_at: mod.create_time,
         updated_at: mod.update_time
       )
-    end.uniq { |mod| [mod.name.downcase, mod.author_slug] }.sort_by(&:name)
+    end
+
+    mods.uniq { |mod| [mod.name.downcase, mod.author_slug] }.sort_by(&:name)
   end
   private_class_method :fetch_all
 
