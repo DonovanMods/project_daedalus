@@ -3,8 +3,8 @@
 
   <%# Row 1: Mod Info Dashboard %>
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    <div class="p-4 rounded-lg bg-slate-200/80 dark:bg-slate-800/80">
-      <div class="text-xs font-medium tracking-wide uppercase text-slate-500">File Types</div>
+    <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
+      <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">File Types</div>
       <div class="flex gap-1.5 mt-1">
         <% mod.file_types.each do |type| %>
           <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase
@@ -20,41 +20,41 @@
       </div>
     </div>
 
-    <div class="p-4 rounded-lg bg-slate-200/80 dark:bg-slate-800/80">
-      <div class="text-xs font-medium tracking-wide uppercase text-slate-500">Mod Age</div>
+    <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
+      <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">Mod Age</div>
       <div class="mt-1 text-sm font-medium text-slate-700 dark:text-slate-300">
         <% if mod.mod_age %>
           <%= mod.mod_age %> old
-          <div class="text-xs text-slate-400">Since <%= mod.created_at.strftime("%b %d, %Y") %></div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">Since <%= mod.created_at.strftime("%b %d, %Y") %></div>
         <% else %>
           <span class="text-slate-400">Unknown</span>
         <% end %>
       </div>
     </div>
 
-    <div class="p-4 rounded-lg bg-slate-200/80 dark:bg-slate-800/80">
-      <div class="text-xs font-medium tracking-wide uppercase text-slate-500">Freshness</div>
+    <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
+      <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">Freshness</div>
       <% indicator = freshness_indicator(mod.days_since_update) %>
       <div class="mt-1 text-sm font-semibold <%= indicator[:css] %>"><%= indicator[:label] %></div>
       <% if mod.days_since_update %>
-        <div class="text-xs text-slate-400">Updated <%= pluralize(mod.days_since_update, "day") %> ago</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400">Updated <%= pluralize(mod.days_since_update, "day") %> ago</div>
       <% end %>
     </div>
 
-    <div class="p-4 rounded-lg bg-slate-200/80 dark:bg-slate-800/80">
-      <div class="text-xs font-medium tracking-wide uppercase text-slate-500">Your Activity</div>
+    <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
+      <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">Your Activity</div>
       <div class="mt-1 text-sm text-slate-700 dark:text-slate-300">
         <span id="analytics-view-count">0</span> views &middot;
         <span id="analytics-download-count">0</span> downloads
       </div>
-      <div class="text-xs text-slate-400">From this browser</div>
+      <div class="text-xs text-slate-500 dark:text-slate-400">From this browser</div>
     </div>
   </div>
 
   <%# Row 2: Compatibility %>
   <% if mod.compatibility.present? %>
-    <div class="p-4 rounded-lg bg-slate-200/80 dark:bg-slate-800/80">
-      <div class="text-xs font-medium tracking-wide uppercase text-slate-500">Compatibility</div>
+    <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
+      <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">Compatibility</div>
       <div class="flex items-center gap-3 mt-2">
         <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-icarus-500/20 text-icarus-500 dark:text-icarus-400">
           <%= mod.compatibility %>
@@ -70,9 +70,9 @@
   <% if mod.github_repo? %>
     <% gh = mod.github_data %>
     <% if gh %>
-      <div class="p-4 rounded-lg bg-slate-200/80 dark:bg-slate-800/80">
+      <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
         <div class="flex items-center justify-between">
-          <div class="text-xs font-medium tracking-wide uppercase text-slate-500">GitHub Repository</div>
+          <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">GitHub Repository</div>
           <a href="<%= gh[:repo_url] %>" target="_blank" rel="noopener noreferrer"
              class="text-xs text-icarus-500 hover:text-icarus-400">
             <%= mod.github_repo %> &nearr;
@@ -80,28 +80,28 @@
         </div>
         <div class="grid gap-4 mt-3 sm:grid-cols-4">
           <div>
-            <div class="text-xl font-bold text-slate-800 dark:text-slate-200"><%= gh[:stars] %></div>
-            <div class="text-xs text-slate-500">Stars</div>
+            <div class="text-xl font-bold text-icarus-500"><%= gh[:stars] %></div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Stars</div>
           </div>
           <div>
-            <div class="text-xl font-bold text-slate-800 dark:text-slate-200"><%= gh[:forks] %></div>
-            <div class="text-xs text-slate-500">Forks</div>
+            <div class="text-xl font-bold text-icarus-500"><%= gh[:forks] %></div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Forks</div>
           </div>
           <div>
-            <div class="text-xl font-bold text-slate-800 dark:text-slate-200"><%= gh[:open_issues] %></div>
-            <div class="text-xs text-slate-500">Open Issues</div>
+            <div class="text-xl font-bold text-icarus-500"><%= gh[:open_issues] %></div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Open Issues</div>
           </div>
           <div>
             <% if gh[:last_push] %>
-              <div class="text-xl font-bold text-slate-800 dark:text-slate-200"><%= time_ago_in_words(gh[:last_push]) %></div>
+              <div class="text-xl font-bold text-icarus-500"><%= time_ago_in_words(gh[:last_push]) %></div>
             <% else %>
-              <div class="text-xl font-bold text-slate-400">—</div>
+              <div class="text-xl font-bold text-slate-400">&mdash;</div>
             <% end %>
-            <div class="text-xs text-slate-500">Since Last Push</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Since Last Push</div>
           </div>
         </div>
         <% if gh[:license] %>
-          <div class="mt-2 text-xs text-slate-500">License: <%= gh[:license] %></div>
+          <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">License: <%= gh[:license] %></div>
         <% end %>
       </div>
     <% end %>
@@ -110,25 +110,25 @@
   <%# Row 4: Author Stats %>
   <% if all_mods.present? %>
     <% stats = author_stats(mod, all_mods) %>
-    <div class="p-4 rounded-lg bg-slate-200/80 dark:bg-slate-800/80">
-      <div class="text-xs font-medium tracking-wide uppercase text-slate-500">Author: <%= mod.author %></div>
+    <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
+      <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">Author: <%= mod.author %></div>
       <div class="grid gap-4 mt-3 sm:grid-cols-3">
         <div>
-          <div class="text-xl font-bold text-slate-800 dark:text-slate-200"><%= stats[:total_mods] %></div>
-          <div class="text-xs text-slate-500">Total Mods</div>
+          <div class="text-xl font-bold text-icarus-500"><%= stats[:total_mods] %></div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">Total Mods</div>
         </div>
         <div>
           <div class="flex gap-3 mt-1">
             <% stats[:file_type_counts].each do |type, count| %>
-              <span class="text-xs text-slate-400"><%= type.to_s.upcase %>: <%= count %></span>
+              <span class="text-xs text-slate-500 dark:text-slate-400"><%= type.to_s.upcase %>: <%= count %></span>
             <% end %>
           </div>
-          <div class="text-xs text-slate-500 mt-1">File Types</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">File Types</div>
         </div>
         <div>
           <% if stats[:newest_mod] %>
-            <div class="text-sm font-medium text-slate-800 dark:text-slate-200"><%= stats[:newest_mod].name %></div>
-            <div class="text-xs text-slate-500">Most Recently Updated</div>
+            <div class="text-sm font-medium text-icarus-400"><%= stats[:newest_mod].name %></div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Most Recently Updated</div>
           <% end %>
         </div>
       </div>
@@ -136,8 +136,8 @@
   <% end %>
 
   <%# Row 5: Mod Status (errors/warnings from metadata) %>
-  <div class="p-4 rounded-lg bg-slate-200/80 dark:bg-slate-800/80">
-    <div class="text-xs font-medium tracking-wide uppercase text-slate-500">Mod Status</div>
+  <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
+    <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">Mod Status</div>
     <% if metadata.present? %>
       <% %i[errors warnings].each do |type| %>
         <% items = metadata[type] %>
