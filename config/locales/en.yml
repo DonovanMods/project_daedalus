@@ -6,6 +6,7 @@ en:
     mods: "Mods"
     tools: "Tools"
     info: "Info"
+    language: "Language"
 
   # Layout / meta
   layout:
@@ -20,8 +21,17 @@ en:
     description_html: "Project Daedalus is a modding platform for the game %{link}."
     community_html: "This is a community-driven project and you can find out more on the unofficial modding %{link}"
     card_mods: "Mods"
+    card_mods_desc: "Explore the full collection of community-made mods for Icarus. EXMOD & EXMODZ formats supported."
     card_tools: "Tools"
+    card_tools_desc: "Calculators, planners, and utilities to create and manage your own Icarus mods."
+    card_tools_cta: "View Tools"
     card_info: "Info"
+    card_info_desc: "Guides, patch notes, and everything you need to know about Icarus modding."
+    card_info_cta: "Learn More"
+    community_heading: "Join the Community"
+    discord_cta: "Join the Discord Server"
+    feedback_prompt_html: "Have feedback for Project Daedalus? Share it on %{link}"
+    feedback_link: "our feedback page"
 
   # Mods index
   mods:
@@ -36,7 +46,10 @@ en:
     click_hint: "Click on any row to view additional mod details"
     mods_displayed: "%{count} mods displayed"
     no_results: "No mods match your query"
+    subtitle: "Browse and download community-made mods for the Icarus survival game."
     download: "Download %{type}"
+    footer_feedback_html: "Submit or upvote mod requests on %{link}"
+    footer_feedback_link: "Project Daedalus Feedback"
     table:
       name: "Name"
       download: "Download"
@@ -68,6 +81,7 @@ en:
   # Info page
   info:
     title: "Icarus Modding Information"
+    subtitle: "Community links and resources for Icarus modding."
     links_heading: "Icarus Modding Links"
     discord_heading: "The Icarus Modding Discord Server"
     discord_link: "Join our Discord"
@@ -80,6 +94,7 @@ en:
   tools:
     title: "Icarus Modding Tools"
     meta_description: "Download tools for modding the Icarus survival game."
+    subtitle: "Download tools and utilities for modding the Icarus survival game."
     download: "DOWNLOAD"
     by_author: "by %{author}"
     version: "version %{version}"

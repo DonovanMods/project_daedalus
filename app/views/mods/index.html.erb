@@ -15,7 +15,7 @@
       <%= link_to t('mods.title'), mods_path, class: "no-underline text-icarus-500" %>
     </h1>
     <p class="max-w-2xl mx-auto text-base text-slate-600 dark:text-slate-400 md:text-lg">
-      Browse and download community-made mods for the Icarus survival game.
+      <%= t('mods.subtitle') %>
     </p>
     <div class="mx-auto mt-4 gold-line w-48"></div>
   </div>
@@ -51,6 +51,6 @@
 
   <%# Footer Feedback Link %>
   <div class="mt-6 text-sm text-center text-slate-500 dark:text-slate-400">
-    <%= t('mods.feedback_prompt_html', link: link_to(t('mods.feedback_link'), "https://feedback.projectdaedalus.app", target: "_blank", class: "font-medium no-underline text-icarus-500 hover:text-icarus-400")) %>
+    <%= t('mods.footer_feedback_html', link: link_to(t('mods.footer_feedback_link'), "https://feedback.projectdaedalus.app", target: "_blank", class: "font-medium no-underline text-icarus-500 hover:text-icarus-400")) %>
   </div>
 </div>

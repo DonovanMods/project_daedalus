@@ -21,20 +21,22 @@ class ApplicationController < ActionController::Base
     return unless header
 
     # Parse Accept-Language with q-value weights (e.g. "en-US,en;q=0.9,fr;q=0.8")
-    accepted = header.split(",").filter_map do |entry|
+    # Filters out q=0 ("not acceptable"), preserves original order as tie-breaker
+    accepted = header.split(",").each_with_index.filter_map do |entry, index|
       language_range, *params = entry.strip.split(";")
       locale_code = language_range.to_s[/\A([a-z]{2})(?:-[A-Za-z]{2})?\z/i, 1]
       next unless locale_code
 
       quality = params.find { |param| param.strip.start_with?("q=") }
       q_value = quality ? quality.strip.delete_prefix("q=").to_f : 1.0
+      next unless q_value.positive?
 
-      [locale_code.downcase.to_sym, q_value]
+      [locale_code.downcase.to_sym, q_value, index]
     end
 
     accepted
-      .sort_by { |_locale, q_value| -q_value }
-      .map(&:first)
+      .sort_by { |_locale, q_value, index| [-q_value, index] }
+      .map { |locale, _q, _i| locale }
       .find { |locale| I18n.available_locales.include?(locale) }
   end
 end
