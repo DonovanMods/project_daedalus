@@ -18,8 +18,11 @@
       <%= form_with url: locale_path, method: :patch, local: true do |f| %>
         <%= f.select :locale,
           options_for_select([
-            ["🇺🇸 English", :en], ["🇪🇸 Español", :es], ["🇫🇷 Français", :fr],
-            ["🇩🇪 Deutsch", :de], ["🇧🇷 Português", :pt]
+            ["🇺🇸 English", :en], ["🇨🇳 中文", :zh], ["🇪🇸 Español", :es],
+            ["🇸🇦 العربية", :ar], ["🇧🇷 Português", :pt], ["🇫🇷 Français", :fr],
+            ["🇯🇵 日本語", :ja], ["🇷🇺 Русский", :ru], ["🇩🇪 Deutsch", :de],
+            ["🇰🇷 한국어", :ko], ["🇮🇩 Bahasa", :id], ["🇹🇷 Türkçe", :tr],
+            ["🇮🇹 Italiano", :it], ["🇮🇳 हिन्दी", :hi], ["🇳🇱 Nederlands", :nl]
           ], I18n.locale),
           {},
           onchange: "this.form.submit()",
