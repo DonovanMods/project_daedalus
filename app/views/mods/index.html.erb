@@ -1,12 +1,6 @@
 <% content_for(:title) { "Icarus Mods" } %>
 <% content_for(:meta_description) { "Browse #{@total_mods || @mods.size} community mods for the Icarus survival game. Filter by author, search, and download." } %>
 
-<style>
-  .gold-line { height: 2px; background: linear-gradient(90deg, transparent, #f1ad1c, transparent); }
-  .row-lift { transition: transform 0.15s ease, box-shadow 0.15s ease; }
-  .row-lift:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-  .dark .row-lift:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-</style>
 
 <div data-controller="mods" class="max-w-screen-2xl mx-auto px-4 py-6 md:py-10">
   <%# Page Header %>
