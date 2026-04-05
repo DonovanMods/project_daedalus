@@ -1,58 +1,164 @@
 <% content_for(:title) { "#{@mod.name} by #{@mod.author}" } %>
 <% content_for(:meta_description) { truncate(@mod.description.to_s, length: 160) } %>
 <% content_for(:og_image) { @mod.image_url } if @mod.image_url.present? %>
-<section class="px-5" data-controller="mods">
-  <div class="flex items-center justify-between flex-auto mt-5">
-    <div class="flex-1 min-w-0 text-2xl font-bold text-icarus-500 md:text-4xl"><%= @mod.name %></div>
-    <% @mod.download_types.each do |type| %>
-      <% if @mod.get_url(type) %>
-        <button
-          data-action="mods#download"
-          data-mods-url-param="<%= raw_url(@mod.get_url(type)) %>"
-          data-mods-file-name-param="<%= @mod.get_name(type) %>"
-          type="button"
-          class="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-          DOWNLOAD <%= type.to_s.upcase %>
-        </button>
-      <% end %>
-    <% end %>
-  </div>
+<section class="max-w-5xl mx-auto px-4 py-6 md:py-10" data-controller="mods">
+  <%# Mod header: name + file type badges %>
   <div class="flex items-center justify-between flex-auto">
-    <div class="pt-2 text-xl text-blue-500 lg:text-2xl">By <%= @mod.author %></div>
+    <div class="flex items-center gap-3 flex-1 min-w-0">
+      <div class="text-2xl font-extrabold tracking-tight text-icarus-500 md:text-4xl"><%= @mod.name %></div>
+      <div class="flex gap-1.5 flex-shrink-0">
+        <% @mod.file_types.each do |type| %>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold uppercase
+            <% if type.to_s == 'exmodz' %>
+              bg-icarus-500/20 text-icarus-500 dark:bg-icarus-500/10 dark:text-icarus-400
+            <% elsif type.to_s == 'pak' %>
+              bg-emerald-500/20 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400
+            <% else %>
+              bg-slate-500/20 text-slate-600 dark:bg-slate-500/10 dark:text-slate-400
+            <% end %>
+          "><%= type.to_s %></span>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex gap-2 flex-shrink-0">
+      <% @mod.download_types.each do |type| %>
+        <% if @mod.get_url(type) %>
+          <button
+            data-action="mods#download"
+            data-mods-url-param="<%= raw_url(@mod.get_url(type)) %>"
+            data-mods-file-name-param="<%= @mod.get_name(type) %>"
+            type="button"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
+            DOWNLOAD <%= type.to_s.upcase %>
+          </button>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Author + version %>
+  <div class="flex items-center justify-between flex-auto mt-1">
+    <div class="text-lg text-icarus-400 lg:text-xl">By <%= @mod.author %></div>
     <div class="text-slate-500"><%= @mod.version_string %></div>
   </div>
-  <div class="flex items-start justify-between flex-auto">
-    <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+
+  <%# EXMODZ note + dates %>
+  <div class="flex items-start justify-between flex-auto mt-2">
+    <div class="text-sm text-slate-500 dark:text-slate-400">
       <% if @mod.exmodz? || @mod.exmod? %>
         This Mod includes an EXMOD formatted file, which doesn't need updates each week.<br />
         We recommend you use a Mod Manager to install this mod
       <% end %>
     </div>
-    <div class="text-sm text-right text-slate-500"><%= @mod.updated_string %></div>
+    <div class="text-sm text-right text-slate-500 flex-shrink-0 ml-4">
+      <div><%= @mod.updated_string %></div>
+      <% if @mod.created_at.present? %>
+        <div class="text-xs text-slate-400">Published <%= @mod.created_at.strftime("%B %d, %Y") %></div>
+      <% end %>
+    </div>
   </div>
-  <button
-    data-action="mods#navigateTo"
-    data-mods-path-param="<%= mod_detail_path(author: @mod.author_slug, slug: @mod.slug, analytics: true) %>"
-    class="float-right text-xs text-right anchor-blue"
-    type="button">
-    Analytics for Mod Authors
-  </button>
-  <div class="mt-12 min-h-48">
+
+  <%# Compatibility badge + analytics link %>
+  <div class="flex items-center justify-between mt-3">
+    <% if @mod.compatibility.present? %>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-icarus-500/20 text-icarus-500 dark:bg-icarus-500/10 dark:text-icarus-400">
+        <%= @mod.compatibility&.downcase %>
+      </span>
+    <% else %>
+      <span></span>
+    <% end %>
+    <button
+      data-action="mods#navigateTo"
+      data-mods-path-param="<%= mod_detail_path(author: @mod.author_slug, slug: @mod.slug, analytics: true) %>"
+      class="text-xs text-icarus-500 hover:text-icarus-400"
+      type="button">
+      Analytics for Mod Authors
+    </button>
+  </div>
+
+  <%# Gold separator %>
+  <div class="mt-4 gold-line"></div>
+
+  <%# Content area: image + markdown %>
+  <div class="mt-6 min-h-48">
     <%= render("analytics", metadata: @mod.metadata&.dig(:status)) if params[:analytics] %>
     <% if @mod.image_url.present? %>
-      <img class="hidden float-right w-48 h-48 mb-5 ml-5 rounded md:block" src="<%= raw_url(@mod.image_url) %>">
+      <img class="hidden float-right w-48 h-48 mb-5 ml-5 rounded md:block" src="<%= raw_url(@mod.image_url) %>" alt="<%= @mod.name %>">
     <% end %>
-    <div class="pt-5 pb-12 prose dark:prose-invert lg:prose-xl"><%= markdown(@mod.details) %></div>
+    <div class="pt-2 pb-12 prose dark:prose-invert lg:prose-xl"><%= markdown(@mod.details) %></div>
   </div>
-  <% if session[:origin_url] %>
-    <div class="flex justify-between flex-auto">
-      <button
-        data-action="mods#navigateTo"
-        data-mods-path-param="<%= session[:origin_url] %>"
-        type="button"
-        class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-        Back to List
-      </button>
+
+  <%# Gold separator %>
+  <div class="gold-line"></div>
+
+  <%# Other mods by this author %>
+  <% if @author_mods.present? %>
+    <div class="mt-6">
+      <h3 class="mb-3 text-base font-semibold tracking-wide text-icarus-500 lg:text-lg">Other mods by <%= @mod.author %></h3>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <% @author_mods.each do |other_mod| %>
+          <button
+            data-action="mods#navigateTo"
+            data-mods-path-param="<%= mod_detail_path(author: other_mod.author_slug, slug: other_mod.slug) %>"
+            type="button"
+            class="flex items-center justify-between p-3 text-left transition-colors border rounded-lg border-slate-200 dark:border-slate-700 hover:border-icarus-500/50 hover:bg-slate-50 dark:hover:bg-slate-800/70">
+            <div class="min-w-0">
+              <div class="text-sm font-medium truncate text-slate-800 dark:text-slate-200"><%= other_mod.name %></div>
+              <div class="text-xs text-slate-500 truncate"><%= other_mod.description %></div>
+            </div>
+            <div class="flex gap-1 ml-2 flex-shrink-0">
+              <% other_mod.file_types.each do |type| %>
+                <span class="px-1.5 py-0.5 text-xs rounded font-medium
+                  <% if type.to_s == 'exmodz' %>
+                    bg-icarus-500/20 text-icarus-500
+                  <% elsif type.to_s == 'pak' %>
+                    bg-emerald-500/20 text-emerald-600
+                  <% else %>
+                    bg-slate-500/20 text-slate-500
+                  <% end %>
+                "><%= type.to_s.upcase %></span>
+              <% end %>
+            </div>
+          </button>
+        <% end %>
+      </div>
     </div>
   <% end %>
+
+  <%# Navigation: prev/next + back to list %>
+  <div class="flex items-center justify-between mt-6 mb-4">
+    <div>
+      <% if @prev_mod %>
+        <button
+          data-action="mods#navigateTo"
+          data-mods-path-param="<%= mod_detail_path(author: @prev_mod.author_slug, slug: @prev_mod.slug) %>"
+          type="button"
+          class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 dark:text-slate-400 hover:text-icarus-500 dark:hover:text-icarus-400 transition-colors">
+          &larr; <%= truncate(@prev_mod.name, length: 25) %>
+        </button>
+      <% end %>
+    </div>
+    <div>
+      <% if session[:origin_url] %>
+        <button
+          data-action="mods#navigateTo"
+          data-mods-path-param="<%= session[:origin_url] %>"
+          type="button"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md shadow-sm border border-icarus-500 text-icarus-500 hover:bg-icarus-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2 transition-colors">
+          Back to List
+        </button>
+      <% end %>
+    </div>
+    <div>
+      <% if @next_mod %>
+        <button
+          data-action="mods#navigateTo"
+          data-mods-path-param="<%= mod_detail_path(author: @next_mod.author_slug, slug: @next_mod.slug) %>"
+          type="button"
+          class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 dark:text-slate-400 hover:text-icarus-500 dark:hover:text-icarus-400 transition-colors">
+          <%= truncate(@next_mod.name, length: 25) %> &rarr;
+        </button>
+      <% end %>
+    </div>
+  </div>
 </section>
