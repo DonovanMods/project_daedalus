@@ -15,11 +15,22 @@ module GithubStats
     github_repo.present?
   end
 
-  # Fetches repository stats from the GitHub API (cached per mod)
+  # Returns cached repository stats. Never blocks the request thread.
+  # On cache miss, returns nil and triggers a background fetch so data
+  # is available on the next page load.
   def github_data
     return nil unless github_repo?
 
-    @github_data ||= fetch_github_data
+    cache_key = "github/#{github_repo}"
+    cached = Rails.cache.read(cache_key)
+
+    if cached
+      cached
+    else
+      # Schedule background fetch so next request has data
+      fetch_github_data_async
+      nil
+    end
   end
 
   private
@@ -34,31 +45,34 @@ module GithubStats
     nil
   end
 
-  def fetch_github_data
-    Rails.cache.fetch("github/#{github_repo}", expires_in: 15.minutes) do
-      fetch_github_api
+  # Non-blocking: spawns a thread to fetch and cache GitHub data
+  def fetch_github_data_async
+    repo = github_repo
+    Thread.new do
+      Rails.cache.fetch("github/#{repo}", expires_in: 15.minutes) do
+        fetch_github_api(repo)
+      end
+    rescue StandardError => e
+      Rails.logger.error("Background GitHub fetch failed for #{repo}: #{e.class} - #{e.message}")
     end
   end
 
-  def fetch_github_api
-    response = github_http_request
-    return nil unless response.is_a?(Net::HTTPSuccess)
-
-    parse_github_response(response.body)
-  rescue StandardError => e
-    Rails.logger.error("Failed to fetch GitHub stats for #{github_repo}: #{e.class} - #{e.message}")
-    nil
-  end
-
-  def github_http_request
-    uri = URI("https://api.github.com/repos/#{github_repo}")
+  def fetch_github_api(repo = github_repo)
+    uri = URI("https://api.github.com/repos/#{repo}")
     request = Net::HTTP::Get.new(uri)
     request["Accept"] = "application/vnd.github.v3+json"
     request["User-Agent"] = "ProjectDaedalus"
 
-    Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 5) do |http|
+    response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 5) do |http|
       http.request(request)
     end
+
+    return nil unless response.is_a?(Net::HTTPSuccess)
+
+    parse_github_response(response.body)
+  rescue StandardError => e
+    Rails.logger.error("Failed to fetch GitHub stats for #{repo}: #{e.class} - #{e.message}")
+    nil
   end
 
   def parse_github_response(body)

@@ -23,8 +23,8 @@
     <div class="p-4 border rounded-lg border-slate-300/50 dark:border-slate-600/50 bg-slate-300/40 dark:bg-slate-900/40">
       <div class="text-xs font-medium tracking-wide uppercase text-icarus-500">Mod Age</div>
       <div class="mt-1 text-sm font-medium text-slate-700 dark:text-slate-300">
-        <% if mod.mod_age %>
-          <%= mod.mod_age %> old
+        <% if mod_age(mod) %>
+          <%= mod_age(mod) %> old
           <div class="text-xs text-slate-500 dark:text-slate-400">Since <%= mod.created_at.strftime("%b %d, %Y") %></div>
         <% else %>
           <span class="text-slate-400">Unknown</span>
