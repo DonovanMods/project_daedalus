@@ -45,13 +45,13 @@
   <%# EXMODZ note + dates %>
   <div class="flex items-start justify-between flex-auto mt-2">
     <div class="text-sm text-slate-500 dark:text-slate-400">
-      <% if @mod.exmodz? %>
+      <% if @mod.exmodz? || @mod.exmod? %>
         This Mod includes an EXMOD formatted file, which doesn't need updates each week.<br />
         We recommend you use a Mod Manager to install this mod
       <% end %>
     </div>
     <div class="text-sm text-right text-slate-500 flex-shrink-0 ml-4">
-      <div><%= @mod.updated_string %></div>
+      <div><%= @mod.updated_string %> (<%= @mod.updated_ago %>)</div>
       <% if @mod.created_at.present? %>
         <div class="text-xs text-slate-400">Published <%= @mod.created_at.strftime("%B %d, %Y") %></div>
       <% end %>
