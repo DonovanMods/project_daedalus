@@ -64,7 +64,7 @@ RSpec.describe AnalyticsHelper, type: :helper do
       Mod.new(
         name: name, author: author,
         files: file_types.index_with { |_| "https://example.com/#{name.parameterize}.zip" },
-        created_at: Time.current - 30.days, updated_at: Time.current - 2.days
+        created_at: 30.days.ago, updated_at: 2.days.ago
       )
     end
   end
