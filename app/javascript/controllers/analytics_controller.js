@@ -14,7 +14,7 @@ export default class extends Controller {
   recordView() {
     const views = this.getViews()
     views[this.modIdValue] = (views[this.modIdValue] || 0) + 1
-    localStorage.setItem("mod_views", JSON.stringify(views))
+    try { localStorage.setItem("mod_views", JSON.stringify(views)) } catch { /* storage unavailable or quota exceeded */ }
   }
 
   recordDownload(event) {
@@ -23,7 +23,7 @@ export default class extends Controller {
 
     const downloads = this.getDownloads()
     downloads[modId] = (downloads[modId] || 0) + 1
-    localStorage.setItem("mod_downloads", JSON.stringify(downloads))
+    try { localStorage.setItem("mod_downloads", JSON.stringify(downloads)) } catch { /* storage unavailable or quota exceeded */ }
     this.renderStats()
   }
 

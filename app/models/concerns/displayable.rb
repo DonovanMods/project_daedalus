@@ -28,12 +28,6 @@ module Displayable
     "Last Updated on #{updated_at.strftime("%B %d, %Y")}"
   end
 
-  # Raw updated_at timestamp — use time_ago_in_words in views/helpers
-  # for human-readable display (e.g., "3 days ago")
-  def updated_ago_timestamp
-    updated_at
-  end
-
   def version_string
     v = []
     v << "v#{version}" if version.present?

@@ -105,12 +105,6 @@ class Mod
     name.parameterize
   end
 
-  # Raw created_at timestamp — use time_ago_in_words in views/helpers
-  # for human-readable display (e.g., "about 1 year")
-  def mod_age_timestamp
-    created_at
-  end
-
   # Integer number of days since last update
   def days_since_update
     return nil unless updated_at

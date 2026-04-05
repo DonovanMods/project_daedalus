@@ -49,7 +49,8 @@ class ModsController < ApplicationController
   end
 
   def neighboring_mods(mod)
-    sorted = mods.sort_by { |m| m.name.downcase }
+    # mods is already sorted by name via Mod.fetch_all
+    sorted = mods
     idx = sorted.index { |m| m.slug == mod.slug && m.author_slug == mod.author_slug }
     prev_mod = idx&.positive? ? sorted[idx - 1] : nil
     next_mod = idx && idx < sorted.size - 1 ? sorted[idx + 1] : nil

@@ -24,8 +24,11 @@ module GithubStats
     cache_key = "github/#{github_repo}"
     cached = Rails.cache.read(cache_key)
 
-    if cached
+    if cached && cached != :unavailable
       cached
+    elsif cached == :unavailable
+      # Previous fetch failed — wait for TTL to expire before retrying
+      nil
     else
       # Schedule background fetch so next request has data
       fetch_github_data_async
@@ -45,15 +48,21 @@ module GithubStats
     nil
   end
 
-  # Non-blocking: spawns a thread to fetch and cache GitHub data
+  # Non-blocking: spawns a thread to fetch and cache GitHub data.
+  # On failure, caches a sentinel value to throttle retries.
   def fetch_github_data_async
     repo = github_repo
     Thread.new do
-      Rails.cache.fetch("github/#{repo}", expires_in: 15.minutes) do
-        fetch_github_api(repo)
+      result = fetch_github_api(repo)
+      if result
+        Rails.cache.write("github/#{repo}", result, expires_in: 15.minutes)
+      else
+        # Cache a sentinel so we don't retry on every page load
+        Rails.cache.write("github/#{repo}", :unavailable, expires_in: 5.minutes)
       end
     rescue StandardError => e
       Rails.logger.error("Background GitHub fetch failed for #{repo}: #{e.class} - #{e.message}")
+      Rails.cache.write("github/#{repo}", :unavailable, expires_in: 5.minutes)
     end
   end
 
