@@ -11,8 +11,24 @@ RSpec.describe Mod do
                     create_time: Time.now.utc,
                     update_time: Time.now.utc,
                     data: {
-                      name: Faker::App.name,
-                      author: Faker::App.author,
+                      name: "Alpha Mod",
+                      author: "Author One",
+                      description: Faker::Lorem.sentence,
+                      version: Faker::App.version,
+                      compatibility: "w#{Random.rand(1..5)}",
+                      files: { zip: Faker::Internet.url },
+                      imageURL: Faker::Internet.url,
+                      readmeURL: Faker::Internet.url
+                    })
+  end
+  let(:mod_firestore_obj2) do
+    instance_double(Google::Cloud::Firestore::DocumentSnapshot,
+                    document_id: SecureRandom.uuid,
+                    create_time: Time.now.utc,
+                    update_time: Time.now.utc,
+                    data: {
+                      name: "Beta Mod",
+                      author: "Author Two",
                       description: Faker::Lorem.sentence,
                       version: Faker::App.version,
                       compatibility: "w#{Random.rand(1..5)}",
@@ -25,7 +41,7 @@ RSpec.describe Mod do
 
   before do
     allow(Google::Cloud::Firestore).to receive(:new).and_return(firestore_client)
-    allow(firestore_collection).to receive(:get).and_return(Array.new(2, mod_firestore_obj))
+    allow(firestore_collection).to receive(:get).and_return([mod_firestore_obj, mod_firestore_obj2])
     allow(firestore_client).to receive(:col).with("mods").and_return(firestore_collection)
   end
 
@@ -49,6 +65,26 @@ RSpec.describe Mod do
     end
 
     it "returns all mods" do
+      expect(described_class.all.count).to eq(2)
+    end
+
+    it "deduplicates mods with the same name and author" do
+      duplicate = instance_double(Google::Cloud::Firestore::DocumentSnapshot,
+                                  document_id: SecureRandom.uuid,
+                                  create_time: Time.now.utc,
+                                  update_time: Time.now.utc,
+                                  data: {
+                                    name: "Alpha Mod",
+                                    author: "Author One",
+                                    description: Faker::Lorem.sentence,
+                                    version: "2.0.0",
+                                    compatibility: "w3",
+                                    files: { zip: Faker::Internet.url },
+                                    imageURL: Faker::Internet.url,
+                                    readmeURL: Faker::Internet.url
+                                  })
+      allow(firestore_collection).to receive(:get).and_return([mod_firestore_obj, duplicate, mod_firestore_obj2])
+
       expect(described_class.all.count).to eq(2)
     end
   end
@@ -174,7 +210,7 @@ RSpec.describe Mod do
     end
   end
 
-  %i[pak zip exmodz].each do |file_type|
+  %i[pak zip exmod exmodz].each do |file_type|
     describe "##{file_type}?" do
       context "when given a #{file_type} object" do
         before { mod.files = { file_type.to_sym => Faker::Internet.url } }
@@ -227,7 +263,7 @@ RSpec.describe Mod do
       before { mod.files = { exmod: Faker::Internet.url } }
 
       it "returns the preferred type" do
-        expect(mod.preferred_type).to be_nil
+        expect(mod.preferred_type).to eq(:exmod)
       end
     end
 

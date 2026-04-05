@@ -34,7 +34,7 @@ class Mod
         created_at: mod.create_time,
         updated_at: mod.update_time
       )
-    end.sort_by(&:name)
+    end.uniq { |mod| [mod.name.downcase, mod.author_slug] }.sort_by(&:name)
   end
   private_class_method :fetch_all
 
@@ -54,23 +54,28 @@ class Mod
     files.key?(:zip)
   end
 
+  def exmod?
+    files.key?(:exmod)
+  end
+
   def exmodz?
     files.key?(:exmodz)
   end
 
   # Determines which file types can be downloaded from the index page
-  # Priority: pak > zip > exmodz (most common/compatible format first)
+  # Priority: pak > zip > exmodz > exmod (most common/compatible format first)
   def preferred_type
     return :pak if pak?
     return :zip if zip?
     return :exmodz if exmodz?
+    return :exmod if exmod?
 
     nil
   end
 
   # Determines which file types can be downloaded from the show page
   def download_types
-    file_types.map(&:to_sym) & %i[pak zip exmodz]
+    file_types.map(&:to_sym) & %i[pak zip exmodz exmod]
   end
 
   def file_types
