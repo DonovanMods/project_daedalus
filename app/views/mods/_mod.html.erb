@@ -1,16 +1,16 @@
 <tr id="<%= dom_id mod %>" class="cursor-pointer row-lift border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/70"
     data-action="click->mods#navigateTo"
     data-mods-path-param="<%= mod_detail_path(author: mod.author_slug, slug: mod.slug) %>">
-  <td class="p-3 font-medium text-slate-800 dark:text-slate-200"><%= mod.name %></td>
-  <td class="p-3">
+  <td class="p-2 sm:p-3 font-medium text-slate-800 dark:text-slate-200"><%= mod.name %></td>
+  <td class="p-2 sm:p-3 whitespace-nowrap">
     <% if type = mod.preferred_type %>
       <button
         data-action="mods#download"
         data-mods-url-param="<%= raw_url(mod.get_url(type)) %>"
         data-mods-file-name-param="<%= mod.get_name(type) %>"
         type="button"
-        class="z-10 inline-flex items-center px-3 py-1.5 text-xs font-medium text-white rounded-md shadow-sm bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
-        Download <%= type.to_s.upcase %>
+        class="z-10 inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 text-xs font-medium text-white rounded-md shadow-sm bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
+        <span class="hidden sm:inline">Download </span><%= type.to_s.upcase %>
       </button>
     <% end %>
   </td>
