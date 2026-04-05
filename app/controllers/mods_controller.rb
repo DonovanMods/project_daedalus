@@ -25,6 +25,7 @@ class ModsController < ApplicationController
 
     @author_mods = other_mods_by_author(@mod)
     @prev_mod, @next_mod = neighboring_mods(@mod)
+    @all_mods = mods if params[:analytics]
   end
 
   private

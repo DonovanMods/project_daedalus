@@ -5,6 +5,7 @@ class Mod
   include Convertable
   include Displayable
   include Firestorable
+  include GithubStats
 
   SORTKEYS = %w[author name].freeze
   ATTRIBUTES = %i[author compatibility description files id image_url metadata name readme_url timestamps version
@@ -102,6 +103,20 @@ class Mod
 
   def slug
     name.parameterize
+  end
+
+  # Human-readable age string (e.g. "about 1 year")
+  def mod_age
+    return nil unless created_at
+
+    ActionController::Base.helpers.time_ago_in_words(created_at)
+  end
+
+  # Integer number of days since last update
+  def days_since_update
+    return nil unless updated_at
+
+    ((Time.current - updated_at) / 1.day).floor
   end
 
   private
