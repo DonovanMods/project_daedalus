@@ -6,6 +6,8 @@ RSpec.describe Displayable do
   let(:mod) { build(:mod) }
 
   describe "#updated_ago" do
+    around { |example| freeze_time { example.run } }
+
     context "when updated_at is nil" do
       before { mod.updated_at = nil }
 
@@ -34,7 +36,7 @@ RSpec.describe Displayable do
       before { mod.updated_at = 2.months.ago }
 
       it "returns a time ago string with months" do
-        expect(mod.updated_ago).to match(/about \d+ months? ago|about \d+ months? ago/)
+        expect(mod.updated_ago).to match(/(?:about )?\d+ months? ago/)
       end
     end
   end
