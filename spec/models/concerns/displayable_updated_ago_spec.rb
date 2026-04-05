@@ -6,8 +6,6 @@ RSpec.describe Displayable do
   let(:mod) { build(:mod) }
 
   describe "#updated_ago" do
-    around { |example| freeze_time { example.run } }
-
     context "when updated_at is nil" do
       before { mod.updated_at = nil }
 
