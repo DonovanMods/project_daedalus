@@ -5,10 +5,10 @@ require "rails_helper"
 RSpec.describe "Locales", type: :request do
   describe "PATCH /locale" do
     it "sets locale cookie for a valid locale" do
-      patch locale_path, params: { locale: "es" }
+      patch locale_path, params: { locale: "en" }
 
       expect(response).to redirect_to(root_path)
-      expect(cookies[:locale]).to eq("es")
+      expect(cookies[:locale]).to eq("en")
     end
 
     it "does not set cookie for an invalid locale" do
@@ -19,7 +19,7 @@ RSpec.describe "Locales", type: :request do
     end
 
     it "redirects back to the referring page" do
-      patch locale_path, params: { locale: "fr" }, headers: { "HTTP_REFERER" => mods_path }
+      patch locale_path, params: { locale: "en" }, headers: { "HTTP_REFERER" => mods_path }
 
       expect(response).to redirect_to(mods_path)
     end

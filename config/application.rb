@@ -30,7 +30,8 @@ module ProjectDaedalus
 
     # i18n configuration
     config.i18n.default_locale = :en
-    config.i18n.available_locales = %i[en zh es ar pt fr ja ru de ko id tr it hi nl]
+    # Add validated locale symbols here as translations are reviewed (e.g. %i[en es fr de])
+    config.i18n.available_locales = %i[en]
     config.i18n.fallbacks = true
   end
 end

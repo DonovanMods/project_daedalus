@@ -11,35 +11,34 @@ RSpec.describe "Locale detection", type: :request do
       expect(response.body).to include("Welcome")
     end
 
-    it "uses locale from cookie when present" do
-      cookies[:locale] = "de"
+    it "falls back to English for unsupported locale in cookie" do
+      cookies[:locale] = "xx"
 
       get "/home"
 
       expect(response).to be_successful
-      expect(response.body).to include("Willkommen")
-    end
-
-    it "uses locale from Accept-Language header when no cookie" do
-      get "/home", headers: { "HTTP_ACCEPT_LANGUAGE" => "es-ES,es;q=0.9,en;q=0.8" }
-
-      expect(response).to be_successful
-      expect(response.body).to include("Bienvenido")
+      expect(response.body).to include("Welcome")
     end
 
     it "ignores unsupported locales in Accept-Language header" do
       get "/home", headers: { "HTTP_ACCEPT_LANGUAGE" => "xx;q=0.9" }
 
       expect(response).to be_successful
+      expect(response.body).to include("Welcome")
     end
 
-    it "cookie takes priority over Accept-Language header" do
-      cookies[:locale] = "fr"
-
-      get "/home", headers: { "HTTP_ACCEPT_LANGUAGE" => "de-DE,de;q=0.9" }
+    it "uses English for Accept-Language header with en" do
+      get "/home", headers: { "HTTP_ACCEPT_LANGUAGE" => "en-US,en;q=0.9" }
 
       expect(response).to be_successful
-      expect(response.body).to include("Bienvenue")
+      expect(response.body).to include("Welcome")
+    end
+
+    it "falls back to default when all Accept-Language locales are unsupported" do
+      get "/home", headers: { "HTTP_ACCEPT_LANGUAGE" => "zz-ZZ,yy;q=0.9" }
+
+      expect(response).to be_successful
+      expect(response.body).to include("Welcome")
     end
   end
 end
