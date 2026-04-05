@@ -51,7 +51,7 @@
       <% end %>
     </div>
     <div class="text-sm text-right text-slate-500 flex-shrink-0 ml-4">
-      <div><%= @mod.updated_string %></div>
+      <div><%= @mod.updated_string %> (<%= @mod.updated_ago %>)</div>
       <% if @mod.created_at.present? %>
         <div class="text-xs text-slate-400">Published <%= @mod.created_at.strftime("%B %d, %Y") %></div>
       <% end %>
