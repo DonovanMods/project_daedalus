@@ -24,17 +24,14 @@ module GithubStats
     cache_key = "github/#{github_repo}"
     cached = Rails.cache.read(cache_key)
 
-    if cached && !%i[unavailable fetching].include?(cached)
+    if cached && %i[unavailable fetching].exclude?(cached)
       cached
-    elsif cached == :fetching
-      # Another request already triggered a fetch — wait for it
-      nil
-    elsif cached == :unavailable
-      # Previous fetch failed — wait for TTL to expire before retrying
+    elsif cached.nil?
+      # No cache entry — schedule background fetch so next request has data
+      fetch_github_data_async
       nil
     else
-      # Schedule background fetch so next request has data
-      fetch_github_data_async
+      # :fetching or :unavailable — wait for TTL to expire
       nil
     end
   end
