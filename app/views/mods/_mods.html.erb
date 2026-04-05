@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "mods" do %>
   <div class="flex flex-col flex-1 w-full">
     <div class="flex justify-end flex-1">
-      <div class="mr-4 text-sm text-icarus-600 dark:text-icarus-500"><%= @total_mods %> mods<%= " (page #{@pagination.current_page} of #{@pagination.total_pages})" if @pagination&.paginated? %></div>
+      <div class="mr-4 text-sm text-icarus-600 dark:text-icarus-500"><%= pluralize(@total_mods, "mod") %><%= " (page #{@pagination.current_page} of #{@pagination.total_pages})" if @pagination&.paginated? %></div>
     </div>
     <div class="overflow-hidden border rounded-xl border-slate-200 dark:border-slate-700 mt-2">
       <table class="w-full border-collapse table-auto">
