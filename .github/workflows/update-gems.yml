@@ -20,7 +20,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '.ruby-version'
-          bundler-cache: false
+          bundler-cache: true
 
       # Fix #2: Only update gems with known vulnerabilities, not all gems
       - name: Audit and update only vulnerable gems
@@ -82,22 +82,30 @@ jobs:
 
           git checkout -b "$BRANCH"
           git add Gemfile.lock
-          git commit -m "Update vulnerable gems via automated audit
 
-          Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+          printf '%s\n' \
+            "Update vulnerable gems via automated audit" \
+            "" \
+            "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>" \
+            > /tmp/commit-msg.txt
+          git commit -F /tmp/commit-msg.txt
           git push -u origin "$BRANCH"
+
+          printf '%s\n' \
+            "## Automated Security Update" \
+            "" \
+            "Vulnerable gems were detected by \`bundle-audit\` and updated to patched versions." \
+            "" \
+            "- Tests have passed against the updated Gemfile.lock" \
+            "- Only vulnerable gems were updated (not all dependencies)" \
+            "- Please review the Gemfile.lock diff before merging" \
+            "" \
+            "*Created by the Update Vulnerable Gems workflow*" \
+            > /tmp/pr-body.md
 
           gh pr create \
             --title "Security: Update vulnerable gems ($(date +%Y-%m-%d))" \
-            --body "## Automated Security Update
-
-          Vulnerable gems were detected by \`bundle-audit\` and updated to patched versions.
-
-          - Tests have passed against the updated Gemfile.lock
-          - Only vulnerable gems were updated (not all dependencies)
-          - Please review the Gemfile.lock diff before merging
-
-          *Created by the Update Vulnerable Gems workflow*" \
+            --body-file /tmp/pr-body.md \
             --base main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
