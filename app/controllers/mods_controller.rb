@@ -55,7 +55,6 @@ class ModsController < ApplicationController
     [prev_mod, next_mod]
   end
 
-
   def filter_by_author
     return if params[:author].blank?
 
