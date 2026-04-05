@@ -30,10 +30,8 @@ module GithubStats
       # No cache entry — schedule background fetch so next request has data
       fetch_github_data_async
       nil
-    else
-      # :fetching or :unavailable — wait for TTL to expire
-      nil
     end
+    # :fetching or :unavailable — implicitly returns nil, waits for TTL to expire
   end
 
   private
