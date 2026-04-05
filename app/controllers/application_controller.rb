@@ -17,12 +17,24 @@ class ApplicationController < ActionController::Base
   end
 
   def locale_from_header
-    return unless request.env["HTTP_ACCEPT_LANGUAGE"]
+    header = request.env["HTTP_ACCEPT_LANGUAGE"]
+    return unless header
 
-    accepted = request.env["HTTP_ACCEPT_LANGUAGE"]
-                      .scan(/[a-z]{2}(?=-|,|;)/)
-                      .map(&:to_sym)
+    # Parse Accept-Language with q-value weights (e.g. "en-US,en;q=0.9,fr;q=0.8")
+    accepted = header.split(",").filter_map do |entry|
+      language_range, *params = entry.strip.split(";")
+      locale_code = language_range.to_s[/\A([a-z]{2})(?:-[A-Za-z]{2})?\z/i, 1]
+      next unless locale_code
 
-    accepted.find { |locale| I18n.available_locales.include?(locale) }
+      quality = params.find { |param| param.strip.start_with?("q=") }
+      q_value = quality ? quality.strip.delete_prefix("q=").to_f : 1.0
+
+      [locale_code.downcase.to_sym, q_value]
+    end
+
+    accepted
+      .sort_by { |_locale, q_value| -q_value }
+      .map(&:first)
+      .find { |locale| I18n.available_locales.include?(locale) }
   end
 end

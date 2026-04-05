@@ -19,6 +19,9 @@ en:
     what_is: "What is Project Daedalus?"
     description_html: "Project Daedalus is a modding platform for the game %{link}."
     community_html: "This is a community-driven project and you can find out more on the unofficial modding %{link}"
+    card_mods: "Mods"
+    card_tools: "Tools"
+    card_info: "Info"
 
   # Mods index
   mods:

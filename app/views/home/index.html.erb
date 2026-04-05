@@ -15,7 +15,7 @@
       <%= t('home.welcome') %>
     </h1>
     <p class="max-w-2xl mx-auto text-base md:text-lg lg:text-xl text-slate-600 dark:text-slate-400">
-      <%= t('home.description_html', link: link_to("Icarus", "https://surviveicarus.com/", class: "font-semibold text-icarus-500 hover:text-icarus-400", target: "_blank")).html_safe %>
+      <%= t('home.description_html', link: link_to("Icarus", "https://surviveicarus.com/", class: "font-semibold text-icarus-500 hover:text-icarus-400", target: "_blank")) %>
     </p>
   </div>
 
@@ -28,7 +28,7 @@
     <%= link_to mods_path, class: "no-underline group" do %>
       <div class="flex flex-col items-center p-6 md:p-8 text-center rounded-xl card-lift border-2 border-icarus-500 bg-gradient-to-b from-icarus-100 to-white dark:from-icarus-900 dark:to-slate-800 group-hover:border-icarus-400">
         <div class="mb-3 text-4xl md:text-5xl">🎮</div>
-        <h2 class="mb-2 text-xl font-bold md:text-2xl text-icarus-600 dark:text-icarus-400"><%= t('nav.mods') %></h2>
+        <h2 class="mb-2 text-xl font-bold md:text-2xl text-icarus-600 dark:text-icarus-400"><%= t('home.card_mods') %></h2>
         <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
           Explore the full collection of community-made mods for Icarus.
           EXMOD &amp; EXMODZ formats supported.
@@ -43,7 +43,7 @@
     <%= link_to tools_path, class: "no-underline group" do %>
       <div class="flex flex-col items-center p-6 text-center transition-all border rounded-xl card-lift border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500">
         <div class="mb-3 text-3xl md:text-4xl">🛠️</div>
-        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400"><%= t('nav.tools') %></h2>
+        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400"><%= t('home.card_tools') %></h2>
         <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
           Calculators, planners, and utilities to create and manage your own Icarus mods.
         </p>
@@ -57,7 +57,7 @@
     <%= link_to info_path, class: "no-underline group" do %>
       <div class="flex flex-col items-center p-6 text-center transition-all border rounded-xl card-lift border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500">
         <div class="mb-3 text-3xl md:text-4xl">📖</div>
-        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400"><%= t('nav.info') %></h2>
+        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400"><%= t('home.card_info') %></h2>
         <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
           Guides, patch notes, and everything you need to know about Icarus modding.
         </p>
@@ -74,7 +74,7 @@
   <div class="max-w-2xl mx-auto text-center">
     <h2 class="mb-3 text-xl font-bold md:text-2xl text-icarus-500">Join the Community</h2>
     <p class="mb-5 text-slate-600 dark:text-slate-400">
-      <%= t('home.community_html', link: link_to("Discord", "https://discord.gg/linkarus-icarus-modding-936621749733302292", class: "font-semibold text-icarus-500 hover:text-icarus-400", target: "_blank")).html_safe %>
+      <%= t('home.community_html', link: link_to("Discord", "https://discord.gg/linkarus-icarus-modding-936621749733302292", class: "font-semibold text-icarus-500 hover:text-icarus-400", target: "_blank")) %>
     </p>
     <%= link_to "https://discord.gg/linkarus-icarus-modding-936621749733302292", target: "_blank", class: "no-underline" do %>
       <span class="inline-flex items-center px-6 py-3 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700">
@@ -85,6 +85,6 @@
 
   <%# Feedback Link %>
   <div class="max-w-2xl mx-auto mt-8 mb-4 text-sm text-center text-slate-500 dark:text-slate-400">
-    <%= t('mods.feedback_prompt_html', link: link_to(t('mods.feedback_link'), "https://feedback.projectdaedalus.app/", target: "_blank", class: "font-medium text-icarus-500 hover:text-icarus-400")).html_safe %>
+    <%= t('mods.feedback_prompt_html', link: link_to(t('mods.feedback_link'), "https://feedback.projectdaedalus.app/", target: "_blank", class: "font-medium text-icarus-500 hover:text-icarus-400")) %>
   </div>
 </section>

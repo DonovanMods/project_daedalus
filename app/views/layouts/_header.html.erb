@@ -15,7 +15,7 @@
     </button>
     <%# Language selector — hidden when only one locale is available %>
     <% if I18n.available_locales.size > 1 %>
-      <div class="relative ml-2">
+      <div class="relative ml-2" data-controller="locale-switcher">
         <%= form_with url: locale_path, method: :patch, local: true do |f| %>
           <%= f.select :locale,
             options_for_select(
@@ -23,7 +23,8 @@
               I18n.locale
             ),
             {},
-            onchange: "this.form.submit()",
+            data: { action: "change->locale-switcher#submit" },
+            aria: { label: "Language" },
             class: "px-2 py-1 text-sm rounded border border-slate-400 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-none cursor-pointer" %>
         <% end %>
       </div>
