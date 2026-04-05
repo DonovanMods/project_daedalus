@@ -9,7 +9,7 @@ module AnalyticsHelper
     {
       total_mods: author_mods.size,
       file_type_counts: file_type_counts,
-      newest_mod: author_mods.max_by { |m| m.updated_at || Time.at(0) },
+      newest_mod: author_mods.max_by { |m| m.updated_at || Time.zone.at(0) },
       oldest_mod: author_mods.min_by { |m| m.created_at || Time.current }
     }
   end
