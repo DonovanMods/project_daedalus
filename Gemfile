@@ -10,7 +10,7 @@ gem "rails", "~> 8.0.0"
 gem "bootsnap", require: false
 gem "coderay", "~> 1.1"
 gem "date", require: false
-gem "dotenv-rails", "~> 2.8"
+gem "dotenv-rails", "~> 3.1"
 gem "google-cloud-firestore", "~> 2.8"
 gem "google-cloud-storage", "~> 1.44"
 gem "importmap-rails"
