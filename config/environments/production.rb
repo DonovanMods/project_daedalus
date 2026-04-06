@@ -69,8 +69,7 @@ Rails.application.configure do
 
   # Log to STDOUT with tagged logging.
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    config.logger = ActiveSupport::Logger.new($stdout)
-      .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
+    config.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new($stdout))
   end
 
   # Do not dump schema after migrations.
