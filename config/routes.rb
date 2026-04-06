@@ -3,6 +3,11 @@
 Rails.application.routes.draw do
   Healthcheck.routes(self)
 
+  # Lightweight JSON API for external consumers (Discord bots, etc.)
+  namespace :api, defaults: { format: :json } do
+    resources :mods, only: [:index]
+  end
+
   get "home", to: "home#index"
   get "info", to: "info#index"
 
