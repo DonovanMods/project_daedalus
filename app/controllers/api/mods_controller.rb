@@ -32,10 +32,10 @@ module Api
       render json: { error: "Service temporarily unavailable" }, status: :service_unavailable
     end
 
-    private
-
     MAX_DESCRIPTION_LENGTH = 500
     SITE_HOST = "projectdaedalus.app"
+
+    private
 
     def serialize_mod(mod)
       {
