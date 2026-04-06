@@ -6,12 +6,9 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
-  config.cache_classes = true
+  config.enable_reloading = false
 
-  # Eager load code on boot. This eager loads most of Rails and
-  # your application in memory, allowing both threaded web servers
-  # and those relying on copy on write to perform better.
-  # Rake tasks automatically ignore this option for performance.
+  # Eager load code on boot for better performance and memory usage.
   config.eager_load = true
 
   # Full error reports are disabled and caching is turned on.
@@ -51,12 +48,11 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
-  config.cache_store = :memory_store, { size: 64.megabytes }
+  # Use Solid Cache for production caching (database-backed, no Redis needed).
+  config.cache_store = :solid_cache_store
 
-  # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
-  # config.active_job.queue_name_prefix = "project_daedalus_production"
+  # Use Solid Queue for background jobs (database-backed, no Redis needed).
+  config.active_job.queue_adapter = :solid_queue
 
   config.action_mailer.perform_caching = false
 
@@ -71,17 +67,10 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = Logger::Formatter.new
-
-  # Use a different logger for distributed setups.
-  # require "syslog/logger"
-  # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new "app-name")
-
+  # Log to STDOUT with tagged logging.
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger = ActiveSupport::Logger.new($stdout)
-    logger.formatter = config.log_formatter
-    config.logger = ActiveSupport::TaggedLogging.new(logger)
+    config.logger = ActiveSupport::Logger.new($stdout)
+      .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
   end
 
   # Do not dump schema after migrations.
