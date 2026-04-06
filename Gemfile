@@ -49,7 +49,7 @@ group :development do
 
   # Auditing
   gem "abbrev" # Required for brakeman with Ruby 3.4+
-  gem "brakeman", "~> 5.4"
+  gem "brakeman", ">= 6.0"
   gem "bundler-audit", "~> 0.9.1"
 
   # Debugging
