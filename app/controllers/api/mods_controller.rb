@@ -47,10 +47,22 @@ module Api
         description: truncate_text(mod.description, MAX_DESCRIPTION_LENGTH),
         image_url: mod.image_url,
         file_types: mod.file_types.map(&:to_s),
+        preferred_download: preferred_download(mod),
         created_at: mod.created_at&.iso8601,
         updated_at: mod.updated_at&.iso8601,
         url: mod_url(mod)
       }
+    end
+
+    # Returns the primary download URL and format for the mod, if available.
+    def preferred_download(mod)
+      type = mod.preferred_type
+      return nil unless type
+
+      url = mod.get_url(type)
+      return nil if url.blank?
+
+      { type: type.to_s, url: url }
     end
 
     # Use a fixed host so cached responses always contain the production URL,
