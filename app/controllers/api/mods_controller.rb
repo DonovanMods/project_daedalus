@@ -42,6 +42,8 @@ module Api
         id: mod.id,
         name: mod.name,
         author: mod.author,
+        author_slug: mod.author_slug,
+        slug: mod.slug,
         version: mod.version,
         compatibility: mod.compatibility,
         description: truncate_text(mod.description, MAX_DESCRIPTION_LENGTH),
