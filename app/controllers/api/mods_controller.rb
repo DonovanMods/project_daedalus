@@ -27,11 +27,15 @@ module Api
 
       expires_in CACHE_TTL, public: true
       render json: json
+    rescue StandardError => e
+      Rails.logger.error("API mods#index failed: #{e.class} - #{e.message}")
+      render json: { error: "Service temporarily unavailable" }, status: :service_unavailable
     end
 
     private
 
     MAX_DESCRIPTION_LENGTH = 500
+    SITE_HOST = "projectdaedalus.app"
 
     def serialize_mod(mod)
       {
@@ -49,12 +53,14 @@ module Api
       }
     end
 
+    # Use a fixed host so cached responses always contain the production URL,
+    # regardless of which host/proxy the first request came through.
     def mod_url(mod)
       Rails.application.routes.url_helpers.mod_detail_url(
         author: mod.author_slug,
         slug: mod.slug,
-        host: request.host,
-        protocol: request.protocol
+        host: SITE_HOST,
+        protocol: "https"
       )
     end
 
