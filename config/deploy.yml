@@ -48,6 +48,8 @@ aliases:
   shell: app exec --interactive --reuse "bash"
   console: app exec --interactive --reuse "rails console"
 
-# Use a persistent storage volume.
+# Use persistent storage volumes.
+# The db volume ensures SQLite databases (primary, cache, queue) survive deploys.
 volumes:
   - rails_tmp:/rails/tmp
+  - rails_db:/rails/db
