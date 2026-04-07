@@ -36,8 +36,7 @@ RSpec.describe GithubStatsFetchJob do
       end
 
       before do
-        response = double("Net::HTTPSuccess", body: body)
-        allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+        response = instance_double(Net::HTTPResponse, code: "200", body: body)
         stub_http(response)
       end
 
@@ -58,8 +57,7 @@ RSpec.describe GithubStatsFetchJob do
 
     context "with a non-success response" do
       before do
-        response = double("Net::HTTPNotFound")
-        allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(false)
+        response = instance_double(Net::HTTPResponse, code: "404", body: "")
         stub_http(response)
       end
 

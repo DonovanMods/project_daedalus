@@ -40,7 +40,7 @@ class GithubStatsFetchJob < ApplicationJob
       http.request(request)
     end
 
-    return nil unless response.is_a?(Net::HTTPSuccess)
+    return nil unless response.code.to_i.between?(200, 299)
 
     parse_github_response(response.body)
   rescue StandardError => e
