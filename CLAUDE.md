@@ -8,7 +8,7 @@ This is a Rails project, read ~/.claude/RUBY.md and ~/.claude/RAILS.md for addit
 
 ## Project Overview
 
-Project Daedalus is a Rails 7.1 application that serves as a website for the Icarus Modding Tools community, featuring mod and tool listings. The application uses Ruby 3.4.8 and Google Cloud Firestore as its data backend.
+Project Daedalus is a Rails 8.0 application that serves as a website for the Icarus Modding Tools community, featuring mod and tool listings. The application uses Ruby 3.4.9 and Google Cloud Firestore as its data backend, with Solid Cache and Solid Queue (SQLite-backed) handling cache and background jobs.
 
 ## Architecture
 
@@ -16,21 +16,28 @@ Project Daedalus is a Rails 7.1 application that serves as a website for the Ica
 
 The application uses **Firestore as its database** instead of Active Record. Two main models (`Mod` and `Tool`) include the `Firestorable` concern to connect to Google Cloud Firestore:
 
-- **Mod**: Represents game modifications with support for multiple file formats (`.pak`, `.zip`, `.exmodz`)
+- **Mod**: Represents game modifications with support for multiple file formats (`.pak`, `.zip`, `.exmodz`, `.exmod`)
 - **Tool**: Represents modding tools and utilities
 
-Both models use `ActiveModel::Model` rather than `ActiveRecord::Base` and include two key concerns:
+Both models use `ActiveModel::Model` rather than `ActiveRecord::Base` and include key concerns:
 
 - `Firestorable`: Provides Firestore connection using credentials from Rails encrypted credentials
 - `Convertable`: Handles URL transformations (e.g., converting GitHub URLs to raw content URLs)
+- `Displayable`: Formatting helpers for display strings (updated_string, version_string, author_slug, readme fetching)
+- `GithubStats` (Mod only): Non-blocking async GitHub API stats with cache-first pattern and sentinel-based dogpile prevention
 
 ### Controllers
 
 Standard Rails controllers handle routing:
-- `ModsController`: Lists and displays mods, supports filtering by author
-- `ToolsController`: Lists tools by author (detail view commented out)
+- `ModsController`: Lists and displays mods, supports filtering by author, prev/next navigation, analytics
+- `ToolsController`: Lists tools by author
 - `HomeController`: Static home page
 - `InfoController`: Static info page
+- `LocalesController`: Handles locale switching via cookie persistence
+
+### i18n
+
+The application uses Rails i18n with all user-visible strings in `config/locales/en.yml`. The locale detection chain is: cookie → Accept-Language header → default (en). To add a new language, drop in a locale YAML file and add the symbol to `config.i18n.available_locales` in `config/application.rb`.
 
 ### Frontend
 
@@ -102,10 +109,14 @@ kamal console          # Open Rails console in production (alias configured)
 
 ## Testing Guidelines
 
-1. Use FactoryBot factories (in `spec/factories/`) for creating test data
-2. Request specs should test HTTP responses and routing
-3. Model specs should test business logic and concern behavior
-4. Since models don't use ActiveRecord, focus on testing the Firestore integration and data transformation methods
+1. Always start with a test for functional code changes
+2. Use FactoryBot factories (in `spec/factories/`) for creating test data
+3. Request specs should test HTTP responses and routing
+4. Model specs should test business logic and concern behavior
+5. Since models don't use ActiveRecord, focus on testing the Firestore integration and data transformation methods
+6. Firestore is unavailable in CI — request specs that hit `root_path` (routes to `mods#index`) will fail. Use `/home` for locale/routing tests instead
+7. Helper specs in `spec/helpers/` for view helper methods (e.g., `ModHelper`, `AnalyticsHelper`)
+8. View specs in `spec/views/` for template rendering
 
 ## Key Dependencies
 
