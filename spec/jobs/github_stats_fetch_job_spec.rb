@@ -7,7 +7,15 @@ RSpec.describe GithubStatsFetchJob do
   let(:cache_key) { "github/#{repo}" }
   let(:job) { described_class.new }
 
-  before { Rails.cache.clear }
+  around do |example|
+    original = Rails.cache
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+    example.run
+  ensure
+    Rails.cache = original
+  end
+
+  before { allow(Net::HTTP).to receive(:start) }
 
   def stub_http(response)
     allow(Net::HTTP).to receive(:start).and_yield(double(request: response))
@@ -28,7 +36,7 @@ RSpec.describe GithubStatsFetchJob do
       end
 
       before do
-        response = instance_double(Net::HTTPSuccess, body: body, is_a?: false)
+        response = double("Net::HTTPSuccess", body: body)
         allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
         stub_http(response)
       end
@@ -50,7 +58,7 @@ RSpec.describe GithubStatsFetchJob do
 
     context "with a non-success response" do
       before do
-        response = instance_double(Net::HTTPNotFound, is_a?: false)
+        response = double("Net::HTTPNotFound")
         allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(false)
         stub_http(response)
       end
@@ -74,13 +82,13 @@ RSpec.describe GithubStatsFetchJob do
 
     context "with an invalid repo string" do
       it "is a no-op for path-traversal-shaped input" do
-        expect(Net::HTTP).not_to receive(:start)
         job.perform("../../etc/passwd")
+        expect(Net::HTTP).not_to have_received(:start)
       end
 
       it "is a no-op for nil input" do
-        expect(Net::HTTP).not_to receive(:start)
         job.perform(nil)
+        expect(Net::HTTP).not_to have_received(:start)
       end
     end
   end

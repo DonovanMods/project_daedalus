@@ -5,7 +5,7 @@ module GithubStats
 
   # Restrict owner/repo characters to GitHub-legal values to prevent malformed
   # URL injection (path traversal, querystring smuggling, etc.).
-  GITHUB_SEGMENT = %r{[\w.-]+}
+  GITHUB_REPO_PATTERN = %r{(?:github\.com|raw\.githubusercontent\.com)/([\w.-]+)/([\w.-]+)}i
 
   # Extracts the GitHub owner/repo from any GitHub URL associated with this mod
   # Checks readme_url first, then file URLs
@@ -40,9 +40,8 @@ module GithubStats
 
   def extract_github_repo
     urls = [readme_url, *files.values].compact
-    pattern = %r{(?:github\.com|raw\.githubusercontent\.com)/(#{GITHUB_SEGMENT})/(#{GITHUB_SEGMENT})}i
     urls.each do |url|
-      match = url.to_s.match(pattern)
+      match = url.to_s.match(GITHUB_REPO_PATTERN)
       return "#{match[1]}/#{match[2].sub(/\.git$/, "")}" if match
     end
     nil
