@@ -10,8 +10,8 @@ Bundler.require(*Rails.groups)
 
 module ProjectDaedalus
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
+    # Initialize configuration defaults for Rails 8.0.
+    config.load_defaults 8.0
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -27,5 +27,8 @@ module ProjectDaedalus
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Solid Queue: connect to the dedicated queue database defined in database.yml
+    config.solid_queue.connects_to = { database: { writing: :queue } }
   end
 end

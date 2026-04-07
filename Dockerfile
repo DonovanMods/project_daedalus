@@ -52,5 +52,5 @@ USER rails:rails
 
 ENTRYPOINT ["/rails/docker-entrypoint.sh"]
 EXPOSE 3000
-CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+CMD ["bin/thrust", "bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 

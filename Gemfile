@@ -5,23 +5,27 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.4.9"
 
-gem "rails", "~> 7.2.3", ">= 7.2.3.1"
+gem "rails", "~> 8.0.0"
 
 gem "bootsnap", require: false
 gem "coderay", "~> 1.1"
 gem "date", require: false
-gem "dotenv-rails", "~> 2.8"
+gem "dotenv-rails", "~> 3.1"
 gem "google-cloud-firestore", "~> 2.8"
 gem "google-cloud-storage", "~> 1.44"
 gem "importmap-rails"
 gem "jbuilder"
+gem "kamal", "~> 2.0"
 gem "propshaft"
 gem "puma", "~> 6.0"
 gem "rails-healthcheck", "~>1.4"
 gem "redcarpet", "~> 3.5"
-gem "sqlite3", "~> 1.4"
+gem "solid_cache"
+gem "solid_queue"
+gem "sqlite3", ">= 2.1"
 gem "stimulus-rails"
 gem "tailwindcss-rails", "~>2.0"
+gem "thruster"
 gem "turbo-rails"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -45,7 +49,7 @@ group :development do
 
   # Auditing
   gem "abbrev" # Required for brakeman with Ruby 3.4+
-  gem "brakeman", "~> 5.4"
+  gem "brakeman", ">= 6.0"
   gem "bundler-audit", "~> 0.9.1"
 
   # Debugging
