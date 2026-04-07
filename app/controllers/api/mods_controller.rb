@@ -7,6 +7,11 @@ module Api
     # Cache the JSON response to reduce Firestore reads and limit abuse.
     # External consumers should respect Cache-Control / ETag headers.
     CACHE_TTL = 2.minutes
+    # Short TTL on the failure path so a Firestore outage doesn't translate
+    # into a tight retry loop hitting the upstream on every request.
+    ERROR_CACHE_TTL = 30.seconds
+    CACHE_KEY = "api/mods.json"
+    ERROR_CACHE_KEY = "api/mods.json:unavailable"
 
     # GET /api/mods.json
     # Returns a lightweight JSON feed of all mods for external consumers
@@ -16,7 +21,11 @@ module Api
       response.headers["Access-Control-Allow-Methods"] = "GET"
       response.headers["X-Content-Type-Options"] = "nosniff"
 
-      json = Rails.cache.fetch("api/mods.json", expires_in: CACHE_TTL) do
+      if Rails.cache.read(ERROR_CACHE_KEY)
+        return render json: { error: "Service temporarily unavailable" }, status: :service_unavailable
+      end
+
+      json = Rails.cache.fetch(CACHE_KEY, expires_in: CACHE_TTL) do
         mods = Mod.all
         {
           updated_at: Time.current.iso8601,
@@ -29,6 +38,9 @@ module Api
       render json: json
     rescue StandardError => e
       Rails.logger.error("API mods#index failed: #{e.class} - #{e.message}")
+      # Throttle retries to upstream during an outage by remembering the
+      # failure for a short window.
+      Rails.cache.write(ERROR_CACHE_KEY, true, expires_in: ERROR_CACHE_TTL)
       render json: { error: "Service temporarily unavailable" }, status: :service_unavailable
     end
 

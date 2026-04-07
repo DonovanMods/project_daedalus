@@ -74,12 +74,36 @@ RSpec.describe "API Mods" do
     it "returns 503 when Firestore is unavailable" do
       allow(Mod).to receive(:all).and_raise(StandardError, "Firestore connection failed")
       Rails.cache.delete("api/mods.json")
+      Rails.cache.delete("api/mods.json:unavailable")
 
       get "/api/mods"
 
       expect(response).to have_http_status(:service_unavailable)
       json = response.parsed_body
       expect(json["error"]).to eq("Service temporarily unavailable")
+    end
+
+    it "short-circuits to 503 while a recent failure is cached" do
+      original = Rails.cache
+      Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
+      call_count = 0
+      allow(Mod).to receive(:all) do
+        call_count += 1
+        raise StandardError, "Firestore connection failed"
+      end
+
+      get "/api/mods"
+      expect(response).to have_http_status(:service_unavailable)
+      expect(call_count).to eq(1)
+
+      # Subsequent request should be served from the failure sentinel
+      # without re-invoking Mod.all.
+      get "/api/mods"
+      expect(response).to have_http_status(:service_unavailable)
+      expect(call_count).to eq(1)
+    ensure
+      Rails.cache = original
     end
   end
 end
