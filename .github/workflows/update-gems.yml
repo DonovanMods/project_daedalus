@@ -58,7 +58,7 @@ jobs:
       # Fix #3: Run tests before committing (mirrors CI setup from rubyonrails.yml)
       - name: Set up database schema
         if: steps.audit.outputs.has_updates == 'true'
-        run: bin/rails db:schema:load
+        run: bin/rails db:prepare
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
