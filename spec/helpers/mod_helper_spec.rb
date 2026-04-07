@@ -70,4 +70,42 @@ RSpec.describe ModHelper, type: :helper do
       expect(helper.raw_url(url)).to eq(url)
     end
   end
+
+  describe "#updated_ago" do
+    around { |example| freeze_time { example.run } }
+
+    it "returns 'Unknown' when updated_at is nil" do
+      mod = build(:mod, updated_at: nil)
+      expect(helper.updated_ago(mod)).to eq("Unknown")
+    end
+
+    it "returns a time ago string for recent updates" do
+      mod = build(:mod, updated_at: 5.minutes.ago)
+      expect(helper.updated_ago(mod)).to match(/\d+ minutes? ago/)
+    end
+
+    it "returns a time ago string with days" do
+      mod = build(:mod, updated_at: 3.days.ago)
+      expect(helper.updated_ago(mod)).to match(/\d+ days? ago/)
+    end
+
+    it "returns a time ago string with months" do
+      mod = build(:mod, updated_at: 2.months.ago)
+      expect(helper.updated_ago(mod)).to match(/(?:about )?\d+ months? ago/)
+    end
+  end
+
+  describe "#mod_age" do
+    around { |example| freeze_time { example.run } }
+
+    it "returns nil when created_at is nil" do
+      mod = build(:mod, created_at: nil)
+      expect(helper.mod_age(mod)).to be_nil
+    end
+
+    it "returns a time ago string when created_at is present" do
+      mod = build(:mod, created_at: 6.months.ago)
+      expect(helper.mod_age(mod)).to match(/(?:about )?\d+ months?/)
+    end
+  end
 end

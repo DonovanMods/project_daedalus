@@ -14,6 +14,7 @@ RSpec.describe "mods/show.html.erb", type: :view do
 
   before do
     assign(:mod, mod)
+    assign(:all_mods, [mod])
     allow(view).to receive(:session).and_return({ origin_url: "/mods" })
   end
 
@@ -21,29 +22,21 @@ RSpec.describe "mods/show.html.erb", type: :view do
     expect { render }.not_to raise_error
   end
 
-  it "includes analytics button with correct path" do
-    render
-
-    # Check that the rendered HTML contains the expected path components
-    expect(rendered).to include(mod.author_slug)
-    expect(rendered).to include(mod.slug)
-    expect(rendered).to include("analytics=true")
-  end
-
-  it "analytics button path includes both author and slug" do
+  it "includes collapsible analytics section" do
     render
 
     doc = Nokogiri::HTML(rendered)
-    analytics_buttons = doc.css("button").select { |btn| btn.text.include?("Analytics") }
+    details = doc.css("details")
+    expect(details).not_to be_empty
 
-    expect(analytics_buttons).not_to be_empty
+    summary = details.first.css("summary")
+    expect(summary.text).to include("Analytics")
+  end
 
-    analytics_button = analytics_buttons.first
-    path = analytics_button["data-mods-path-param"]
-
-    expect(path).to include(mod.author_slug)
-    expect(path).to include(mod.slug)
-    expect(path).to include("analytics=true")
+  it "renders the analytics partial inside the dropdown" do
+    render
+    expect(rendered).to include("Analytics")
+    expect(rendered).to include("Mod Status")
   end
 
   context "with nil metadata" do
@@ -58,14 +51,15 @@ RSpec.describe "mods/show.html.erb", type: :view do
 
     before do
       assign(:mod, mod)
-      allow(view).to receive_messages(session: { origin_url: "/mods" }, params: { analytics: "true" })
+      assign(:all_mods, [mod])
+      allow(view).to receive(:session).and_return({ origin_url: "/mods" })
     end
 
-    it "renders without error when metadata is nil and analytics requested" do
+    it "renders without error when metadata is nil" do
       expect { render }.not_to raise_error
     end
 
-    it "does not render analytics partial when metadata is nil" do
+    it "shows no analytics data message when metadata is nil" do
       render
       expect(rendered).to include("No analytics data available")
       expect(rendered).not_to include("All Clear")

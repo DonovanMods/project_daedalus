@@ -75,20 +75,21 @@ RSpec.describe "Mods Show", type: :request do
       end
     end
 
-    context "with analytics parameter" do
-      it "renders analytics section when analytics=true param" do
+    context "with analytics dropdown" do
+      it "renders collapsible analytics section on mod detail page" do
         mod_with_meta = build(:mod, name: "Meta Mod", author: "Author", metadata: { status: { errors: [], warnings: [] } })
         allow(Mod).to receive(:all).and_return([mod_with_meta])
 
-        get mod_detail_path(author: mod_with_meta.author_slug, slug: mod_with_meta.slug, analytics: true)
+        get mod_detail_path(author: mod_with_meta.author_slug, slug: mod_with_meta.slug)
         expect(response).to have_http_status(:success)
-        expect(response.body).to include("Analytics")
+        expect(response.body).to include("Analytics for Mod Authors")
+        expect(response.body).to include("Mod Status")
       end
 
-      it "does not render analytics section without param" do
+      it "renders analytics inside a details element" do
         get mod_detail_path(author: mod1.author_slug, slug: mod1.slug)
-        # The word "analytics" appears in a link, but the analytics partial should not render
-        expect(response.body).not_to include('render("analytics"')
+        expect(response.body).to include("<details")
+        expect(response.body).to include("<summary")
       end
     end
 

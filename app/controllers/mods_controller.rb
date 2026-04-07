@@ -20,20 +20,42 @@ class ModsController < ApplicationController
   end
 
   def show
-    @mod = mods.find do |mod|
-      mod.author_slug.casecmp(params[:author].parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
+    @mod = find_mod_by_slug
+    return handle_mod_not_found unless @mod
+
+    @author_mods = other_mods_by_author(@mod)
+    @prev_mod, @next_mod = neighboring_mods(@mod)
+    @all_mods = mods
+  end
+
+  private
+
+  def find_mod_by_slug
+    mods.find do |mod|
+      mod.author_slug.casecmp(params[:author].parameterize)&.zero? &&
+        mod.slug.casecmp(params[:slug])&.zero?
     end
+  end
 
-    return unless @mod.nil?
-
+  def handle_mod_not_found
     flash[:error] = t("mod-not-found", author: params[:author], slug: params[:slug])
-
     return redirect_to mods_author_path(author: params[:author]) if params[:author].present?
 
     redirect_to mods_path
   end
 
-  private
+  def other_mods_by_author(mod)
+    mods.select { |m| m.author == mod.author && m.slug != mod.slug }
+  end
+
+  def neighboring_mods(mod)
+    # mods is already sorted by name via Mod.fetch_all
+    sorted = mods
+    idx = sorted.index { |m| m.slug == mod.slug && m.author_slug == mod.author_slug }
+    prev_mod = idx&.positive? ? sorted[idx - 1] : nil
+    next_mod = idx && idx < sorted.size - 1 ? sorted[idx + 1] : nil
+    [prev_mod, next_mod]
+  end
 
   def filter_by_author
     return if params[:author].blank?

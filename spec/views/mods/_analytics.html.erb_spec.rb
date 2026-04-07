@@ -3,17 +3,20 @@
 require "rails_helper"
 
 RSpec.describe "mods/_analytics.html.erb", type: :view do
+  let(:mod) { Mod.new(name: "Test Mod", author: "Tester", files: { exmodz: "https://example.com/test.exmodz" }) }
+  let(:all_mods) { [mod] }
+
   context "with errors and warnings" do
     it "renders errors in red" do
       metadata = { errors: ["Missing pak file"], warnings: [] }
-      render partial: "mods/analytics", locals: { metadata: metadata }
+      render partial: "mods/analytics", locals: { mod: mod, all_mods: all_mods, metadata: metadata }
       expect(rendered).to include("text-red-500")
       expect(rendered).to include("Missing pak file")
     end
 
     it "renders warnings in yellow" do
       metadata = { errors: [], warnings: ["Outdated version"] }
-      render partial: "mods/analytics", locals: { metadata: metadata }
+      render partial: "mods/analytics", locals: { mod: mod, all_mods: all_mods, metadata: metadata }
       expect(rendered).to include("text-yellow-500")
       expect(rendered).to include("Outdated version")
     end
@@ -22,7 +25,7 @@ RSpec.describe "mods/_analytics.html.erb", type: :view do
   context "with no issues" do
     it "shows All Clear" do
       metadata = { errors: [], warnings: [] }
-      render partial: "mods/analytics", locals: { metadata: metadata }
+      render partial: "mods/analytics", locals: { mod: mod, all_mods: all_mods, metadata: metadata }
       expect(rendered).to include("All Clear")
     end
   end
@@ -30,7 +33,7 @@ RSpec.describe "mods/_analytics.html.erb", type: :view do
   context "with nil metadata" do
     it "handles nil gracefully" do
       expect do
-        render partial: "mods/analytics", locals: { metadata: nil }
+        render partial: "mods/analytics", locals: { mod: mod, all_mods: all_mods, metadata: nil }
       end.not_to raise_error
       expect(rendered).to include("No analytics data available")
     end
@@ -39,13 +42,13 @@ RSpec.describe "mods/_analytics.html.erb", type: :view do
   context "with missing keys" do
     it "handles metadata without errors key" do
       expect do
-        render partial: "mods/analytics", locals: { metadata: { warnings: ["test"] } }
+        render partial: "mods/analytics", locals: { mod: mod, all_mods: all_mods, metadata: { warnings: ["test"] } }
       end.not_to raise_error
     end
 
     it "handles metadata without warnings key" do
       expect do
-        render partial: "mods/analytics", locals: { metadata: { errors: ["test"] } }
+        render partial: "mods/analytics", locals: { mod: mod, all_mods: all_mods, metadata: { errors: ["test"] } }
       end.not_to raise_error
     end
   end
