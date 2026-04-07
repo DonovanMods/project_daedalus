@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Locale detection", type: :request do
-  describe "set_locale before_action" do
+  describe "switch_locale around_action" do
     it "defaults to English when no cookie or header is set" do
       get "/home"
 

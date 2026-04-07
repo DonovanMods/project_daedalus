@@ -3,12 +3,16 @@
 class ApplicationController < ActionController::Base
   include ActionView::Helpers::SanitizeHelper
 
-  before_action :set_locale
+  around_action :switch_locale
 
   private
 
-  def set_locale
-    I18n.locale = locale_from_cookie || locale_from_header || I18n.default_locale
+  # Use around_action + I18n.with_locale so the locale is scoped to the
+  # current request. Setting I18n.locale directly mutates a thread-local
+  # that can leak between requests when the same thread is reused.
+  def switch_locale(&)
+    locale = locale_from_cookie || locale_from_header || I18n.default_locale
+    I18n.with_locale(locale, &)
   end
 
   def locale_from_cookie
