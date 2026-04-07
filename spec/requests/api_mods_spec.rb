@@ -83,27 +83,28 @@ RSpec.describe "API Mods" do
       expect(json["error"]).to eq("Service temporarily unavailable")
     end
 
-    it "short-circuits to 503 while a recent failure is cached" do
-      original = Rails.cache
-      Rails.cache = ActiveSupport::Cache::MemoryStore.new
-
-      call_count = 0
-      allow(Mod).to receive(:all) do
-        call_count += 1
-        raise StandardError, "Firestore connection failed"
+    context "when a recent failure has been cached" do
+      around do |example|
+        original = Rails.cache
+        Rails.cache = ActiveSupport::Cache::MemoryStore.new
+        example.run
+      ensure
+        Rails.cache = original
       end
 
-      get "/api/mods"
-      expect(response).to have_http_status(:service_unavailable)
-      expect(call_count).to eq(1)
+      it "short-circuits to 503 without re-invoking the upstream" do
+        call_count = 0
+        allow(Mod).to receive(:all) do
+          call_count += 1
+          raise StandardError, "Firestore connection failed"
+        end
 
-      # Subsequent request should be served from the failure sentinel
-      # without re-invoking Mod.all.
-      get "/api/mods"
-      expect(response).to have_http_status(:service_unavailable)
-      expect(call_count).to eq(1)
-    ensure
-      Rails.cache = original
+        get "/api/mods"
+        get "/api/mods"
+
+        expect(response).to have_http_status(:service_unavailable)
+        expect(call_count).to eq(1)
+      end
     end
   end
 end
