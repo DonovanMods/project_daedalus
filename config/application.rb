@@ -27,5 +27,8 @@ module ProjectDaedalus
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Solid Queue: connect to the dedicated queue database defined in database.yml
+    config.solid_queue.connects_to = { database: { writing: :queue } }
   end
 end
