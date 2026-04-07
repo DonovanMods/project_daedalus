@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>">
   <head>
-    <title><%= content_for?(:title) ? "#{yield(:title)} | ProjectDaedalus" : "ProjectDaedalus — Icarus Mods & Tools" %></title>
+    <title><%= content_for?(:title) ? "#{yield(:title)} | #{t('layout.site_name')}" : t('layout.site_title') %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Browse and download mods and tools for the Icarus survival game." %>">
-    <meta property="og:title" content="<%= content_for?(:title) ? yield(:title) : "ProjectDaedalus" %>">
-    <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Browse and download mods and tools for the Icarus survival game." %>">
+    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : t('layout.default_description') %>">
+    <meta property="og:title" content="<%= content_for?(:title) ? yield(:title) : t('layout.site_name') %>">
+    <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : t('layout.default_description') %>">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="ProjectDaedalus">
+    <meta property="og:site_name" content="<%= t('layout.site_name') %>">
     <% if content_for?(:og_image) %><meta property="og:image" content="<%= yield(:og_image) %>"><% end %>
     <%= favicon_link_tag asset_path("favicon.png") %>
     <%= csrf_meta_tags %>

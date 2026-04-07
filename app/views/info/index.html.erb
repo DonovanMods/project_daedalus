@@ -10,16 +10,16 @@
   <%# Page Header %>
   <div class="text-center mb-8">
     <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 text-icarus-500">
-      Icarus Modding Information
+      <%= t('info.title') %>
     </h1>
     <p class="text-slate-600 dark:text-slate-400 text-base md:text-lg max-w-2xl mx-auto">
-      Community links and resources for Icarus modding.
+      <%= t('info.subtitle') %>
     </p>
     <div class="gold-line w-48 mx-auto mt-4"></div>
   </div>
 
   <%# Section Title %>
-  <h2 class="text-xl md:text-2xl font-bold mb-6 text-center text-icarus-500">Icarus Modding Links</h2>
+  <h2 class="text-xl md:text-2xl font-bold mb-6 text-center text-icarus-500"><%= t('info.links_heading') %></h2>
 
   <%# Link Cards %>
   <div class="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
@@ -27,26 +27,24 @@
     <%# Discord Card %>
     <%= link_to "https://discord.gg/linkarus-icarus-modding-936621749733302292", target: "_blank", class: "info-card block rounded-xl p-6 text-center border-2 border-icarus-500 bg-slate-100 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-900 no-underline" do %>
       <div class="text-4xl mb-3">&#128172;</div>
-      <h3 class="text-xl font-bold mb-2 text-icarus-500">The Icarus Modding Discord Server</h3>
+      <h3 class="text-xl font-bold mb-2 text-icarus-500"><%= t('info.discord_heading') %></h3>
       <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-        This is the unofficial modding Discord server for Icarus.
-        It's a great place to get help with modding, ask questions, and meet other modders.
+        <%= t('info.discord_description') %>
       </p>
       <span class="inline-block px-5 py-2 rounded-md font-semibold text-sm text-white bg-icarus-500 hover:bg-icarus-600">
-        Join our Discord
+        <%= t('info.discord_link') %>
       </span>
     <% end %>
 
     <%# Upvote Card %>
     <%= link_to "https://feedback.projectdaedalus.app/", target: "_blank", class: "info-card block rounded-xl p-6 text-center border-2 border-icarus-500 bg-slate-100 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-900 no-underline" do %>
       <div class="text-4xl mb-3">&#11014;&#65039;</div>
-      <h3 class="text-xl font-bold mb-2 text-icarus-500">The Icarus Modding Upvote Page</h3>
+      <h3 class="text-xl font-bold mb-2 text-icarus-500"><%= t('info.upvote_heading') %></h3>
       <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-        Upvote or add new mods you'd like to see for Icarus.
-        It's a great way to let us know what you want to see in the future.
+        <%= t('info.upvote_description') %>
       </p>
       <span class="inline-block px-5 py-2 rounded-md font-semibold text-sm text-white bg-icarus-500 hover:bg-icarus-600">
-        Modding Upvote Page
+        <%= t('info.upvote_link') %>
       </span>
     <% end %>
 

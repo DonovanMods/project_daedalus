@@ -1,33 +1,100 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   "true": "foo"
-#
-# To learn more, please read the Rails Internationalization guide
-# available at https://guides.rubyonrails.org/i18n.html.
-
 en:
+  language_name: "English"
+
+  # Navigation
+  nav:
+    mods: "Mods"
+    tools: "Tools"
+    info: "Info"
+    language: "Language"
+
+  # Layout / meta
+  layout:
+    site_name: "ProjectDaedalus"
+    site_title: "ProjectDaedalus — Icarus Mods & Tools"
+    default_description: "Browse and download mods and tools for the Icarus survival game."
+
+  # Home / splash page
+  home:
+    welcome: "Welcome to Project Daedalus"
+    what_is: "What is Project Daedalus?"
+    description_html: "Project Daedalus is a modding platform for the game %{link}."
+    community_html: "This is a community-driven project and you can find out more on the unofficial modding %{link}"
+    card_mods: "Mods"
+    card_mods_desc: "Explore the full collection of community-made mods for Icarus. EXMOD & EXMODZ formats supported."
+    card_tools: "Tools"
+    card_tools_desc: "Calculators, planners, and utilities to create and manage your own Icarus mods."
+    card_tools_cta: "View Tools"
+    card_info: "Info"
+    card_info_desc: "Guides, patch notes, and everything you need to know about Icarus modding."
+    card_info_cta: "Learn More"
+    community_heading: "Join the Community"
+    discord_cta: "Join the Discord Server"
+    feedback_prompt_html: "Have feedback for Project Daedalus? Share it on %{link}"
+    feedback_link: "our feedback page"
+
+  # Mods index
+  mods:
+    title: "Icarus Mods"
+    meta_description: "Browse %{count} community mods for the Icarus survival game. Filter by author, search, and download."
+    filter_all: "All"
+    filter_by_author: "Filter By Author"
+    search_placeholder: "Search mods..."
+    show_all: "Show All Mods"
+    feedback_prompt_html: "Don't see a feature you're looking for? Go upvote or add it on %{link}"
+    feedback_link: "the Icarus Modding Upvote Page"
+    click_hint: "Click on any row to view additional mod details"
+    mods_displayed: "%{count} mods displayed"
+    no_results: "No mods match your query"
+    subtitle: "Browse and download community-made mods for the Icarus survival game."
+    download: "Download %{type}"
+    footer_feedback_html: "Submit or upvote mod requests on %{link}"
+    footer_feedback_link: "Project Daedalus Feedback"
+    table:
+      name: "Name"
+      download: "Download"
+      author: "Author"
+      version: "Version"
+      week: "Week"
+      description: "Description"
+
+  # Mod detail (show)
+  mod:
+    title: "%{name} by %{author}"
+    by_author: "By %{author}"
+    exmodz_note: "This Mod includes an EXMOD formatted file, which doesn't need updates each week."
+    exmodz_recommend: "We recommend you use a Mod Manager to install this mod"
+    analytics_link: "Analytics for Mod Authors"
+    back_to_list: "Back to List"
+    download: "DOWNLOAD %{type}"
+    not_found: "Mod %{author}/%{slug} was not found"
+
+  # Keep legacy key working
   mod-not-found: "Mod %{author}/%{slug} was not found"
+
+  # Analytics partial
+  analytics:
+    title: "Analytics"
+    all_clear: "All Clear"
+    no_data: "No analytics data available"
+
+  # Info page
+  info:
+    title: "Icarus Modding Information"
+    subtitle: "Community links and resources for Icarus modding."
+    links_heading: "Icarus Modding Links"
+    discord_heading: "The Icarus Modding Discord Server"
+    discord_link: "Join our Discord"
+    discord_description: "This is the unofficial modding Discord server for Icarus. It's a great place to get help with modding, ask questions, and meet other modders."
+    upvote_heading: "The Icarus Modding Upvote Page"
+    upvote_link: "Modding Upvote Page"
+    upvote_description: "This is a page where you can upvote or add new mods you'd like to see for Icarus. It's a great way to let us know what you want to see in the future."
+
+  # Tools page
+  tools:
+    title: "Icarus Modding Tools"
+    meta_description: "Download tools for modding the Icarus survival game."
+    subtitle: "Download tools and utilities for modding the Icarus survival game."
+    download: "DOWNLOAD"
+    by_author: "by %{author}"
+    version: "version %{version}"

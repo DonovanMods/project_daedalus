@@ -10,7 +10,7 @@
         data-mods-file-name-param="<%= mod.get_name(type) %>"
         type="button"
         class="z-10 inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 text-xs font-medium text-white rounded-md shadow-sm bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
-        <span class="hidden sm:inline">Download </span><%= type.to_s.upcase %>
+        <span class="hidden sm:inline"><%= t('mods.download', type: type.to_s.upcase) %></span><span class="sm:hidden"><%= type.to_s.upcase %></span>
       </button>
     <% end %>
   </td>

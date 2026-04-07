@@ -12,13 +12,10 @@
   <div class="pt-6 pb-4 text-center md:pt-8 md:pb-6">
     <%= image_tag "daedalus-logo.png", width: "96", class: "mx-auto mb-4 drop-shadow-lg hero-shimmer", alt: "Daedalus Logo" %>
     <h1 class="mb-3 text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl text-icarus-500">
-      Project Daedalus
+      <%= t('home.welcome') %>
     </h1>
     <p class="max-w-2xl mx-auto text-base md:text-lg lg:text-xl text-slate-600 dark:text-slate-400">
-      Your home for
-      <%= link_to "Icarus", "https://surviveicarus.com/", class: "font-semibold text-icarus-500 hover:text-icarus-400", target: "_blank" %>
-      mods, tools, and community resources.
-      Browse, download, and enhance your survival experience.
+      <%= t('home.description_html', link: link_to("Icarus", "https://surviveicarus.com/", class: "font-semibold text-icarus-500 hover:text-icarus-400", target: "_blank")) %>
     </p>
   </div>
 
@@ -31,13 +28,12 @@
     <%= link_to mods_path, class: "no-underline group" do %>
       <div class="flex flex-col items-center p-6 md:p-8 text-center rounded-xl card-lift border-2 border-icarus-500 bg-gradient-to-b from-icarus-100 to-white dark:from-icarus-900 dark:to-slate-800 group-hover:border-icarus-400">
         <div class="mb-3 text-4xl md:text-5xl">🎮</div>
-        <h2 class="mb-2 text-xl font-bold md:text-2xl text-icarus-600 dark:text-icarus-400">Browse Mods</h2>
+        <h2 class="mb-2 text-xl font-bold md:text-2xl text-icarus-600 dark:text-icarus-400"><%= t('home.card_mods') %></h2>
         <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
-          Explore the full collection of community-made mods for Icarus.
-          EXMOD &amp; EXMODZ formats supported.
+          <%= t('home.card_mods_desc') %>
         </p>
         <span class="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white rounded-md bg-icarus-500 group-hover:bg-icarus-600">
-          View All Mods →
+          <%= t('mods.show_all') %> →
         </span>
       </div>
     <% end %>
@@ -46,12 +42,12 @@
     <%= link_to tools_path, class: "no-underline group" do %>
       <div class="flex flex-col items-center p-6 text-center transition-all border rounded-xl card-lift border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500">
         <div class="mb-3 text-3xl md:text-4xl">🛠️</div>
-        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400">Modding Tools</h2>
+        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400"><%= t('home.card_tools') %></h2>
         <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
-          Calculators, planners, and utilities to create and manage your own Icarus mods.
+          <%= t('home.card_tools_desc') %>
         </p>
         <span class="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white bg-blue-600 rounded-md group-hover:bg-blue-700">
-          View Tools →
+          <%= t('home.card_tools_cta') %> →
         </span>
       </div>
     <% end %>
@@ -60,12 +56,12 @@
     <%= link_to info_path, class: "no-underline group" do %>
       <div class="flex flex-col items-center p-6 text-center transition-all border rounded-xl card-lift border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500">
         <div class="mb-3 text-3xl md:text-4xl">📖</div>
-        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400">Information</h2>
+        <h2 class="mb-2 text-lg font-bold md:text-xl text-blue-600 dark:text-blue-400"><%= t('home.card_info') %></h2>
         <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">
-          Guides, patch notes, and everything you need to know about Icarus modding.
+          <%= t('home.card_info_desc') %>
         </p>
         <span class="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white bg-blue-600 rounded-md group-hover:bg-blue-700">
-          Learn More →
+          <%= t('home.card_info_cta') %> →
         </span>
       </div>
     <% end %>
@@ -75,20 +71,19 @@
 
   <%# Community Section %>
   <div class="max-w-2xl mx-auto text-center">
-    <h2 class="mb-3 text-xl font-bold md:text-2xl text-icarus-500">Join the Community</h2>
+    <h2 class="mb-3 text-xl font-bold md:text-2xl text-icarus-500"><%= t('home.community_heading') %></h2>
     <p class="mb-5 text-slate-600 dark:text-slate-400">
-      Connect with fellow Icarus modders, get help, share your creations, and stay up to date.
+      <%= t('home.community_html', link: link_to("Discord", "https://discord.gg/linkarus-icarus-modding-936621749733302292", class: "font-semibold text-icarus-500 hover:text-icarus-400", target: "_blank")) %>
     </p>
     <%= link_to "https://discord.gg/linkarus-icarus-modding-936621749733302292", target: "_blank", class: "no-underline" do %>
       <span class="inline-flex items-center px-6 py-3 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700">
-        💬 Join the Discord Server →
+        💬 <%= t('home.discord_cta') %> →
       </span>
     <% end %>
   </div>
 
   <%# Feedback Link %>
   <div class="max-w-2xl mx-auto mt-8 mb-4 text-sm text-center text-slate-500 dark:text-slate-400">
-    Want to see a new mod?
-    <%= link_to "Submit or upvote mod requests", "https://feedback.projectdaedalus.app/", target: "_blank", class: "anchor-blue" %>
+    <%= t('home.feedback_prompt_html', link: link_to(t('home.feedback_link'), "https://feedback.projectdaedalus.app/", target: "_blank", class: "font-medium text-icarus-500 hover:text-icarus-400")) %>
   </div>
 </section>

@@ -1,5 +1,5 @@
 <div class="p-2 mb-4 border-2 border-icarus-500">
-  <h3 class="px-2 pb-3 text-blue-500">Analytics</h3>
+  <h3 class="px-2 pb-3 text-blue-500"><%= t('analytics.title') %></h3>
   <div class="flex flex-col flex-auto">
     <% if metadata.present? %>
       <% %i[errors warnings].each do |type| %>
@@ -13,10 +13,10 @@
         <% end %>
       <% end %>
       <% if metadata[:warnings].blank? && metadata[:errors].blank? %>
-        <div class="px-2 ml-5 text-green-500">All Clear</div>
+        <div class="px-2 ml-5 text-green-500"><%= t('analytics.all_clear') %></div>
       <% end %>
     <% else %>
-      <div class="px-2 ml-5 text-slate-500">No analytics data available</div>
+      <div class="px-2 ml-5 text-slate-500"><%= t('analytics.no_data') %></div>
     <% end %>
   </div>
 </div>

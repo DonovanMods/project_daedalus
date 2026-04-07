@@ -27,5 +27,11 @@ module ProjectDaedalus
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # i18n configuration
+    config.i18n.default_locale = :en
+    # Add validated locale symbols here as translations are reviewed (e.g. %i[en es fr de])
+    config.i18n.available_locales = %i[en]
+    config.i18n.fallbacks = true
   end
 end
