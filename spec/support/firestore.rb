@@ -16,11 +16,19 @@ RSpec.configure do |config|
     end
   end
 
+  # Default stub: NexusMod.all returns [] so controller specs that only
+  # set up Firestore mocks for Mod can continue to work without knowing
+  # about Nexus integration. Specs that exercise NexusMod itself should
+  # override with `allow(NexusMod).to receive(:all).and_call_original`.
+  config.before do
+    allow(NexusMod).to receive(:all).and_return([]) if defined?(NexusMod)
+  end
+
   # Reset memoized Firestore clients after each test to prevent
   # RSpec test doubles from leaking across examples via the
   # class-level @firestore ||= memoization in Firestorable.
   config.after do
-    [Mod, Tool].each do |klass|
+    [Mod, Tool, NexusMod].each do |klass|
       klass.instance_variable_set(:@firestore, nil) if klass.instance_variable_defined?(:@firestore)
     end
     if defined?(SiteContent) && SiteContent.respond_to?(:instance_variable_set) &&
