@@ -90,7 +90,16 @@ class ModsController < ApplicationController
   end
 
   def mods
-    @mods ||= Mod.all
+    @mods ||= combined_mods
+  end
+
+  # Merges curated mods (Firestore `mods`) with mods synced from the
+  # Nexus API (Firestore `nexus_mods`). Curated mods take precedence
+  # when a name+author match exists.
+  def combined_mods
+    (Mod.all + NexusMod.all)
+      .uniq { |mod| [mod.name.to_s.downcase, mod.author_slug] }
+      .sort_by { |mod| mod.name.to_s }
   end
 
   def set_session

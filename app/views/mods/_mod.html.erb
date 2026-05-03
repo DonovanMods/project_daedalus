@@ -1,9 +1,21 @@
-<tr id="<%= dom_id mod %>" class="cursor-pointer row-lift border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/70"
+<tr id="<%= dom_id mod %>" class="row-lift border-t border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/70 <%= 'cursor-pointer' unless mod.nexus_source? %>"
+    <% unless mod.nexus_source? %>
     data-action="click->mods#navigateTo"
-    data-mods-path-param="<%= mod_detail_path(author: mod.author_slug, slug: mod.slug) %>">
-  <td class="p-2 sm:p-3 font-medium text-slate-800 dark:text-slate-200"><%= mod.name %></td>
+    data-mods-path-param="<%= mod_detail_path(author: mod.author_slug, slug: mod.slug) %>"
+    <% end %>>
+  <td class="p-2 sm:p-3 font-medium text-slate-800 dark:text-slate-200">
+    <%= mod.name %>
+    <% if mod.nexus_source? %>
+      <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-icarus-500/10 text-icarus-500 align-middle" title="Synced from Nexus Mods">NEXUS</span>
+    <% end %>
+  </td>
   <td class="p-2 sm:p-3 whitespace-nowrap">
-    <% if type = mod.preferred_type %>
+    <% if mod.nexus_source? %>
+      <a href="<%= mod.mod_page_url %>" target="_blank" rel="noopener noreferrer"
+         class="z-10 inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 text-xs font-medium text-white rounded-md shadow-sm bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
+        <span class="hidden sm:inline">View on </span>Nexus &nearr;
+      </a>
+    <% elsif type = mod.preferred_type %>
       <button
         data-action="mods#download"
         data-mods-url-param="<%= raw_url(mod.get_url(type)) %>"
