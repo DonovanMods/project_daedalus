@@ -20,7 +20,7 @@ RSpec.configure do |config|
   # RSpec test doubles from leaking across examples via the
   # class-level @firestore ||= memoization in Firestorable.
   config.after do
-    [Mod, Tool].each do |klass|
+    [Mod, Tool, NexusMod].each do |klass|
       klass.instance_variable_set(:@firestore, nil) if klass.instance_variable_defined?(:@firestore)
     end
     if defined?(SiteContent) && SiteContent.respond_to?(:instance_variable_set) &&

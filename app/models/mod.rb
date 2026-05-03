@@ -104,6 +104,12 @@ class Mod
     name.parameterize
   end
 
+  # Always false on curated mods; NexusMod overrides this to true.
+  # Used by the _mod partial to differentiate render styles.
+  def nexus_source?
+    false
+  end
+
   private
 
   def filename(url)
