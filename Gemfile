@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.4.9"
+ruby "4.0.6"
 
 gem "rails", "~> 7.2.3", ">= 7.2.3.1"
 
@@ -49,7 +49,7 @@ group :development do
   gem "bundler-audit", "~> 0.9.1"
 
   # Debugging
-  gem "pry", "~> 0.14.2"
+  gem "pry", "~> 0.16"
   gem "pry-rails", "~> 0.3.9"
 
   # Ruby Linter [https://github.com/rubocop/rubocop-rails]
