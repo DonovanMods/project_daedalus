@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "4.0.6"
 
-gem "rails", "~> 7.2.3", ">= 7.2.3.1"
+gem "rails", "~> 8.0.0"
 
 gem "bootsnap", require: false
 gem "coderay", "~> 1.1"
@@ -19,7 +19,10 @@ gem "propshaft"
 gem "puma", "~> 6.0"
 gem "rails-healthcheck", "~>1.4"
 gem "redcarpet", "~> 3.5"
-gem "sqlite3", "~> 1.4"
+gem "solid_cable"
+gem "solid_cache"
+gem "solid_queue"
+gem "sqlite3", "~> 2.1"
 gem "stimulus-rails"
 gem "tailwindcss-rails", "~>2.0"
 gem "turbo-rails"
