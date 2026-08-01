@@ -23,7 +23,7 @@ gem "solid_cache"
 gem "solid_queue"
 gem "sqlite3", "~> 2.1"
 gem "stimulus-rails"
-gem "tailwindcss-rails", "~>2.0"
+gem "tailwindcss-rails", "~> 4.6"
 gem "turbo-rails"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

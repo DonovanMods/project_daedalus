@@ -1,0 +1,53 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter var", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --background-image-topo-light: url('/bg-topography-light.svg');
+  --background-image-topo-dark: url('/bg-topography-dark.svg');
+
+  --color-icarus-100: #fcefd2;
+  --color-icarus-200: #f9dea4;
+  --color-icarus-300: #f7ce77;
+  --color-icarus-400: #f4bd49;
+  --color-icarus-500: #f1ad1c;
+  --color-icarus-600: #c18a16;
+  --color-icarus-700: #916811;
+  --color-icarus-800: #60450b;
+  --color-icarus-900: #302306;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility anchor-blue {
+  @apply text-blue-700 dark:text-blue-500 no-underline;
+  &:visited {
+    @apply text-blue-700 dark:text-blue-500 no-underline;
+  }
+  &:hover {
+    @apply text-blue-500 dark:text-blue-300 no-underline;
+  }
+}

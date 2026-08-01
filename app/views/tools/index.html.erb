@@ -8,7 +8,7 @@
   .dark .tool-card:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.4); }
 </style>
 
-<div data-controller="mods" class="max-w-screen-2xl mx-auto px-4 py-6 md:py-10">
+<div data-controller="mods" class="max-w-(--breakpoint-2xl) mx-auto px-4 py-6 md:py-10">
   <%# Page Header %>
   <div class="mb-8 text-center">
     <h1 class="mb-3 text-3xl font-extrabold tracking-tight md:text-4xl lg:text-5xl text-icarus-500">
@@ -24,7 +24,7 @@
   <div class="grid gap-6 lg:grid-cols-2">
     <% @tools.each do |tool| %>
       <div id="<%= tool.slug %>"
-           class="flex flex-col p-6 border-2 tool-card rounded-xl border-icarus-500 bg-gradient-to-b from-slate-100 to-white dark:from-slate-800 dark:to-slate-900">
+           class="flex flex-col p-6 border-2 tool-card rounded-xl border-icarus-500 bg-linear-to-b from-slate-100 to-white dark:from-slate-800 dark:to-slate-900">
 
         <%# Header: Name + Author + Download %>
         <div id="<%= tool.slug %>-header" class="flex items-start justify-between mb-4">
@@ -32,13 +32,13 @@
             <h2 class="text-xl font-bold md:text-2xl text-icarus-500"><%= tool.name %></h2>
             <p class="text-sm text-blue-400">by <%= tool.author %></p>
           </div>
-          <div class="flex flex-col items-end flex-shrink-0 ml-4">
+          <div class="flex flex-col items-end shrink-0 ml-4">
             <button
               data-action="mods#download"
               data-mods-url-param="<%= raw_url(tool.url) %>"
               data-mods-file-name-param="<%= tool.filename %>"
               type="button"
-              class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md bg-icarus-500 hover:bg-icarus-600 focus:outline-none focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
+              class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md bg-icarus-500 hover:bg-icarus-600 focus:outline-hidden focus:ring-2 focus:ring-icarus-400 focus:ring-offset-2">
               Download
             </button>
             <span class="mt-1 text-xs text-slate-500">v<%= tool.version %></span>
