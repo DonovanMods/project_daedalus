@@ -10,14 +10,13 @@ gem "rails", "~> 8.1.3", ">= 8.1.3.1"
 gem "bootsnap", require: false
 gem "coderay", "~> 1.1"
 gem "date", require: false
-gem "dotenv-rails", "~> 2.8"
-gem "google-cloud-firestore", "~> 2.8"
-gem "google-cloud-storage", "~> 1.44"
+gem "dotenv-rails", "~> 3.2"
+gem "google-cloud-firestore", "~> 3.2"
+gem "google-cloud-storage", "~> 1.62"
 gem "importmap-rails"
 gem "jbuilder"
 gem "propshaft"
-gem "puma", "~> 6.0"
-gem "rails-healthcheck", "~>1.4"
+gem "puma", "~> 8.0"
 gem "redcarpet", "~> 3.5"
 gem "solid_cable"
 gem "solid_cache"
@@ -44,11 +43,8 @@ group :development, :test do
 end
 
 group :development do
-  gem "erb_lint", "~> 0.3.1"
-
   # Auditing
-  gem "abbrev" # Required for brakeman with Ruby 3.4+
-  gem "brakeman", "~> 5.4"
+  gem "brakeman", "~> 8.0"
   gem "bundler-audit", "~> 0.9.1"
 
   # Debugging

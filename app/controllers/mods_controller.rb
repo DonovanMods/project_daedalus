@@ -21,7 +21,7 @@ class ModsController < ApplicationController
 
   def show
     @mod = mods.find do |mod|
-      mod.author_slug.casecmp(params[:author].parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
+      mod.author_slug.casecmp(params.expect(:author).parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
     end
 
     return unless @mod.nil?
