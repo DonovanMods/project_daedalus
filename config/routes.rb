@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  Healthcheck.routes(self)
+  # Can be used by load balancers and uptime monitors to verify that
+  # the app is live.
+  get "up" => "rails/health#show", as: :rails_health_check
 
   get "home", to: "home#index"
   get "info", to: "info#index"
