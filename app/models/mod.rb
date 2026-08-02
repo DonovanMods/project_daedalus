@@ -4,9 +4,11 @@ class Mod
   include ActiveModel::Model
   include Convertable
   include Displayable
+  include Downloadable
   include Firestorable
 
-  SORTKEYS = %w[author name].freeze
+  SORTKEYS = %w[updated name download author].freeze
+  SORT_DEFAULT_DIRS = { "updated" => "desc" }.freeze
   ATTRIBUTES = %i[author compatibility description files id image_url metadata name readme_url timestamps version
                   created_at updated_at].freeze
 
@@ -44,75 +46,38 @@ class Mod
     Rails.cache.delete("firestore/mods")
   end
 
-  def files?
-    files.keys.any?
+  def self.default_dir_for(key)
+    SORT_DEFAULT_DIRS.fetch(key, "asc")
   end
 
-  def pak?
-    files.key?(:pak)
+  # Sorts a listing of mods for the index table. `key` must be in SORTKEYS
+  # (unknown keys return the input untouched). Mods without updated_at sort
+  # last regardless of direction; download sorts by the label the button
+  # shows under the active type filter.
+  def self.sort_mods(mods, key:, dir:, type_filter: nil)
+    return mods unless SORTKEYS.include?(key)
+
+    if key == "updated"
+      dated, undated = mods.partition { |mod| mod.updated_at.present? }
+      sorted = dated.sort_by(&:updated_at)
+      sorted.reverse! if dir == "desc"
+      sorted + undated
+    else
+      sorted = mods.sort_by { |mod| sort_key_for(mod, key, type_filter) }
+      dir == "desc" ? sorted.reverse : sorted
+    end
   end
 
-  def zip?
-    files.key?(:zip)
+  def self.sort_key_for(mod, key, type_filter)
+    case key
+    when "name" then [mod.name.to_s.downcase]
+    when "author" then [mod.author.to_s.downcase, mod.name.to_s.downcase]
+    when "download" then [mod.download_type_for(type_filter).to_s, mod.name.to_s.downcase]
+    end
   end
-
-  def exmod?
-    files.key?(:exmod)
-  end
-
-  def exmodz?
-    files.key?(:exmodz)
-  end
-
-  # Determines which file types can be downloaded from the index page
-  # Priority: pak > zip > exmodz > exmod (most common/compatible format first)
-  def preferred_type
-    return :pak if pak?
-    return :zip if zip?
-    return :exmodz if exmodz?
-    return :exmod if exmod?
-
-    nil
-  end
-
-  # Determines which file types can be downloaded from the show page
-  def download_types
-    file_types.map(&:to_sym) & %i[pak zip exmodz exmod]
-  end
-
-  def file_types
-    files.keys
-  end
-
-  def urls
-    files.values
-  end
-
-  def get_url(type)
-    files[type.to_sym]
-  end
-
-  def get_name(type)
-    filename(files[type.to_sym])
-  end
-
-  def types_string
-    file_types.map(&:upcase).sort.join(" / ")
-  end
+  private_class_method :sort_key_for
 
   def slug
     name.parameterize
-  end
-
-  private
-
-  def filename(url)
-    return if url.blank?
-
-    url.split("?").first.split("/").last
-  end
-
-  def exmod_type
-    files.key?(:exmodz) ? :exmodz : :exmod
   end
 end

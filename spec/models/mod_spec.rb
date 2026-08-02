@@ -48,8 +48,71 @@ RSpec.describe Mod do
   end
 
   describe "::SORTKEYS" do
-    it "returns the sortkeys" do
-      expect(described_class::SORTKEYS).to eq(%w[author name])
+    it "lists the sortable listing columns in default-priority order" do
+      expect(described_class::SORTKEYS).to eq(%w[updated name download author])
+    end
+  end
+
+  describe ".default_dir_for" do
+    it "is desc for updated and asc otherwise" do
+      expect(described_class.default_dir_for("updated")).to eq("desc")
+      expect(described_class.default_dir_for("name")).to eq("asc")
+      expect(described_class.default_dir_for("download")).to eq("asc")
+      expect(described_class.default_dir_for("author")).to eq("asc")
+    end
+  end
+
+  describe ".sort_mods" do
+    let(:mods) do
+      [
+        build(:mod, name: "Alpha", author: "zed", files: { zip: Faker::Internet.url }, updated_at: 3.days.ago),
+        build(:mod, name: "beta", author: "Ann", files: { pak: Faker::Internet.url }, updated_at: 1.hour.ago),
+        build(:mod, name: "Gamma", author: "mid", files: { exmodz: Faker::Internet.url }, updated_at: nil)
+      ]
+    end
+
+    it "sorts by updated desc with nil updated_at last" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "updated", dir: "desc")).to eq([new_mod, old_mod, undated_mod])
+    end
+
+    it "sorts by updated asc with nil updated_at still last" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "updated", dir: "asc")).to eq([old_mod, new_mod, undated_mod])
+    end
+
+    it "sorts by name case-insensitively" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "name", dir: "asc")).to eq([old_mod, new_mod, undated_mod])
+      expect(described_class.sort_mods(mods, key: "name", dir: "desc")).to eq([undated_mod, new_mod, old_mod])
+    end
+
+    it "sorts by author case-insensitively" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "author", dir: "asc")).to eq([new_mod, undated_mod, old_mod])
+    end
+
+    it "sorts by download label (exmodz < pak < zip) ascending" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "download", dir: "asc")).to eq([undated_mod, new_mod, old_mod])
+    end
+
+    it "uses the type filter for the download key" do
+      _old_mod, new_mod, _undated_mod = mods
+      both = build(:mod, name: "Both", author: "x", files: { pak: Faker::Internet.url, zip: Faker::Internet.url })
+      result = described_class.sort_mods([both, new_mod], key: "download", dir: "asc", type_filter: "zip")
+      # under zip filter, Both's effective label is "zip" (> "pak"), so new_mod (pak) comes first
+      expect(result).to eq([new_mod, both])
+    end
+
+    it "breaks download ties by name ascending" do
+      pak_b = build(:mod, name: "Bravo", author: "x", files: { pak: Faker::Internet.url })
+      pak_a = build(:mod, name: "alpha2", author: "y", files: { pak: Faker::Internet.url })
+      expect(described_class.sort_mods([pak_b, pak_a], key: "download", dir: "asc")).to eq([pak_a, pak_b])
+    end
+
+    it "returns the array unchanged for an unknown key" do
+      expect(described_class.sort_mods(mods, key: "bogus", dir: "asc")).to eq(mods)
     end
   end
 
@@ -227,38 +290,129 @@ RSpec.describe Mod do
   end
 
   describe "#preferred_type" do
-    context "when given a pak object" do
+    context "when zip, pak, and exmodz are all present" do
       before do
-        mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }
+        mod.files = { pak: Faker::Internet.url, zip: Faker::Internet.url, exmodz: Faker::Internet.url }
       end
 
-      it "returns the preferred type" do
+      it "prefers zip" do
+        expect(mod.preferred_type).to eq(:zip)
+      end
+    end
+
+    context "when pak and exmodz are present" do
+      before { mod.files = { exmodz: Faker::Internet.url, pak: Faker::Internet.url } }
+
+      it "prefers pak" do
         expect(mod.preferred_type).to eq(:pak)
       end
     end
 
-    context "when given a zip object" do
-      before { mod.files = { zip: Faker::Internet.url, exmodz: Faker::Internet.url } }
+    context "when exmodz and exmod are present" do
+      before { mod.files = { exmod: Faker::Internet.url, exmodz: Faker::Internet.url } }
 
-      it "returns the preferred type" do
-        expect(mod.preferred_type).to eq(:zip)
+      it "prefers exmodz" do
+        expect(mod.preferred_type).to eq(:exmodz)
       end
     end
 
     context "when only given an exmod object" do
       before { mod.files = { exmod: Faker::Internet.url } }
 
-      it "returns the preferred type" do
+      it "returns exmod" do
         expect(mod.preferred_type).to eq(:exmod)
       end
     end
 
-    context "when only given an exmodz object" do
+    context "when there are no files" do
+      before { mod.files = {} }
+
+      it "returns nil" do
+        expect(mod.preferred_type).to be_nil
+      end
+    end
+  end
+
+  describe "#has_download_type?" do
+    context "with a pak file" do
+      before { mod.files = { pak: Faker::Internet.url } }
+
+      it "matches pak" do
+        expect(mod.has_download_type?("pak")).to be(true)
+      end
+
+      it "does not match zip" do
+        expect(mod.has_download_type?("zip")).to be(false)
+      end
+
+      it "does not match exmod" do
+        expect(mod.has_download_type?("exmod")).to be(false)
+      end
+    end
+
+    context "with a zip file" do
+      before { mod.files = { zip: Faker::Internet.url } }
+
+      it "matches zip" do
+        expect(mod.has_download_type?("zip")).to be(true)
+      end
+    end
+
+    context "with only an exmod file" do
+      before { mod.files = { exmod: Faker::Internet.url } }
+
+      it "matches exmod" do
+        expect(mod.has_download_type?("exmod")).to be(true)
+      end
+    end
+
+    context "with only an exmodz file" do
       before { mod.files = { exmodz: Faker::Internet.url } }
 
-      it "returns the preferred type" do
-        expect(mod.preferred_type).to eq(:exmodz)
+      it "matches exmod" do
+        expect(mod.has_download_type?("exmod")).to be(true)
       end
+    end
+
+    context "with any files" do
+      before { mod.files = { pak: Faker::Internet.url } }
+
+      it "matches unknown types" do
+        expect(mod.has_download_type?("garbage")).to be(true)
+      end
+
+      it "accepts symbols and mixed case" do
+        expect(mod.has_download_type?(:PAK)).to be(true)
+      end
+    end
+  end
+
+  describe "#download_type_for" do
+    before { mod.files = { pak: Faker::Internet.url, zip: Faker::Internet.url, exmodz: Faker::Internet.url } }
+
+    it "returns the filtered type when the mod has it" do
+      expect(mod.download_type_for("pak")).to eq(:pak)
+      expect(mod.download_type_for("zip")).to eq(:zip)
+    end
+
+    it "resolves exmod filter to exmodz when present" do
+      expect(mod.download_type_for("exmod")).to eq(:exmodz)
+    end
+
+    it "resolves exmod filter to exmod when only exmod present" do
+      mod.files = { pak: Faker::Internet.url, exmod: Faker::Internet.url }
+      expect(mod.download_type_for("exmod")).to eq(:exmod)
+    end
+
+    it "falls back to preferred_type when the mod lacks the filtered type" do
+      mod.files = { pak: Faker::Internet.url }
+      expect(mod.download_type_for("zip")).to eq(:pak)
+    end
+
+    it "falls back to preferred_type for nil or non-filter values" do
+      expect(mod.download_type_for(nil)).to eq(:zip)
+      expect(mod.download_type_for("all")).to eq(:zip)
+      expect(mod.download_type_for("garbage")).to eq(:zip)
     end
   end
 
@@ -268,6 +422,18 @@ RSpec.describe Mod do
 
       it "returns the file types" do
         expect(mod.file_types).to eq(%i[zip pak exmodz])
+      end
+    end
+  end
+
+  describe "#download_types" do
+    context "when files are present in arbitrary order" do
+      before do
+        mod.files = { exmod: Faker::Internet.url, pak: Faker::Internet.url, zip: Faker::Internet.url }
+      end
+
+      it "returns downloadable types in priority order" do
+        expect(mod.download_types).to eq(%i[zip pak exmod])
       end
     end
   end

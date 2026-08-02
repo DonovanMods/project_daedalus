@@ -7,7 +7,7 @@
   @keyframes shimmer { 0% { opacity: 0.7; } 100% { opacity: 1; } }
 </style>
 
-<section class="max-w-screen-2xl mx-auto px-4 py-6 md:py-12">
+<section class="max-w-(--breakpoint-2xl) mx-auto px-4 py-6 md:py-12">
   <%# Hero Section %>
   <div class="pt-6 pb-4 text-center md:pt-8 md:pb-6">
     <%= image_tag "daedalus-logo.png", width: "96", class: "mx-auto mb-4 drop-shadow-lg hero-shimmer", alt: "Daedalus Logo" %>
@@ -29,7 +29,7 @@
 
     <%# Mods Card — Gold Primary CTA %>
     <%= link_to mods_path, class: "no-underline group" do %>
-      <div class="flex flex-col items-center p-6 md:p-8 text-center rounded-xl card-lift border-2 border-icarus-500 bg-gradient-to-b from-icarus-100 to-white dark:from-icarus-900 dark:to-slate-800 group-hover:border-icarus-400">
+      <div class="flex flex-col items-center p-6 md:p-8 text-center rounded-xl card-lift border-2 border-icarus-500 bg-linear-to-b from-icarus-100 to-white dark:from-icarus-900 dark:to-slate-800 group-hover:border-icarus-400">
         <div class="mb-3 text-4xl md:text-5xl">🎮</div>
         <h2 class="mb-2 text-xl font-bold md:text-2xl text-icarus-600 dark:text-icarus-400">Browse Mods</h2>
         <p class="text-sm md:text-base text-slate-600 dark:text-slate-400">

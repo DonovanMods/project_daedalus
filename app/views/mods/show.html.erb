@@ -11,7 +11,7 @@
           data-mods-url-param="<%= raw_url(@mod.get_url(type)) %>"
           data-mods-file-name-param="<%= @mod.get_name(type) %>"
           type="button"
-          class="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          class="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white border border-transparent rounded-md shadow-xs focus:outline-hidden focus:ring-2 focus:ring-offset-2 <%= download_button_classes(type) %>">
           DOWNLOAD <%= type.to_s.upcase %>
         </button>
       <% end %>
@@ -40,7 +40,7 @@
   <div class="mt-12 min-h-48">
     <%= render("analytics", metadata: @mod.metadata&.dig(:status)) if params[:analytics] %>
     <% if @mod.image_url.present? %>
-      <img class="hidden float-right w-48 h-48 mb-5 ml-5 rounded md:block" src="<%= raw_url(@mod.image_url) %>">
+      <img class="hidden float-right w-48 h-48 mb-5 ml-5 rounded-sm md:block" src="<%= raw_url(@mod.image_url) %>">
     <% end %>
     <div class="pt-5 pb-12 prose dark:prose-invert lg:prose-xl"><%= markdown(@mod.details) %></div>
   </div>
@@ -50,7 +50,7 @@
         data-action="mods#navigateTo"
         data-mods-path-param="<%= session[:origin_url] %>"
         type="button"
-        class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        class="inline-flex items-center px-4 py-2 mb-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-xs hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
         Back to List
       </button>
     </div>

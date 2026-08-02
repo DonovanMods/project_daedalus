@@ -8,7 +8,7 @@ This is a Rails project, read ~/.claude/RUBY.md and ~/.claude/RAILS.md for addit
 
 ## Project Overview
 
-Project Daedalus is a Rails 7.1 application that serves as a website for the Icarus Modding Tools community, featuring mod and tool listings. The application uses Ruby 3.4.8 and Google Cloud Firestore as its data backend.
+Project Daedalus is a Rails 8.1 application that serves as a website for the Icarus Modding Tools community, featuring mod and tool listings. The application uses Ruby 4.0.6 and Google Cloud Firestore as its data backend.
 
 ## Architecture
 
@@ -34,24 +34,32 @@ Standard Rails controllers handle routing:
 
 ### Frontend
 
-- **Tailwind CSS** for styling (watch with `bin/rails tailwindcss:watch`)
+- **Tailwind CSS v4** for styling, configured CSS-first in `app/assets/tailwind/application.css` (no `tailwind.config.js`); watch with `bin/rails tailwindcss:watch`
 - **Stimulus** and **Turbo** for interactivity
 - **Importmap** for JavaScript module management
+
+### Background Jobs & Caching (Solid Stack)
+
+Uses Rails 8's Solid Cache/Queue/Cable, each backed by its own SQLite database under `storage/` (see `config/database.yml`: `production_cache.sqlite3`, `production_queue.sqlite3`, `production_cable.sqlite3`, alongside the primary `production.sqlite3`). In the single-server production deployment, the `SOLID_QUEUE_IN_PUMA` env var (set in `config/deploy.yml`) makes Puma run the Solid Queue supervisor in-process (see `config/puma.rb`).
 
 ### Deployment
 
 Uses **Kamal** for Docker-based deployment to a single web server (10.30.11.2). Configuration in `config/deploy.yml` includes:
 - Docker image: `dyoung522/project-daedalus`
 - Google Cloud integration (Firestore, Storage)
-- Environment variables for production database and cloud services
+- Environment variables for production database and cloud services, including `SOLID_QUEUE_IN_PUMA`
+- Persistent volumes for `/rails/tmp` and `/rails/storage` (the latter holds the primary and Solid Cache/Queue/Cable SQLite databases, which must survive deploys)
 - Aliases for `shell` and `console` access
+
+`docker-entrypoint.sh` runs `bin/rails db:prepare` before `bin/rails server` invocations, which creates/migrates the primary database and the Solid Cache/Queue/Cable databases (multi-database aware).
 
 ## Common Commands
 
 ### Setup
 
 ```bash
-bin/setup              # Initial setup: installs dependencies, prepares DB, clears logs/tmp
+bin/setup                # Installs dependencies, prepares DB, clears logs/tmp, then execs bin/dev to start the server
+bin/setup --skip-server  # Same as above, but does not start the server afterward
 ```
 
 ### Development
@@ -80,16 +88,14 @@ The project uses RSpec with:
 ### Linting & Code Quality
 
 ```bash
-bin/audit                           # Run all security audits (bundle-audit + brakeman + standardrb)
-bundle exec standardrb              # Run Standard Ruby linter (auto-fix with --fix)
-bundle exec standardrb --parallel   # Faster linting with parallel processing
-bundle exec rubocop                 # Run RuboCop (available in development)
+bin/audit                           # Run all checks: bundle-audit + brakeman + rubocop --parallel
+bundle exec rubocop                 # Run RuboCop
+bundle exec rubocop --parallel      # Faster linting with parallel processing
 bundle exec brakeman                # Security vulnerability scanner
 bundle exec bundle-audit            # Check gems for known vulnerabilities
-bundle exec erb_lint                # Lint ERB templates
 ```
 
-Standard Ruby configuration is in `.standard.yml` with extensions in `.standard_rubocop_extensions.yml`.
+RuboCop configuration is in `.rubocop.yml`.
 
 ### Deployment
 
@@ -113,4 +119,4 @@ kamal console          # Open Rails console in production (alias configured)
 - **google-cloud-storage**: File storage
 - **redcarpet**: Markdown rendering for READMEs
 - **dotenv-rails**: Environment variable management
-- **standard**: Ruby style guide and linter
+- **rubocop** (+ rubocop-rails, rubocop-performance, rubocop-rspec): Ruby style guide and linter

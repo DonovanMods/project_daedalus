@@ -7,14 +7,17 @@ export default class extends Controller {
 
   navigateToAuthor(event) {
     const author = event.target.value;
-    const path = window.location.origin;
     let modsPath = "/mods";
 
     if (author) {
       modsPath = `${modsPath}/${author}`;
     }
 
-    window.location.href = `${path}${modsPath}`;
+    const params = new URLSearchParams(window.location.search);
+    params.delete("page");
+    const queryString = params.toString();
+
+    window.location.href = `${window.location.origin}${modsPath}${queryString ? `?${queryString}` : ""}`;
   }
 
   download(event) {
@@ -36,11 +39,30 @@ export default class extends Controller {
   search(event) {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
+      this.#syncSortFields(event.target.form);
       event.target.form.requestSubmit();
     }, 400)
   }
 
   submit(event) {
+    this.#syncSortFields(event.target.form);
     event.target.form.requestSubmit();
+  }
+
+  prepareSubmit(event) {
+    this.#syncSortFields(event.target);
+  }
+
+  #syncSortFields(form) {
+    const params = new URLSearchParams(window.location.search);
+
+    ["sort", "dir"].forEach((name) => {
+      const field = form.elements[name];
+      if (!field) return;
+
+      const value = params.get(name) || "";
+      field.value = value;
+      field.disabled = !value;
+    });
   }
 }

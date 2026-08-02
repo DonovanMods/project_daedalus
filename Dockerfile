@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM ruby:3.4-bookworm AS build
+FROM ruby:4.0-bookworm AS build
 
 WORKDIR /rails
 
@@ -24,7 +24,7 @@ COPY . .
 RUN SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 
 # Stage 2: Runtime
-FROM ruby:3.4-slim-bookworm
+FROM ruby:4.0-slim-bookworm
 
 WORKDIR /rails
 
@@ -35,8 +35,6 @@ RUN apt-get update -qq && \
 
 # Set production environment
 ENV RAILS_ENV=production
-ENV RAILS_SERVE_STATIC_FILES=true
-ENV RAILS_LOG_TO_STDOUT=true
 
 # Run as non-root user
 RUN groupadd --system rails --gid 1000 && \

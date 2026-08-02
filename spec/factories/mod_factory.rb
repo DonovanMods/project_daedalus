@@ -12,6 +12,7 @@ FactoryBot.define do
     image_url { Faker::Internet.url }
     readme_url { Faker::Internet.url }
     created_at { Time.now.utc - 1.day }
+    # Order-asserting specs must set explicit distinct updated_at values — build-time timestamps are near-identical.
     updated_at { Time.now.utc }
 
     initialize_with { new(attributes) }

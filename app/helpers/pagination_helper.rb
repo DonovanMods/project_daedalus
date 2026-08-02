@@ -3,6 +3,13 @@
 module PaginationHelper
   DEFAULT_PER_PAGE = 20
 
+  # Query params for a pagination link: preserves the active sort/filter
+  # state (query, type, sort, dir) and points at the given page, mirroring
+  # how sort_link builds its own query string.
+  def pagination_link_params(page)
+    { query: params[:query], type: params[:type], sort: params[:sort], dir: params[:dir], page: page }.compact_blank
+  end
+
   # Paginates an array and returns the current page slice
   def paginate_array(collection, page:, per_page: DEFAULT_PER_PAGE)
     page = [page.to_i, 1].max

@@ -7,6 +7,8 @@ class ModsController < ApplicationController
   before_action :mods, only: %i[index show]
   before_action :set_session, only: %i[index]
 
+  FILTERABLE_TYPES = %w[pak zip exmod].freeze
+
   def index
     @filtered = false
 
@@ -14,6 +16,8 @@ class ModsController < ApplicationController
     return if performed?
 
     filter_by_query
+    filter_by_type
+    apply_sort
     @total_mods = @mods.size
     paginate_mods unless @filtered
     render_index
@@ -21,7 +25,7 @@ class ModsController < ApplicationController
 
   def show
     @mod = mods.find do |mod|
-      mod.author_slug.casecmp(params[:author].parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
+      mod.author_slug.casecmp(params.expect(:author).parameterize)&.zero? && mod.slug.casecmp(params[:slug])&.zero?
     end
 
     return unless @mod.nil?
@@ -53,6 +57,19 @@ class ModsController < ApplicationController
 
     @mods = find_mods(sanitize(params[:query]))
     @filtered = true
+  end
+
+  def filter_by_type
+    return unless FILTERABLE_TYPES.include?(params[:type])
+
+    @mods = @mods.select { |mod| mod.has_download_type?(params[:type]) }
+    @filtered = true
+  end
+
+  def apply_sort
+    @sort = params[:sort].to_s.presence_in(Mod::SORTKEYS) || "updated"
+    @dir = params[:dir].to_s.presence_in(%w[asc desc]) || Mod.default_dir_for(@sort)
+    @mods = Mod.sort_mods(@mods, key: @sort, dir: @dir, type_filter: params[:type])
   end
 
   def paginate_mods

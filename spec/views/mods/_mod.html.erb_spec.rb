@@ -38,10 +38,11 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
     expect(rendered).to include("A test mod")
   end
 
-  it "renders download button for preferred_type when available" do
+  it "renders download button labeled with only the format name" do
     render partial: "mods/mod", locals: { mod: mod }
-    expect(rendered).to include("Download")
-    expect(rendered).to include("PAK")
+    expect(rendered).to include(">PAK<")
+    expect(rendered).not_to include("Download")
+    expect(rendered).to include("bg-emerald-600")
   end
 
   it "has click handler for navigateTo" do
@@ -95,7 +96,7 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
     end
   end
 
-  context "with no preferred file type" do
+  context "with only an exmodz file" do
     let(:mod_no_files) do
       build(:mod,
             name: "No Files",
@@ -103,10 +104,59 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
             files: { exmodz: "https://example.com/mod.exmodz" })
     end
 
-    it "does not show download button" do
+    it "shows the exmodz button in icarus gold" do
       render partial: "mods/mod", locals: { mod: mod_no_files }
-      expect(rendered).not_to include("Download PAK")
-      expect(rendered).not_to include("Download ZIP")
+      expect(rendered).to include(">EXMODZ<")
+      expect(rendered).to include("bg-icarus-500")
+      expect(rendered).not_to include("Download")
+    end
+  end
+
+  context "with no files" do
+    let(:mod_empty_files) do
+      build(:mod,
+            name: "Empty Files",
+            author: "Author",
+            files: {})
+    end
+
+    it "does not render a download button" do
+      render partial: "mods/mod", locals: { mod: mod_empty_files }
+      expect(rendered).not_to include("<button")
+    end
+  end
+
+  context "with an active type filter and a multi-format mod" do
+    let(:multi_mod) do
+      build(:mod,
+            name: "Multi Format",
+            author: "Author",
+            files: { pak: "https://example.com/m.pak", zip: "https://example.com/m.zip" })
+    end
+
+    it "offers the filtered type instead of the preferred one" do
+      allow(view).to receive(:params).and_return({ type: "pak" }.with_indifferent_access)
+      render partial: "mods/mod", locals: { mod: multi_mod }
+
+      expect(rendered).to include(">PAK<")
+      expect(rendered).to include("bg-emerald-600")
+      expect(rendered).not_to include(">ZIP<")
+    end
+  end
+
+  describe "updated column" do
+    it "shows relative time when updated_at is present" do
+      mod.updated_at = 3.days.ago
+      render partial: "mods/mod", locals: { mod: mod }
+
+      expect(rendered).to include("3 days ago")
+    end
+
+    it "shows an em-dash when updated_at is missing" do
+      mod.updated_at = nil
+      render partial: "mods/mod", locals: { mod: mod }
+
+      expect(rendered).to include("&mdash;")
     end
   end
 end

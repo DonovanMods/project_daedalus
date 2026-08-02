@@ -39,6 +39,9 @@ env:
     GOOGLE_PROJECT_ID: projectdaedalus-fb09f
     STORAGE_BUCKET_NAME: project-daedalus-public
     GOOGLE_REGION: us-central1
+    # Run the Solid Queue supervisor inside Puma (single-server deployment,
+    # see config/puma.rb).
+    SOLID_QUEUE_IN_PUMA: true
   secret:
     - RAILS_MASTER_KEY
 
@@ -48,6 +51,9 @@ aliases:
   shell: app exec --interactive --reuse "bash"
   console: app exec --interactive --reuse "rails console"
 
-# Use a persistent storage volume.
+# Use persistent storage volumes.
 volumes:
   - rails_tmp:/rails/tmp
+  # Solid Cache/Queue/Cable sqlite databases live under storage/ (see
+  # config/database.yml) and must survive deploys/restarts.
+  - rails_storage:/rails/storage
