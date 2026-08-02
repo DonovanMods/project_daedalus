@@ -124,4 +124,36 @@ RSpec.describe "mods/index.html.erb", type: :view do
       expect(rendered).to include("Search mods...")
     end
   end
+
+  describe "download type filter" do
+    it "renders the type select with all options" do
+      render
+
+      expect(rendered).to include('name="type"')
+      expect(rendered).to include(">DL Type<")
+      expect(rendered).to include(">PAK<")
+      expect(rendered).to include(">ZIP<")
+      expect(rendered).to include(">EXMOD(z)<")
+    end
+
+    it "renders the options in order" do
+      render
+
+      expect(rendered.index(">DL Type<")).to be < rendered.index(">PAK<")
+      expect(rendered.index(">PAK<")).to be < rendered.index(">ZIP<")
+      expect(rendered.index(">ZIP<")).to be < rendered.index(">EXMOD(z)<")
+    end
+
+    context "with type param" do
+      before do
+        allow(view).to receive(:params).and_return(ActionController::Parameters.new(type: "zip"))
+      end
+
+      it "marks the current param value as selected" do
+        render
+
+        expect(rendered).to include('<option selected="selected" value="zip">ZIP</option>')
+      end
+    end
+  end
 end

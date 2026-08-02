@@ -7,6 +7,8 @@ class ModsController < ApplicationController
   before_action :mods, only: %i[index show]
   before_action :set_session, only: %i[index]
 
+  FILTERABLE_TYPES = %w[pak zip exmod].freeze
+
   def index
     @filtered = false
 
@@ -14,6 +16,7 @@ class ModsController < ApplicationController
     return if performed?
 
     filter_by_query
+    filter_by_type
     @total_mods = @mods.size
     paginate_mods unless @filtered
     render_index
@@ -52,6 +55,13 @@ class ModsController < ApplicationController
     return if params[:query].blank?
 
     @mods = find_mods(sanitize(params[:query]))
+    @filtered = true
+  end
+
+  def filter_by_type
+    return unless FILTERABLE_TYPES.include?(params[:type])
+
+    @mods = @mods.select { |mod| mod.has_download_type?(params[:type]) }
     @filtered = true
   end
 

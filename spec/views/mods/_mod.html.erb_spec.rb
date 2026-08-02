@@ -125,4 +125,22 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
       expect(rendered).not_to include("<button")
     end
   end
+
+  context "with an active type filter and a multi-format mod" do
+    let(:multi_mod) do
+      build(:mod,
+            name: "Multi Format",
+            author: "Author",
+            files: { pak: "https://example.com/m.pak", zip: "https://example.com/m.zip" })
+    end
+
+    it "offers the filtered type instead of the preferred one" do
+      allow(view).to receive(:params).and_return({ type: "pak" }.with_indifferent_access)
+      render partial: "mods/mod", locals: { mod: multi_mod }
+
+      expect(rendered).to include(">PAK<")
+      expect(rendered).to include("bg-emerald-600")
+      expect(rendered).not_to include(">ZIP<")
+    end
+  end
 end

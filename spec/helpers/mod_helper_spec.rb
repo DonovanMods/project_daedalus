@@ -102,4 +102,18 @@ RSpec.describe ModHelper, type: :helper do
         .to eq("bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-400")
     end
   end
+
+  describe "#effective_download_type" do
+    let(:mod) { build(:mod, files: { pak: Faker::Internet.url, zip: Faker::Internet.url }) }
+
+    it "returns the filtered type when a filter is active" do
+      allow(helper).to receive(:params).and_return({ type: "pak" }.with_indifferent_access)
+      expect(helper.effective_download_type(mod)).to eq(:pak)
+    end
+
+    it "returns preferred_type when no filter is active" do
+      allow(helper).to receive(:params).and_return({}.with_indifferent_access)
+      expect(helper.effective_download_type(mod)).to eq(:zip)
+    end
+  end
 end

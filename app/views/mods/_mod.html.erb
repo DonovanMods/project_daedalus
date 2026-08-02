@@ -3,7 +3,7 @@
     data-mods-path-param="<%= mod_detail_path(author: mod.author_slug, slug: mod.slug) %>">
   <td class="p-2 sm:p-3 font-medium text-slate-800 dark:text-slate-200"><%= mod.name %></td>
   <td class="p-2 sm:p-3 whitespace-nowrap">
-    <% if type = mod.preferred_type %>
+    <% if type = effective_download_type(mod) %>
       <%# This button must stay on one line: the view spec asserts exact >PAK< output, and ERB tags on multiple lines introduce whitespace %>
       <button data-action="mods#download" data-mods-url-param="<%= raw_url(mod.get_url(type)) %>" data-mods-file-name-param="<%= mod.get_name(type) %>" type="button" class="z-10 inline-flex items-center px-2 py-1 sm:px-3 sm:py-1.5 text-xs font-medium text-white rounded-md shadow-xs focus:outline-hidden focus:ring-2 focus:ring-offset-2 <%= download_button_classes(type) %>"><%= type.to_s.upcase %></button>
     <% end %>
