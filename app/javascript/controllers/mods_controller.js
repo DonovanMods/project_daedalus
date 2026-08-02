@@ -39,11 +39,26 @@ export default class extends Controller {
   search(event) {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
+      this.#syncSortFields(event.target.form);
       event.target.form.requestSubmit();
     }, 400)
   }
 
   submit(event) {
+    this.#syncSortFields(event.target.form);
     event.target.form.requestSubmit();
+  }
+
+  #syncSortFields(form) {
+    const params = new URLSearchParams(window.location.search);
+
+    ["sort", "dir"].forEach((name) => {
+      const field = form.elements[name];
+      if (!field) return;
+
+      const value = params.get(name) || "";
+      field.value = value;
+      field.disabled = !value;
+    });
   }
 }

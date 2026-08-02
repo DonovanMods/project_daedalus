@@ -156,4 +156,32 @@ RSpec.describe "mods/index.html.erb", type: :view do
       end
     end
   end
+
+  describe "sort state hidden fields" do
+    it "renders hidden sort and dir fields with current values" do
+      allow(view).to receive(:params)
+        .and_return({ sort: "name", dir: "desc" }.with_indifferent_access)
+      render
+
+      expect(rendered).to match(/<input[^>]*value="name"[^>]*type="hidden"[^>]*name="sort"/)
+      expect(rendered).to match(/<input[^>]*value="desc"[^>]*type="hidden"[^>]*name="dir"/)
+    end
+
+    it "renders the hidden fields empty when no sort is active" do
+      render
+
+      expect(rendered).to match(/<input[^>]*type="hidden"[^>]*name="sort"/)
+      expect(rendered).not_to include('name="sort" value=')
+    end
+  end
+
+  describe "Show All link" do
+    it "resets everything: bare mods path with no params" do
+      allow(view).to receive(:params)
+        .and_return({ query: "ice", type: "pak", sort: "name" }.with_indifferent_access)
+      render
+
+      expect(rendered).to match(%r{<a[^>]*href="/mods"[^>]*>Show All</a>})
+    end
+  end
 end

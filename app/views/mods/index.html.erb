@@ -30,6 +30,8 @@
             {selected: params[:type].presence_in(ModsController::FILTERABLE_TYPES) || "all"},
             data: {action: "change->mods#submit"},
             class: "px-3 py-2 text-sm border rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-hidden" %>
+        <%= form.hidden_field :sort, value: params[:sort] %>
+        <%= form.hidden_field :dir, value: params[:dir] %>
       <% end %>
       <%= collection_select nil, nil, @authors, :parameterize, :to_s,
                             {
