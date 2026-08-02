@@ -130,7 +130,7 @@ RSpec.describe "mods/index.html.erb", type: :view do
       render
 
       expect(rendered).to include('name="type"')
-      expect(rendered).to include(">ALL<")
+      expect(rendered).to include(">DL Type<")
       expect(rendered).to include(">PAK<")
       expect(rendered).to include(">ZIP<")
       expect(rendered).to include(">EXMOD(z)<")
