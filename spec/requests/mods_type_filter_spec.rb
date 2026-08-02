@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Mods Type Filtering", type: :request do
   let(:pak_mod) { build(:mod, name: "Pak Only Mod", author: "Author One", files: { pak: "https://example.com/mod.pak" }) }
-  let(:zip_mod) { build(:mod, name: "Zip Only Mod", author: "Author Two", files: { zip: "https://example.com/mod.zip" }) }
+  let(:zip_mod) { build(:mod, name: "Zip Only Mod", author: "Author One", files: { zip: "https://example.com/mod.zip" }) }
   let(:exmod_mod) { build(:mod, name: "Exmod Only Mod", author: "Author Three", files: { exmod: "https://example.com/mod.exmod" }) }
   let(:exmodz_mod) { build(:mod, name: "Exmodz Only Mod", author: "Author Four", files: { exmodz: "https://example.com/mod.exmodz" }) }
 
@@ -74,6 +74,15 @@ RSpec.describe "Mods Type Filtering", type: :request do
     it "returns nothing when query matches but type does not" do
       get mods_path(query: "Zip Only", type: "pak")
 
+      expect(response.body).not_to include("Zip Only Mod")
+    end
+  end
+
+  describe "GET /mods/:author?type=pak" do
+    it "applies the type filter on author pages" do
+      get mods_author_path(author: pak_mod.author_slug, type: "pak")
+
+      expect(response.body).to include("Pak Only Mod")
       expect(response.body).not_to include("Zip Only Mod")
     end
   end

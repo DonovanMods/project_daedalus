@@ -134,6 +134,9 @@ RSpec.describe "mods/index.html.erb", type: :view do
       expect(rendered).to include(">PAK<")
       expect(rendered).to include(">ZIP<")
       expect(rendered).to include(">EXMOD(z)<")
+      expect(rendered.index(">DL Type<")).to be < rendered.index(">PAK<")
+      expect(rendered.index(">PAK<")).to be < rendered.index(">ZIP<")
+      expect(rendered.index(">ZIP<")).to be < rendered.index(">EXMOD(z)<")
     end
 
     context "with type param" do

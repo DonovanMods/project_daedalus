@@ -27,7 +27,7 @@
             class: "px-3 py-2 text-sm border rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 ring-0 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-hidden md:w-64" %>
         <%= form.select :type,
             [["DL Type", "all"], ["PAK", "pak"], ["ZIP", "zip"], ["EXMOD(z)", "exmod"]],
-            {selected: params[:type].presence_in(%w[pak zip exmod]) || "all"},
+            {selected: params[:type].presence_in(ModsController::FILTERABLE_TYPES) || "all"},
             data: {action: "change->mods#submit"},
             class: "px-3 py-2 text-sm border rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-hidden" %>
       <% end %>

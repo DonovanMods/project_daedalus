@@ -7,6 +7,8 @@ class ModsController < ApplicationController
   before_action :mods, only: %i[index show]
   before_action :set_session, only: %i[index]
 
+  FILTERABLE_TYPES = %w[pak zip exmod].freeze
+
   def index
     @filtered = false
 
@@ -33,8 +35,6 @@ class ModsController < ApplicationController
 
     redirect_to mods_path
   end
-
-  FILTERABLE_TYPES = %w[pak zip exmod].freeze
 
   private
 
