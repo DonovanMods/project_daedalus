@@ -167,11 +167,16 @@ RSpec.describe "mods/index.html.erb", type: :view do
       expect(rendered).to match(/<input[^>]*value="desc"[^>]*type="hidden"[^>]*name="dir"/)
     end
 
-    it "renders the hidden fields empty when no sort is active" do
+    it "renders the hidden fields empty and disabled when no sort is active" do
       render
 
-      expect(rendered[/<input[^>]*name="sort"[^>]*>/]).not_to include("value=")
-      expect(rendered[/<input[^>]*name="dir"[^>]*>/]).not_to include("value=")
+      sort_tag = rendered[/<input[^>]*name="sort"[^>]*>/]
+      dir_tag = rendered[/<input[^>]*name="dir"[^>]*>/]
+
+      expect(sort_tag).not_to include("value=")
+      expect(dir_tag).not_to include("value=")
+      expect(sort_tag).to include("disabled=\"disabled\"")
+      expect(dir_tag).to include("disabled=\"disabled\"")
     end
   end
 

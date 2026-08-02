@@ -49,6 +49,10 @@ export default class extends Controller {
     event.target.form.requestSubmit();
   }
 
+  prepareSubmit(event) {
+    this.#syncSortFields(event.target);
+  }
+
   #syncSortFields(form) {
     const params = new URLSearchParams(window.location.search);
 
