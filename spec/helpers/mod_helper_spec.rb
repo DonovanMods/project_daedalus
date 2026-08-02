@@ -124,13 +124,8 @@ RSpec.describe ModHelper, type: :helper do
     end
 
     context "when the column is inactive" do
-      before do
-        assign(:sort, "updated")
-        assign(:dir, "desc")
-      end
-
       it "links with the column's first-click default and no arrow" do
-        html = helper.sort_link("Name", "name")
+        html = helper.sort_link("Name", "name", current_sort: "updated", current_dir: "desc")
 
         expect(html).to include("sort=name")
         expect(html).to include("dir=asc")
@@ -143,7 +138,7 @@ RSpec.describe ModHelper, type: :helper do
         allow(helper).to receive(:params)
           .and_return({ query: "ice", type: "pak", page: "3" }.with_indifferent_access)
 
-        html = helper.sort_link("Name", "name")
+        html = helper.sort_link("Name", "name", current_sort: "updated", current_dir: "desc")
 
         expect(html).to include("query=ice")
         expect(html).to include("type=pak")
@@ -152,13 +147,8 @@ RSpec.describe ModHelper, type: :helper do
     end
 
     context "when the column is active" do
-      before do
-        assign(:sort, "name")
-        assign(:dir, "asc")
-      end
-
       it "toggles direction and shows the ascending arrow" do
-        html = helper.sort_link("Name", "name")
+        html = helper.sort_link("Name", "name", current_sort: "name", current_dir: "asc")
 
         expect(html).to include("dir=desc")
         expect(html).to include("▲")
@@ -166,13 +156,8 @@ RSpec.describe ModHelper, type: :helper do
     end
 
     context "when the column is active descending" do
-      before do
-        assign(:sort, "updated")
-        assign(:dir, "desc")
-      end
-
       it "shows the descending arrow and toggles to asc" do
-        html = helper.sort_link("Updated", "updated")
+        html = helper.sort_link("Updated", "updated", current_sort: "updated", current_dir: "desc")
 
         expect(html).to include("dir=asc")
         expect(html).to include("▼")

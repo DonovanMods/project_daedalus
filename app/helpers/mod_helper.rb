@@ -32,9 +32,9 @@ module ModHelper
   # Header link for a sortable listing column: preserves the active
   # query/type filters, resets pagination, toggles direction on the
   # active column, and marks it with an arrow.
-  def sort_link(label, key)
-    active = @sort == key
-    arrow, next_dir = sort_state_for(key, active)
+  def sort_link(label, key, current_sort:, current_dir:)
+    active = current_sort == key
+    arrow, next_dir = sort_state_for(key, active, current_dir)
     link_params = { query: params[:query], type: params[:type], sort: key, dir: next_dir }.compact_blank
 
     link_to "#{label}#{arrow}", "#{request.path}?#{link_params.to_query}",
@@ -43,10 +43,10 @@ module ModHelper
 
   private
 
-  def sort_state_for(key, active)
+  def sort_state_for(key, active, current_dir)
     if active
-      arrow = @dir == "asc" ? " ▲" : " ▼"
-      next_dir = @dir == "asc" ? "desc" : "asc"
+      arrow = current_dir == "asc" ? " ▲" : " ▼"
+      next_dir = current_dir == "asc" ? "desc" : "asc"
     else
       arrow = ""
       next_dir = Mod.default_dir_for(key)
