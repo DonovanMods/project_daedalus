@@ -170,8 +170,8 @@ RSpec.describe "mods/index.html.erb", type: :view do
     it "renders the hidden fields empty when no sort is active" do
       render
 
-      expect(rendered).to match(/<input[^>]*type="hidden"[^>]*name="sort"/)
-      expect(rendered).not_to include('name="sort" value=')
+      expect(rendered[/<input[^>]*name="sort"[^>]*>/]).not_to include("value=")
+      expect(rendered[/<input[^>]*name="dir"[^>]*>/]).not_to include("value=")
     end
   end
 
