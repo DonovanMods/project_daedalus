@@ -66,6 +66,7 @@ class Mod
 
   # Whether this mod offers the given download format.
   # "exmod" covers both exmod and exmodz; unknown types match everything (ALL).
+  # rubocop:disable Naming/PredicatePrefix
   def has_download_type?(type)
     case type.to_s.downcase
     when "pak" then pak?
@@ -74,6 +75,7 @@ class Mod
     else true
     end
   end
+  # rubocop:enable Naming/PredicatePrefix
 
   # Determines which file type is downloaded from the index page
   # Priority: zip > pak > exmodz > exmod
