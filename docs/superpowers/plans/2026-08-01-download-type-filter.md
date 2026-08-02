@@ -482,3 +482,41 @@ Run: `bin/rspec` (expect 295 + 8 new = 303-ish; all green), `bundle exec rubocop
 git add app/models/mod.rb app/helpers/mod_helper.rb app/views/mods/_mod.html.erb spec/models/mod_spec.rb spec/helpers/mod_helper_spec.rb spec/views/mods/_mod.html.erb_spec.rb
 git commit -m "Offer the filtered download type on listing buttons"
 ```
+
+---
+
+### Task 5: Rename default option to "DL Type"
+
+**Files:**
+- Modify: `app/views/mods/index.html.erb` (the `form.select :type` options array)
+- Test: `spec/views/mods/index.html.erb_spec.rb`
+
+**Interfaces:**
+- Consumes: everything as landed in Tasks 3-4. Value `"all"` unchanged — controller/model behavior untouched.
+
+- [ ] **Step 1: Update the view spec (failing first)**
+
+In the "download type filter" describe block, change the option assertion `expect(rendered).to include(">ALL<")` to:
+
+```ruby
+expect(rendered).to include(">DL Type<")
+```
+
+(leave the PAK/ZIP/EXMOD(z) assertions untouched). Run `bin/rspec spec/views/mods/index.html.erb_spec.rb` → that example FAILS (still renders ALL).
+
+- [ ] **Step 2: Change the label**
+
+In `app/views/mods/index.html.erb`, change the options array's first entry from `["ALL", "all"]` to:
+
+```ruby
+["DL Type", "all"]
+```
+
+- [ ] **Step 3: Verify and commit**
+
+Run: `bin/rspec spec/views/mods/index.html.erb_spec.rb` → PASS; full `bin/rspec` → PASS; `bundle exec rubocop --parallel` → clean.
+
+```bash
+git add app/views/mods/index.html.erb spec/views/mods/index.html.erb_spec.rb
+git commit -m "Label the type filter's default option DL Type"
+```

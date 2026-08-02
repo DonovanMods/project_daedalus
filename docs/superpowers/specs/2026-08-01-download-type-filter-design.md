@@ -53,3 +53,5 @@ No JS changes (reuses `mods#submit`), no route changes, no new dependencies.
    - Safety: if the mod somehow lacks the filtered type (cannot happen through the UI), fall back to `preferred_type`.
    - Implementation: `Mod#download_type_for(filter)` (model) + `ModHelper#effective_download_type(mod)` reading `params[:type]` (helper) + `_mod.html.erb` switching from `mod.preferred_type` to `effective_download_type(mod)`.
    - Show page unaffected. ALL / no filter → existing `preferred_type` behavior, unchanged.
+
+8. **Default option label.** The select's first option is labeled `DL Type` (value remains `all`), acting as the control's label the way "Filter By Author" does for the author select. Selecting it still resets to unfiltered. (Amended per user, 2026-08-01.)
