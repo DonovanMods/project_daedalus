@@ -38,10 +38,11 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
     expect(rendered).to include("A test mod")
   end
 
-  it "renders download button for preferred_type when available" do
+  it "renders download button labeled with only the format name" do
     render partial: "mods/mod", locals: { mod: mod }
-    expect(rendered).to include("Download")
-    expect(rendered).to include("PAK")
+    expect(rendered).to include(">PAK<")
+    expect(rendered).not_to include("Download")
+    expect(rendered).to include("bg-emerald-600")
   end
 
   it "has click handler for navigateTo" do
@@ -103,10 +104,11 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
             files: { exmodz: "https://example.com/mod.exmodz" })
     end
 
-    it "does not show download button" do
+    it "shows the exmodz button in icarus gold" do
       render partial: "mods/mod", locals: { mod: mod_no_files }
-      expect(rendered).not_to include("Download PAK")
-      expect(rendered).not_to include("Download ZIP")
+      expect(rendered).to include(">EXMODZ<")
+      expect(rendered).to include("bg-icarus-500")
+      expect(rendered).not_to include("Download")
     end
   end
 end
