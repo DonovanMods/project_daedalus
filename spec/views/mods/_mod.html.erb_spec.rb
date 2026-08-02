@@ -96,7 +96,7 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
     end
   end
 
-  context "with no preferred file type" do
+  context "with only an exmodz file" do
     let(:mod_no_files) do
       build(:mod,
             name: "No Files",
@@ -109,6 +109,20 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
       expect(rendered).to include(">EXMODZ<")
       expect(rendered).to include("bg-icarus-500")
       expect(rendered).not_to include("Download")
+    end
+  end
+
+  context "with no files" do
+    let(:mod_empty_files) do
+      build(:mod,
+            name: "Empty Files",
+            author: "Author",
+            files: {})
+    end
+
+    it "does not render a download button" do
+      render partial: "mods/mod", locals: { mod: mod_empty_files }
+      expect(rendered).not_to include("<button")
     end
   end
 end
