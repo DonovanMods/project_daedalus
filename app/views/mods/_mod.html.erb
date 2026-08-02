@@ -10,6 +10,13 @@
   </td>
   <td class="hidden p-3 text-sm sm:table-cell text-slate-600 dark:text-slate-400"><%= mod.author %></td>
   <td class="hidden p-3 text-sm text-right md:table-cell text-slate-600 dark:text-slate-400"><%= mod.version %></td>
+  <td class="hidden p-3 text-sm text-right md:table-cell text-slate-600 dark:text-slate-400 whitespace-nowrap">
+    <% if mod.updated_at.present? %>
+      <%= time_ago_in_words(mod.updated_at) %> ago
+    <% else %>
+      <span class="text-xs text-slate-500">&mdash;</span>
+    <% end %>
+  </td>
   <td class="hidden p-3 text-sm text-center xl:table-cell">
     <% if mod.compatibility.present? %>
       <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-icarus-500/20 text-icarus-500 dark:bg-icarus-500/10 dark:text-icarus-400">
