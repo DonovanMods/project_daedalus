@@ -64,20 +64,21 @@ class Mod
     files.key?(:exmodz)
   end
 
-  # Determines which file types can be downloaded from the index page
-  # Priority: pak > zip > exmodz > exmod (most common/compatible format first)
+  # Determines which file type is downloaded from the index page
+  # Priority: zip > pak > exmodz > exmod
   def preferred_type
-    return :pak if pak?
     return :zip if zip?
+    return :pak if pak?
     return :exmodz if exmodz?
     return :exmod if exmod?
 
     nil
   end
 
-  # Determines which file types can be downloaded from the show page
+  # Determines which file types can be downloaded from the show page,
+  # rendered in the same priority order as preferred_type
   def download_types
-    file_types.map(&:to_sym) & %i[pak zip exmodz exmod]
+    %i[zip pak exmodz exmod] & file_types.map(&:to_sym)
   end
 
   def file_types

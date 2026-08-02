@@ -227,37 +227,45 @@ RSpec.describe Mod do
   end
 
   describe "#preferred_type" do
-    context "when given a pak object" do
+    context "when zip, pak, and exmodz are all present" do
       before do
-        mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }
+        mod.files = { pak: Faker::Internet.url, zip: Faker::Internet.url, exmodz: Faker::Internet.url }
       end
 
-      it "returns the preferred type" do
+      it "prefers zip" do
+        expect(mod.preferred_type).to eq(:zip)
+      end
+    end
+
+    context "when pak and exmodz are present" do
+      before { mod.files = { exmodz: Faker::Internet.url, pak: Faker::Internet.url } }
+
+      it "prefers pak" do
         expect(mod.preferred_type).to eq(:pak)
       end
     end
 
-    context "when given a zip object" do
-      before { mod.files = { zip: Faker::Internet.url, exmodz: Faker::Internet.url } }
+    context "when exmodz and exmod are present" do
+      before { mod.files = { exmod: Faker::Internet.url, exmodz: Faker::Internet.url } }
 
-      it "returns the preferred type" do
-        expect(mod.preferred_type).to eq(:zip)
+      it "prefers exmodz" do
+        expect(mod.preferred_type).to eq(:exmodz)
       end
     end
 
     context "when only given an exmod object" do
       before { mod.files = { exmod: Faker::Internet.url } }
 
-      it "returns the preferred type" do
+      it "returns exmod" do
         expect(mod.preferred_type).to eq(:exmod)
       end
     end
 
-    context "when only given an exmodz object" do
-      before { mod.files = { exmodz: Faker::Internet.url } }
+    context "when there are no files" do
+      before { mod.files = {} }
 
-      it "returns the preferred type" do
-        expect(mod.preferred_type).to eq(:exmodz)
+      it "returns nil" do
+        expect(mod.preferred_type).to be_nil
       end
     end
   end
@@ -268,6 +276,18 @@ RSpec.describe Mod do
 
       it "returns the file types" do
         expect(mod.file_types).to eq(%i[zip pak exmodz])
+      end
+    end
+  end
+
+  describe "#download_types" do
+    context "when files are present in arbitrary order" do
+      before do
+        mod.files = { exmod: Faker::Internet.url, pak: Faker::Internet.url, zip: Faker::Internet.url }
+      end
+
+      it "returns downloadable types in priority order" do
+        expect(mod.download_types).to eq(%i[zip pak exmod])
       end
     end
   end
