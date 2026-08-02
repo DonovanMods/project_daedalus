@@ -22,7 +22,7 @@
   <%# Search & Filter Bar %>
   <div class="flex flex-col gap-3 p-4 mb-6 border rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 md:flex-row md:items-center md:justify-between">
     <div class="flex flex-col gap-3 md:flex-row md:items-center md:flex-1">
-      <%= form_with(url: current_path, method: :get, data: {turbo_frame: "mods", turbo_action: "advance"}) do |form| %>
+      <%= form_with(url: current_path, method: :get, data: {turbo_frame: "mods", turbo_action: "advance", action: "submit->mods#prepareSubmit"}) do |form| %>
         <%= form.text_field :query, placeholder: "Search mods...", data: {action: "input->mods#search"},
             class: "px-3 py-2 text-sm border rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 ring-0 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-hidden md:w-64" %>
         <%= form.select :type,
@@ -30,6 +30,8 @@
             {selected: params[:type].presence_in(ModsController::FILTERABLE_TYPES) || "all"},
             data: {action: "change->mods#submit"},
             class: "px-3 py-2 text-sm border rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-hidden" %>
+        <%= form.hidden_field :sort, value: params[:sort], disabled: params[:sort].blank? %>
+        <%= form.hidden_field :dir, value: params[:dir], disabled: params[:dir].blank? %>
       <% end %>
       <%= collection_select nil, nil, @authors, :parameterize, :to_s,
                             {

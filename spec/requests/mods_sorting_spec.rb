@@ -105,4 +105,31 @@ RSpec.describe "Mods Sorting", type: :request do
       expect(response.body).to match(/page=1[^"]*sort=name|sort=name[^"]*page=1/)
     end
   end
+
+  describe "GET /mods/:author with type and sort combined" do
+    let(:author_pak_a) do
+      build(:mod, name: "Alpha Pak", author: "Shared Author",
+                  files: { pak: "https://example.com/a.pak" }, updated_at: 3.days.ago)
+    end
+    let(:author_pak_b) do
+      build(:mod, name: "Beta Pak", author: "Shared Author",
+                  files: { pak: "https://example.com/b.pak" }, updated_at: 2.days.ago)
+    end
+    let(:author_zip) do
+      build(:mod, name: "Gamma Zip", author: "Shared Author",
+                  files: { zip: "https://example.com/g.zip" }, updated_at: 1.day.ago)
+    end
+
+    before do
+      allow(Mod).to receive(:all).and_return([author_pak_a, author_pak_b, author_zip])
+    end
+
+    it "applies author, type, and sort together" do
+      get mods_author_path(author: author_pak_a.author_slug, type: "pak", sort: "name", dir: "desc")
+
+      expect(response.body).not_to include("Gamma Zip")
+      beta, alpha = positions(response.body, "Beta Pak", "Alpha Pak")
+      expect(beta).to be < alpha
+    end
+  end
 end
