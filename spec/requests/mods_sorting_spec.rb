@@ -74,4 +74,35 @@ RSpec.describe "Mods Sorting", type: :request do
       expect(bison).to be < aardvark
     end
   end
+
+  describe "pagination under sort" do
+    let(:paginated_mods) do
+      (1..25).map do |n|
+        build(:mod, name: format("Mod %02d", n), author: "Author #{n}",
+                    files: { zip: "https://example.com/#{n}.zip" },
+                    updated_at: n.hours.ago)
+      end
+    end
+
+    before do
+      allow(Mod).to receive(:all).and_return(paginated_mods)
+    end
+
+    it "returns the correct name-sorted slice for page 2" do
+      get mods_path(sort: "name", page: 2)
+
+      # 25 mods, 20 per page (PaginationHelper::DEFAULT_PER_PAGE): page 2 holds
+      # "Mod 21".."Mod 25", in ascending name order.
+      expect(response.body).not_to include("Mod 01")
+      expect(response.body).not_to include("Mod 20")
+      mod21, mod25 = positions(response.body, "Mod 21", "Mod 25")
+      expect(mod21).to be < mod25
+    end
+
+    it "carries the active sort into the pagination links" do
+      get mods_path(sort: "name", page: 2)
+
+      expect(response.body).to match(/page=1[^"]*sort=name|sort=name[^"]*page=1/)
+    end
+  end
 end
