@@ -77,6 +77,18 @@ class Mod
   end
   # rubocop:enable Naming/PredicatePrefix
 
+  # The download type the listing should offer when a format filter is
+  # active: the filtered format itself when this mod provides it,
+  # otherwise the normal preferred_type.
+  def download_type_for(filter)
+    case filter.to_s.downcase
+    when "pak" then pak? ? :pak : preferred_type
+    when "zip" then zip? ? :zip : preferred_type
+    when "exmod" then exmod? || exmodz? ? exmod_type : preferred_type
+    else preferred_type
+    end
+  end
+
   # Determines which file type is downloaded from the index page
   # Priority: zip > pak > exmodz > exmod
   def preferred_type

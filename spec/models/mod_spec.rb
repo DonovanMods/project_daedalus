@@ -324,6 +324,35 @@ RSpec.describe Mod do
     end
   end
 
+  describe "#download_type_for" do
+    before { mod.files = { pak: Faker::Internet.url, zip: Faker::Internet.url, exmodz: Faker::Internet.url } }
+
+    it "returns the filtered type when the mod has it" do
+      expect(mod.download_type_for("pak")).to eq(:pak)
+      expect(mod.download_type_for("zip")).to eq(:zip)
+    end
+
+    it "resolves exmod filter to exmodz when present" do
+      expect(mod.download_type_for("exmod")).to eq(:exmodz)
+    end
+
+    it "resolves exmod filter to exmod when only exmod present" do
+      mod.files = { pak: Faker::Internet.url, exmod: Faker::Internet.url }
+      expect(mod.download_type_for("exmod")).to eq(:exmod)
+    end
+
+    it "falls back to preferred_type when the mod lacks the filtered type" do
+      mod.files = { pak: Faker::Internet.url }
+      expect(mod.download_type_for("zip")).to eq(:pak)
+    end
+
+    it "falls back to preferred_type for nil or non-filter values" do
+      expect(mod.download_type_for(nil)).to eq(:zip)
+      expect(mod.download_type_for("all")).to eq(:zip)
+      expect(mod.download_type_for("garbage")).to eq(:zip)
+    end
+  end
+
   describe "#file_types" do
     context "when given a files object" do
       before { mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url } }

@@ -22,4 +22,10 @@ module ModHelper
   def download_button_classes(type)
     DOWNLOAD_BUTTON_CLASSES.fetch(type.to_s.downcase.to_sym, ICARUS_BUTTON_CLASSES)
   end
+
+  # The download type the listing button should offer for this mod,
+  # honoring an active ?type= filter.
+  def effective_download_type(mod)
+    mod.download_type_for(params[:type])
+  end
 end
