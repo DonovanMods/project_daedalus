@@ -64,6 +64,17 @@ class Mod
     files.key?(:exmodz)
   end
 
+  # Whether this mod offers the given download format.
+  # "exmod" covers both exmod and exmodz; unknown types match everything (ALL).
+  def has_download_type?(type)
+    case type.to_s.downcase
+    when "pak" then pak?
+    when "zip" then zip?
+    when "exmod" then exmod? || exmodz?
+    else true
+    end
+  end
+
   # Determines which file type is downloaded from the index page
   # Priority: zip > pak > exmodz > exmod
   def preferred_type

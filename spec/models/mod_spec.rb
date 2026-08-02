@@ -270,6 +270,60 @@ RSpec.describe Mod do
     end
   end
 
+  describe "#has_download_type?" do
+    context "with a pak file" do
+      before { mod.files = { pak: Faker::Internet.url } }
+
+      it "matches pak" do
+        expect(mod.has_download_type?("pak")).to be(true)
+      end
+
+      it "does not match zip" do
+        expect(mod.has_download_type?("zip")).to be(false)
+      end
+
+      it "does not match exmod" do
+        expect(mod.has_download_type?("exmod")).to be(false)
+      end
+    end
+
+    context "with a zip file" do
+      before { mod.files = { zip: Faker::Internet.url } }
+
+      it "matches zip" do
+        expect(mod.has_download_type?("zip")).to be(true)
+      end
+    end
+
+    context "with only an exmod file" do
+      before { mod.files = { exmod: Faker::Internet.url } }
+
+      it "matches exmod" do
+        expect(mod.has_download_type?("exmod")).to be(true)
+      end
+    end
+
+    context "with only an exmodz file" do
+      before { mod.files = { exmodz: Faker::Internet.url } }
+
+      it "matches exmod" do
+        expect(mod.has_download_type?("exmod")).to be(true)
+      end
+    end
+
+    context "with any files" do
+      before { mod.files = { pak: Faker::Internet.url } }
+
+      it "matches unknown types" do
+        expect(mod.has_download_type?("garbage")).to be(true)
+      end
+
+      it "accepts symbols and mixed case" do
+        expect(mod.has_download_type?(:PAK)).to be(true)
+      end
+    end
+  end
+
   describe "#file_types" do
     context "when given a files object" do
       before { mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url } }

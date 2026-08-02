@@ -73,6 +73,14 @@ RSpec/IndexedLet:
 RSpec/NestedGroups:
   Max: 5
 
+# Naming Cops
+Naming/PredicatePrefix:
+  MethodDefinitionMacros:
+    - define_method
+    - define_singleton_method
+  Exclude:
+    - 'app/models/**/*'
+
 # Rails Cops
 Rails/SkipsModelValidations:
   Enabled: false
