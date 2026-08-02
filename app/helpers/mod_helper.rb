@@ -28,4 +28,29 @@ module ModHelper
   def effective_download_type(mod)
     mod.download_type_for(params[:type])
   end
+
+  # Header link for a sortable listing column: preserves the active
+  # query/type filters, resets pagination, toggles direction on the
+  # active column, and marks it with an arrow.
+  def sort_link(label, key, current_sort:, current_dir:)
+    active = current_sort == key
+    arrow, next_dir = sort_state_for(key, active, current_dir)
+    link_params = { query: params[:query], type: params[:type], sort: key, dir: next_dir }.compact_blank
+
+    link_to "#{label}#{arrow}", "#{request.path}?#{link_params.to_query}",
+            data: { turbo_action: "advance" }, class: "no-underline text-icarus-500"
+  end
+
+  private
+
+  def sort_state_for(key, active, current_dir)
+    if active
+      arrow = current_dir == "asc" ? " ▲" : " ▼"
+      next_dir = current_dir == "asc" ? "desc" : "asc"
+    else
+      arrow = ""
+      next_dir = Mod.default_dir_for(key)
+    end
+    [arrow, next_dir]
+  end
 end

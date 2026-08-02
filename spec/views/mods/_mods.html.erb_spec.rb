@@ -8,6 +8,8 @@ RSpec.describe "mods/_mods.html.erb", type: :view do
 
   before do
     assign(:total_mods, 2)
+    assign(:sort, "updated")
+    assign(:dir, "desc")
   end
 
   context "with mods present" do
@@ -39,6 +41,30 @@ RSpec.describe "mods/_mods.html.erb", type: :view do
     end
   end
 
+  describe "sortable headers" do
+    it "renders sort links for Name, Download, Author, and Updated" do
+      render partial: "mods/mods", locals: { mods: [mod1, mod2] }
+
+      expect(rendered).to include("sort=name")
+      expect(rendered).to include("sort=download")
+      expect(rendered).to include("sort=author")
+      expect(rendered).to include("sort=updated")
+    end
+
+    it "marks the active column with an arrow" do
+      render partial: "mods/mods", locals: { mods: [mod1, mod2] }
+
+      expect(rendered).to include("Updated ▼")
+    end
+
+    it "renders an Updated header and plain Version header" do
+      render partial: "mods/mods", locals: { mods: [mod1, mod2] }
+
+      expect(rendered).to include("Updated")
+      expect(rendered).not_to include("sort=version")
+    end
+  end
+
   context "with empty mods array" do
     before do
       assign(:total_mods, 0)
@@ -51,7 +77,7 @@ RSpec.describe "mods/_mods.html.erb", type: :view do
 
     it "shows message in table row with proper colspan" do
       render partial: "mods/mods", locals: { mods: [] }
-      expect(rendered).to include('colspan="6"')
+      expect(rendered).to include('colspan="7"')
     end
 
     it "still renders the table structure" do

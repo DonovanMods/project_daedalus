@@ -48,8 +48,71 @@ RSpec.describe Mod do
   end
 
   describe "::SORTKEYS" do
-    it "returns the sortkeys" do
-      expect(described_class::SORTKEYS).to eq(%w[author name])
+    it "lists the sortable listing columns in default-priority order" do
+      expect(described_class::SORTKEYS).to eq(%w[updated name download author])
+    end
+  end
+
+  describe ".default_dir_for" do
+    it "is desc for updated and asc otherwise" do
+      expect(described_class.default_dir_for("updated")).to eq("desc")
+      expect(described_class.default_dir_for("name")).to eq("asc")
+      expect(described_class.default_dir_for("download")).to eq("asc")
+      expect(described_class.default_dir_for("author")).to eq("asc")
+    end
+  end
+
+  describe ".sort_mods" do
+    let(:mods) do
+      [
+        build(:mod, name: "Alpha", author: "zed", files: { zip: Faker::Internet.url }, updated_at: 3.days.ago),
+        build(:mod, name: "beta", author: "Ann", files: { pak: Faker::Internet.url }, updated_at: 1.hour.ago),
+        build(:mod, name: "Gamma", author: "mid", files: { exmodz: Faker::Internet.url }, updated_at: nil)
+      ]
+    end
+
+    it "sorts by updated desc with nil updated_at last" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "updated", dir: "desc")).to eq([new_mod, old_mod, undated_mod])
+    end
+
+    it "sorts by updated asc with nil updated_at still last" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "updated", dir: "asc")).to eq([old_mod, new_mod, undated_mod])
+    end
+
+    it "sorts by name case-insensitively" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "name", dir: "asc")).to eq([old_mod, new_mod, undated_mod])
+      expect(described_class.sort_mods(mods, key: "name", dir: "desc")).to eq([undated_mod, new_mod, old_mod])
+    end
+
+    it "sorts by author case-insensitively" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "author", dir: "asc")).to eq([new_mod, undated_mod, old_mod])
+    end
+
+    it "sorts by download label (exmodz < pak < zip) ascending" do
+      old_mod, new_mod, undated_mod = mods
+      expect(described_class.sort_mods(mods, key: "download", dir: "asc")).to eq([undated_mod, new_mod, old_mod])
+    end
+
+    it "uses the type filter for the download key" do
+      _old_mod, new_mod, _undated_mod = mods
+      both = build(:mod, name: "Both", author: "x", files: { pak: Faker::Internet.url, zip: Faker::Internet.url })
+      result = described_class.sort_mods([both, new_mod], key: "download", dir: "asc", type_filter: "zip")
+      # under zip filter, Both's effective label is "zip" (> "pak"), so new_mod (pak) comes first
+      expect(result).to eq([new_mod, both])
+    end
+
+    it "breaks download ties by name ascending" do
+      pak_b = build(:mod, name: "Bravo", author: "x", files: { pak: Faker::Internet.url })
+      pak_a = build(:mod, name: "alpha2", author: "y", files: { pak: Faker::Internet.url })
+      expect(described_class.sort_mods([pak_b, pak_a], key: "download", dir: "asc")).to eq([pak_a, pak_b])
+    end
+
+    it "returns the array unchanged for an unknown key" do
+      expect(described_class.sort_mods(mods, key: "bogus", dir: "asc")).to eq(mods)
     end
   end
 

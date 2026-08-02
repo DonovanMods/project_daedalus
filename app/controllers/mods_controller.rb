@@ -17,6 +17,7 @@ class ModsController < ApplicationController
 
     filter_by_query
     filter_by_type
+    apply_sort
     @total_mods = @mods.size
     paginate_mods unless @filtered
     render_index
@@ -63,6 +64,12 @@ class ModsController < ApplicationController
 
     @mods = @mods.select { |mod| mod.has_download_type?(params[:type]) }
     @filtered = true
+  end
+
+  def apply_sort
+    @sort = params[:sort].to_s.presence_in(Mod::SORTKEYS) || "updated"
+    @dir = params[:dir].to_s.presence_in(%w[asc desc]) || Mod.default_dir_for(@sort)
+    @mods = Mod.sort_mods(@mods, key: @sort, dir: @dir, type_filter: params[:type])
   end
 
   def paginate_mods

@@ -15,7 +15,7 @@
       <% if @pagination.first_page? %>
         <span class="px-2 py-1.5 sm:px-3 sm:py-2 text-sm rounded-md text-slate-400 dark:text-slate-600 cursor-default">&laquo;<span class="hidden sm:inline"> Prev</span></span>
       <% else %>
-        <%= link_to mods_path(page: @pagination.previous_page),
+        <%= link_to "#{request.path}?#{pagination_link_params(@pagination.previous_page).to_query}",
             class: "px-2 py-1.5 sm:px-3 sm:py-2 text-sm rounded-md text-blue-600 dark:text-blue-400 hover:bg-slate-200 dark:hover:bg-slate-700 no-underline" do %>
           &laquo;<span class="hidden sm:inline"> Prev</span>
         <% end %>
@@ -30,7 +30,7 @@
             <%= page_num %>
           </span>
         <% else %>
-          <%= link_to page_num, mods_path(page: page_num),
+          <%= link_to page_num, "#{request.path}?#{pagination_link_params(page_num).to_query}",
               class: "px-2.5 py-1.5 sm:px-3 sm:py-2 text-sm rounded-md text-blue-600 dark:text-blue-400 hover:bg-slate-200 dark:hover:bg-slate-700 no-underline" %>
         <% end %>
       <% end %>
@@ -39,7 +39,7 @@
       <% if @pagination.last_page? %>
         <span class="px-2 py-1.5 sm:px-3 sm:py-2 text-sm rounded-md text-slate-400 dark:text-slate-600 cursor-default"><span class="hidden sm:inline">Next </span>&raquo;</span>
       <% else %>
-        <%= link_to mods_path(page: @pagination.next_page),
+        <%= link_to "#{request.path}?#{pagination_link_params(@pagination.next_page).to_query}",
             class: "px-2 py-1.5 sm:px-3 sm:py-2 text-sm rounded-md text-blue-600 dark:text-blue-400 hover:bg-slate-200 dark:hover:bg-slate-700 no-underline" do %>
           <span class="hidden sm:inline">Next </span>&raquo;
         <% end %>

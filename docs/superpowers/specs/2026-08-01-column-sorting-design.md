@@ -30,7 +30,7 @@ The mods listing has a fixed order (name A→Z). Users can't sort by the columns
   - `Mod.sort_mods(mods, key:, dir:, type_filter: nil)` class method implementing requirement 3 (returns a new array; `download` key uses each mod's `download_type_for(type_filter)`).
 - **`ModsController#index`:** private `sort_mods` step after `filter_by_type`, before `paginate_mods`: resolves whitelisted `params[:sort]`/`params[:dir]` (fallbacks per requirement 3), calls `Mod.sort_mods`, does NOT touch `@filtered`. Exposes `@sort`/`@dir` for the view.
 - **`ModHelper`:**
-  - `sort_link(label, key)` → returns the header link: href = `url_for` merging current `query`/`type` with `sort: key` and computed `dir` (toggle if `key == @sort`, else first-click default), `data: {turbo_action: "advance"}`, label suffixed with the arrow when active.
+  - `sort_link(label, key, current_sort:, current_dir:)` (explicit state — amended during implementation to satisfy Rails/HelperInstanceVariable) → returns the header link: href = `url_for` merging current `query`/`type` with `sort: key` and computed `dir` (toggle if `key == @sort`, else first-click default), `data: {turbo_action: "advance"}`, label suffixed with the arrow when active.
   - First-click defaults live in one place (e.g. `SORT_DEFAULT_DIRS = {"updated" => "desc"}.freeze` with `"asc"` fallback), used by both helper and controller — put the constant on `Mod` next to `SORTKEYS` so there's a single owner.
 - **`app/views/mods/_mods.html.erb`:** the four `<th>` texts become `sort_link` calls; new Updated `<th>` + `<td>` (in `_mod.html.erb`) per requirement 1.
 

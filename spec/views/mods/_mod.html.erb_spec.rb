@@ -143,4 +143,20 @@ RSpec.describe "mods/_mod.html.erb", type: :view do
       expect(rendered).not_to include(">ZIP<")
     end
   end
+
+  describe "updated column" do
+    it "shows relative time when updated_at is present" do
+      mod.updated_at = 3.days.ago
+      render partial: "mods/mod", locals: { mod: mod }
+
+      expect(rendered).to include("3 days ago")
+    end
+
+    it "shows an em-dash when updated_at is missing" do
+      mod.updated_at = nil
+      render partial: "mods/mod", locals: { mod: mod }
+
+      expect(rendered).to include("&mdash;")
+    end
+  end
 end
