@@ -43,6 +43,9 @@ group :development, :test do
 end
 
 group :development do
+  # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
+  gem "kamal", require: false
+
   # Auditing
   gem "brakeman", "~> 8.0"
   gem "bundler-audit", "~> 0.9.1"
