@@ -329,3 +329,156 @@ Expected: all green, no offenses. Then `bin/rails tailwindcss:build` (no new cla
 git add app/views/mods/index.html.erb spec/views/mods/index.html.erb_spec.rb
 git commit -m "Add download-type filter select to mods search bar"
 ```
+
+---
+
+### Task 4: Filter-aware download button (spec amendment 7)
+
+**Files:**
+- Modify: `app/models/mod.rb` (after `has_download_type?`)
+- Modify: `app/helpers/mod_helper.rb` (after `download_button_classes`)
+- Modify: `app/views/mods/_mod.html.erb:6` (the `if type = mod.preferred_type` line)
+- Test: `spec/models/mod_spec.rb`, `spec/helpers/mod_helper_spec.rb`, `spec/views/mods/_mod.html.erb_spec.rb`
+
+**Interfaces:**
+- Consumes: `Mod#preferred_type`, private `Mod#exmod_type`, `params[:type]` contract (`pak|zip|exmod` = active filter).
+- Produces: `Mod#download_type_for(filter)` → Symbol|nil; `ModHelper#effective_download_type(mod)` → Symbol|nil (reads `params[:type]`).
+
+- [ ] **Step 1: Write the failing model spec**
+
+Add to `spec/models/mod_spec.rb`:
+
+```ruby
+describe "#download_type_for" do
+  before { mod.files = { pak: Faker::Internet.url, zip: Faker::Internet.url, exmodz: Faker::Internet.url } }
+
+  it "returns the filtered type when the mod has it" do
+    expect(mod.download_type_for("pak")).to eq(:pak)
+    expect(mod.download_type_for("zip")).to eq(:zip)
+  end
+
+  it "resolves exmod filter to exmodz when present" do
+    expect(mod.download_type_for("exmod")).to eq(:exmodz)
+  end
+
+  it "resolves exmod filter to exmod when only exmod present" do
+    mod.files = { pak: Faker::Internet.url, exmod: Faker::Internet.url }
+    expect(mod.download_type_for("exmod")).to eq(:exmod)
+  end
+
+  it "falls back to preferred_type when the mod lacks the filtered type" do
+    mod.files = { pak: Faker::Internet.url }
+    expect(mod.download_type_for("zip")).to eq(:pak)
+  end
+
+  it "falls back to preferred_type for nil or non-filter values" do
+    expect(mod.download_type_for(nil)).to eq(:zip)
+    expect(mod.download_type_for("all")).to eq(:zip)
+    expect(mod.download_type_for("garbage")).to eq(:zip)
+  end
+end
+```
+
+- [ ] **Step 2: Run to verify failure**
+
+Run: `bin/rspec spec/models/mod_spec.rb -e download_type_for`
+Expected: FAIL with `NoMethodError: undefined method 'download_type_for'`
+
+- [ ] **Step 3: Implement the model method** (after `has_download_type?` in `app/models/mod.rb`)
+
+```ruby
+# The download type the listing should offer when a format filter is
+# active: the filtered format itself when this mod provides it,
+# otherwise the normal preferred_type.
+def download_type_for(filter)
+  case filter.to_s.downcase
+  when "pak" then pak? ? :pak : preferred_type
+  when "zip" then zip? ? :zip : preferred_type
+  when "exmod" then (exmod? || exmodz?) ? exmod_type : preferred_type
+  else preferred_type
+  end
+end
+```
+
+Note: `exmod_type` is currently under `private`. Move `download_type_for` ABOVE the `private` keyword and leave `exmod_type` private (same-object call is fine).
+
+- [ ] **Step 4: Model spec green, then failing helper spec**
+
+Run: `bin/rspec spec/models/mod_spec.rb` → PASS.
+
+Add to `spec/helpers/mod_helper_spec.rb` inside the ModHelper describe:
+
+```ruby
+describe "#effective_download_type" do
+  let(:mod) { build(:mod, files: { pak: Faker::Internet.url, zip: Faker::Internet.url }) }
+
+  it "returns the filtered type when a filter is active" do
+    allow(helper).to receive(:params).and_return({ type: "pak" }.with_indifferent_access)
+    expect(helper.effective_download_type(mod)).to eq(:pak)
+  end
+
+  it "returns preferred_type when no filter is active" do
+    allow(helper).to receive(:params).and_return({}.with_indifferent_access)
+    expect(helper.effective_download_type(mod)).to eq(:zip)
+  end
+end
+```
+
+Run: `bin/rspec spec/helpers/mod_helper_spec.rb` → FAIL (`undefined method 'effective_download_type'`).
+
+- [ ] **Step 5: Implement the helper** (in `app/helpers/mod_helper.rb`)
+
+```ruby
+# The download type the listing button should offer for this mod,
+# honoring an active ?type= filter.
+def effective_download_type(mod)
+  mod.download_type_for(params[:type])
+end
+```
+
+Run helper spec → PASS.
+
+- [ ] **Step 6: Failing view spec, then view change**
+
+Add to `spec/views/mods/_mod.html.erb_spec.rb`:
+
+```ruby
+context "with an active type filter and a multi-format mod" do
+  let(:multi_mod) do
+    build(:mod,
+          name: "Multi Format",
+          author: "Author",
+          files: { pak: "https://example.com/m.pak", zip: "https://example.com/m.zip" })
+  end
+
+  it "offers the filtered type instead of the preferred one" do
+    allow(view).to receive(:params).and_return({ type: "pak" }.with_indifferent_access)
+    render partial: "mods/mod", locals: { mod: multi_mod }
+
+    expect(rendered).to include(">PAK<")
+    expect(rendered).to include("bg-emerald-600")
+    expect(rendered).not_to include(">ZIP<")
+  end
+end
+```
+
+(Adapt the params stub to the file's existing convention if it differs — this file renders the partial directly; if `view` isn't stubbable this way, follow whatever the index spec does with `allow(view).to receive(:params)`.)
+
+Run: `bin/rspec spec/views/mods/_mod.html.erb_spec.rb` → the new example FAILS (renders ZIP, the priority winner).
+
+Then in `app/views/mods/_mod.html.erb` change line 6 from `<% if type = mod.preferred_type %>` to:
+
+```erb
+<% if type = effective_download_type(mod) %>
+```
+
+- [ ] **Step 7: Full verification**
+
+Run: `bin/rspec` (expect 295 + 8 new = 303-ish; all green), `bundle exec rubocop --parallel` (clean), `bin/rails tailwindcss:build` (succeeds).
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add app/models/mod.rb app/helpers/mod_helper.rb app/views/mods/_mod.html.erb spec/models/mod_spec.rb spec/helpers/mod_helper_spec.rb spec/views/mods/_mod.html.erb_spec.rb
+git commit -m "Offer the filtered download type on listing buttons"
+```
