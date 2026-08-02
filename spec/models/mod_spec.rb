@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe Mod do
@@ -5,25 +7,39 @@ RSpec.describe Mod do
   let(:firestore_collection) { instance_double(Google::Cloud::Firestore::CollectionReference) }
   let(:mod_firestore_obj) do
     instance_double(Google::Cloud::Firestore::DocumentSnapshot,
-      document_id: SecureRandom.uuid,
-      create_time: Time.now.utc,
-      update_time: Time.now.utc,
-      data: {
-        name: Faker::App.name,
-        author: Faker::App.author,
-        description: Faker::Lorem.sentence,
-        version: Faker::App.version,
-        compatibility: "w#{Random.rand(1..5)}",
-        files: {zip: Faker::Internet.url},
-        imageURL: Faker::Internet.url,
-        readmeURL: Faker::Internet.url
-      })
+                    document_id: SecureRandom.uuid,
+                    create_time: Time.now.utc,
+                    update_time: Time.now.utc,
+                    data: {
+                      name: "Alpha Mod",
+                      author: "Author One",
+                      description: Faker::Lorem.sentence,
+                      version: Faker::App.version,
+                      compatibility: "w#{Random.rand(1..5)}",
+                      files: { zip: Faker::Internet.url },
+                      imageURL: Faker::Internet.url,
+                      readmeURL: Faker::Internet.url
+                    })
   end
   let(:mod) { build :mod }
 
+  # Builds a Firestore document snapshot double with the given name and author
+  def firestore_doc(name: Faker::App.name, author: Faker::App.author)
+    instance_double(Google::Cloud::Firestore::DocumentSnapshot,
+                    document_id: SecureRandom.uuid,
+                    create_time: Time.now.utc,
+                    update_time: Time.now.utc,
+                    data: {
+                      name: name, author: author, description: Faker::Lorem.sentence,
+                      version: Faker::App.version, compatibility: "w#{Random.rand(1..5)}",
+                      files: { zip: Faker::Internet.url },
+                      imageURL: Faker::Internet.url, readmeURL: Faker::Internet.url
+                    })
+  end
+
   before do
     allow(Google::Cloud::Firestore).to receive(:new).and_return(firestore_client)
-    allow(firestore_collection).to receive(:get).and_return(Array.new(2, mod_firestore_obj))
+    allow(firestore_collection).to receive(:get).and_return([mod_firestore_obj, firestore_doc(name: "Beta Mod", author: "Author Two")])
     allow(firestore_client).to receive(:col).with("mods").and_return(firestore_collection)
   end
 
@@ -47,6 +63,14 @@ RSpec.describe Mod do
     end
 
     it "returns all mods" do
+      expect(described_class.all.count).to eq(2)
+    end
+
+    it "deduplicates mods with the same name and author" do
+      duplicate = firestore_doc(name: "Alpha Mod", author: "Author One")
+      unique = firestore_doc(name: "Beta Mod", author: "Author Two")
+      allow(firestore_collection).to receive(:get).and_return([mod_firestore_obj, duplicate, unique])
+
       expect(described_class.all.count).to eq(2)
     end
   end
@@ -172,10 +196,10 @@ RSpec.describe Mod do
     end
   end
 
-  %i[pak zip exmodz].each do |file_type|
+  %i[pak zip exmod exmodz].each do |file_type|
     describe "##{file_type}?" do
       context "when given a #{file_type} object" do
-        before { mod.files = {file_type.to_sym => Faker::Internet.url} }
+        before { mod.files = { file_type.to_sym => Faker::Internet.url } }
 
         it "returns true" do
           expect(mod.send(:"#{file_type}?")).to be true
@@ -194,7 +218,7 @@ RSpec.describe Mod do
 
   context "when given a exmodz object" do
     describe "#exmodz?" do
-      before { mod.files = {exmodz: Faker::Internet.url} }
+      before { mod.files = { exmodz: Faker::Internet.url } }
 
       it "returns true" do
         expect(mod.exmodz?).to be true
@@ -205,7 +229,7 @@ RSpec.describe Mod do
   describe "#preferred_type" do
     context "when given a pak object" do
       before do
-        mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url}
+        mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }
       end
 
       it "returns the preferred type" do
@@ -214,7 +238,7 @@ RSpec.describe Mod do
     end
 
     context "when given a zip object" do
-      before { mod.files = {zip: Faker::Internet.url, exmodz: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url, exmodz: Faker::Internet.url } }
 
       it "returns the preferred type" do
         expect(mod.preferred_type).to eq(:zip)
@@ -222,25 +246,25 @@ RSpec.describe Mod do
     end
 
     context "when only given an exmod object" do
-      before { mod.files = {exmod: Faker::Internet.url} }
+      before { mod.files = { exmod: Faker::Internet.url } }
 
       it "returns the preferred type" do
-        expect(mod.preferred_type).to be_nil
+        expect(mod.preferred_type).to eq(:exmod)
       end
     end
 
     context "when only given an exmodz object" do
-      before { mod.files = {exmodz: Faker::Internet.url} }
+      before { mod.files = { exmodz: Faker::Internet.url } }
 
       it "returns the preferred type" do
-        expect(mod.preferred_type).to be_nil
+        expect(mod.preferred_type).to eq(:exmodz)
       end
     end
   end
 
   describe "#file_types" do
     context "when given a files object" do
-      before { mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url } }
 
       it "returns the file types" do
         expect(mod.file_types).to eq(%i[zip pak exmodz])
@@ -251,7 +275,7 @@ RSpec.describe Mod do
   describe "#urls" do
     context "when given a files object" do
       it "returns an array of urls" do
-        mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url}
+        mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url }
 
         expect(mod.urls).to eq([mod.files[:zip], mod.files[:pak], mod.files[:exmodz]])
       end
@@ -260,7 +284,7 @@ RSpec.describe Mod do
 
   describe "#get_url" do
     context "when given a files object" do
-      before { mod.files = {zip: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url } }
 
       it "returns the url" do
         expect(mod.get_url(:zip)).to eq(mod.files[:zip])
@@ -270,21 +294,121 @@ RSpec.describe Mod do
 
   describe "#get_name" do
     context "when given a files object" do
-      before { mod.files = {zip: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url } }
 
       it "returns the name" do
         expect(mod.get_name(:zip)).to eq(mod.files[:zip].split("/").last)
+      end
+    end
+
+    context "when the URL contains spaces" do
+      before { mod.files = { pak: "https://github.com/user/repo/raw/main/No Weather/Mod_P.pak" } }
+
+      it "returns the filename without raising" do
+        expect(mod.get_name(:pak)).to eq("Mod_P.pak")
+      end
+    end
+
+    context "when the URL is nil" do
+      it "returns nil" do
+        expect(mod.get_name(:nonexistent)).to be_nil
       end
     end
   end
 
   describe "#types_string" do
     context "when given a files object" do
-      before { mod.files = {zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url} }
+      before { mod.files = { zip: Faker::Internet.url, pak: Faker::Internet.url, exmodz: Faker::Internet.url } }
 
       it "returns the types string" do
         expect(mod.types_string).to eq("EXMODZ / PAK / ZIP")
       end
+    end
+  end
+
+  describe "#readme error handling" do
+    let(:readme_url) { "https://example.com/README.md" }
+
+    before { mod.readme_url = readme_url }
+
+    context "when network errors occur" do
+      it "returns nil on SocketError (DNS failure)" do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError, "getaddrinfo: Name or service not known")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on Errno::ECONNREFUSED" do
+        allow(Net::HTTP).to receive(:get).and_raise(Errno::ECONNREFUSED, "Connection refused")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on Timeout::Error" do
+        allow(Net::HTTP).to receive(:get).and_raise(Timeout::Error, "execution expired")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on Net::HTTPServerException" do
+        allow(Net::HTTP).to receive(:get).and_raise(Net::HTTPClientException.new("404 Not Found", nil))
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on URI::InvalidURIError" do
+        allow(Net::HTTP).to receive(:get).and_raise(URI::InvalidURIError, "bad URI")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "returns nil on OpenSSL::SSL::SSLError" do
+        allow(Net::HTTP).to receive(:get).and_raise(OpenSSL::SSL::SSLError, "SSL_connect error")
+
+        expect(mod.readme).to be_nil
+      end
+
+      it "logs the error when fetch fails" do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError, "Network error")
+        allow(Rails.logger).to receive(:error)
+
+        mod.readme
+
+        expect(Rails.logger).to have_received(:error).with(/Failed to fetch README/)
+      end
+    end
+
+    context "when readme fetch fails" do
+      before do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError)
+      end
+
+      it "details falls back to description" do
+        mod.description = "Fallback description"
+
+        expect(mod.details).to eq("Fallback description")
+      end
+    end
+  end
+
+  describe "caching" do
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
+    end
+
+    it "caches results and skips Firestore on subsequent calls" do
+      allow(described_class).to receive(:fetch_all).and_call_original
+      described_class.all
+      described_class.all
+      expect(described_class).to have_received(:fetch_all).once
+    end
+
+    it "clears cache with .expire_cache" do
+      described_class.all
+      described_class.expire_cache
+      expect(memory_store.exist?("firestore/mods")).to be false
     end
   end
 end

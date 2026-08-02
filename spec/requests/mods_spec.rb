@@ -3,6 +3,10 @@
 require "rails_helper"
 
 RSpec.describe "Mods" do
+  before do
+    allow(Mod).to receive(:all).and_return([build(:mod)])
+  end
+
   describe "GET /mods" do
     it "returns http success" do
       get "/mods"

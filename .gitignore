@@ -9,10 +9,6 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-*
-
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
@@ -38,3 +34,16 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+.env
+.env.*
+!.env.example
+
+# Claude Code local settings
+.claude/
+
+# Serena MCP plugin
+.serena/
+
+# Playwright MCP plugin
+.playwright-mcp/
+firebase-debug.log

@@ -1,25 +1,47 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ProjectDaedalus</title>
+    <title><%= content_for?(:title) ? "#{yield(:title)} | ProjectDaedalus" : "ProjectDaedalus — Icarus Mods & Tools" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Browse and download mods and tools for the Icarus survival game." %>">
+    <meta property="og:title" content="<%= content_for?(:title) ? yield(:title) : "ProjectDaedalus" %>">
+    <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "Browse and download mods and tools for the Icarus survival game." %>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ProjectDaedalus">
+    <% if content_for?(:og_image) %><meta property="og:image" content="<%= yield(:og_image) %>"><% end %>
     <%= favicon_link_tag asset_path("favicon.png") %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <script>
+      // Apply theme before render to prevent flash.
+      // Priority: saved preference > OS preference (preserves pre-toggle behavior)
+      (function() {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'light') {
+          document.documentElement.classList.remove('dark');
+        } else if (saved === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          // No saved preference — respect OS dark mode setting
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
   </head>
 
   <body class="min-h-screen bg-fixed min-w-screen lg:text-xl bg-topo-light dark:bg-topo-dark text-slate-800 dark:text-slate-300 bg-slate-200 dark:bg-slate-800">
     <%= render "shared/flashes" %>
     <header class="w-screen">
-      <%= render "layouts/header" %></header>
+      <%= render "layouts/header" %>
     </header>
     <main class="flex flex-row justify-center w-screen">
-      <div class="container p-2 mt-5 mb-12 rounded bg-gradient-to-b from-slate-300 to-slate-100 dark:from-slate-900 dark:to-slate-700 drop-shadow-xl paper bg-slate-300 dark:bg-slate-900">
+      <div class="w-[95%] xl:w-[90%] mx-auto p-2 mt-5 mb-12 rounded-sm bg-linear-to-b from-slate-300 to-slate-100 dark:from-slate-900 dark:to-slate-700 drop-shadow-xl paper bg-slate-300 dark:bg-slate-900">
         <%= yield %>
       </div>
     </main>
+
   </body>
 </html>

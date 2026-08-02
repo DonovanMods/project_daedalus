@@ -1,18 +1,24 @@
 # frozen_string_literal: true
 
-require "net/http"
-
 class Tool
   include ActiveModel::Model
   include Convertable
+  include Displayable
   include Firestorable
 
   SORTKEYS = %w[author name].freeze
-  ATTRIBUTES = %i[id name author version compatibility description file_type url image_url readme_url created_at updated_at].freeze
+  ATTRIBUTES = %i[id name author version compatibility description file_type url image_url readme_url created_at
+                  updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def self.all
+    Rails.cache.fetch("firestore/tools", expires_in: 5.minutes) do
+      fetch_all
+    end
+  end
+
+  def self.fetch_all # :nodoc:
     firestore.col("tools").get.filter_map do |tool|
       new(
         id: tool.document_id,
@@ -30,43 +36,23 @@ class Tool
       )
     end.sort_by(&:name)
   end
+  private_class_method :fetch_all
 
-  def readme
-    # We stip out the first # line of the README, as it's usually a title
-    @readme ||= Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip if readme_url.present?
-  end
-
-  def details
-    return readme if readme.present?
-
-    description
+  def self.expire_cache
+    Rails.cache.delete("firestore/tools")
   end
 
   def filename
-    url.split("/").last
+    return if url.blank?
+
+    url.split("?").first.split("/").last
   end
 
   def name_slug
     name.parameterize
   end
 
-  def author_slug
-    author.parameterize
-  end
-
   def slug
     "#{author_slug}-#{name_slug}"
-  end
-
-  def updated_string
-    "Last Updated on #{updated_at.strftime("%B %d, %Y")}"
-  end
-
-  def version_string
-    v = []
-    v << "v#{version}" if version.present?
-    v << compatibility if compatibility.present?
-
-    v.join(" / ")
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe Tool do
@@ -5,20 +7,20 @@ RSpec.describe Tool do
   let(:firestore_collection) { instance_double(Google::Cloud::Firestore::CollectionReference) }
   let(:tool_firestore_obj) do
     instance_double(Google::Cloud::Firestore::DocumentSnapshot,
-      document_id: SecureRandom.uuid,
-      create_time: Time.now.utc,
-      update_time: Time.now.utc,
-      data: {
-        name: Faker::App.name,
-        author: Faker::App.author,
-        description: Faker::Lorem.sentence,
-        version: Faker::App.version,
-        compatibility: "w#{Random.rand(1..5)}",
-        fileType: "ZIP",
-        fileURL: Faker::Internet.url,
-        imageURL: Faker::Internet.url,
-        readmeURL: Faker::Internet.url
-      })
+                    document_id: SecureRandom.uuid,
+                    create_time: Time.now.utc,
+                    update_time: Time.now.utc,
+                    data: {
+                      name: Faker::App.name,
+                      author: Faker::App.author,
+                      description: Faker::Lorem.sentence,
+                      version: Faker::App.version,
+                      compatibility: "w#{Random.rand(1..5)}",
+                      fileType: "ZIP",
+                      fileURL: Faker::Internet.url,
+                      imageURL: Faker::Internet.url,
+                      readmeURL: Faker::Internet.url
+                    })
   end
   let(:tool) { build :tool }
 
@@ -152,6 +154,73 @@ RSpec.describe Tool do
 
         expect(tool.version_string).to eq("v#{tool.version}")
       end
+    end
+  end
+
+  describe "#readme error handling" do
+    let(:readme_url) { "https://example.com/README.md" }
+
+    before { tool.readme_url = readme_url }
+
+    context "when network errors occur" do
+      it "returns nil on SocketError" do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError)
+        expect(tool.readme).to be_nil
+      end
+
+      it "returns nil on Errno::ECONNREFUSED" do
+        allow(Net::HTTP).to receive(:get).and_raise(Errno::ECONNREFUSED)
+        expect(tool.readme).to be_nil
+      end
+
+      it "returns nil on Timeout::Error" do
+        allow(Net::HTTP).to receive(:get).and_raise(Timeout::Error)
+        expect(tool.readme).to be_nil
+      end
+
+      it "returns nil on URI::InvalidURIError" do
+        allow(Net::HTTP).to receive(:get).and_raise(URI::InvalidURIError)
+        expect(tool.readme).to be_nil
+      end
+
+      it "logs the error" do
+        allow(Net::HTTP).to receive(:get).and_raise(SocketError, "Network error")
+        allow(Rails.logger).to receive(:error)
+
+        tool.readme
+
+        expect(Rails.logger).to have_received(:error).with(/Failed to fetch README/)
+      end
+    end
+
+    context "when readme fetch fails" do
+      before { allow(Net::HTTP).to receive(:get).and_raise(SocketError) }
+
+      it "details falls back to description" do
+        tool.description = "Fallback description"
+        expect(tool.details).to eq("Fallback description")
+      end
+    end
+  end
+
+  describe "caching" do
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_store)
+    end
+
+    it "caches results and skips Firestore on subsequent calls" do
+      allow(described_class).to receive(:fetch_all).and_call_original
+      described_class.all
+      described_class.all
+      expect(described_class).to have_received(:fetch_all).once
+    end
+
+    it "clears cache with .expire_cache" do
+      described_class.all
+      described_class.expire_cache
+      expect(memory_store.exist?("firestore/tools")).to be false
     end
   end
 end

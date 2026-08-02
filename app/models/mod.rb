@@ -1,19 +1,25 @@
 # frozen_string_literal: true
 
-require "net/http"
-
 class Mod
   include ActiveModel::Model
   include Convertable
+  include Displayable
   include Firestorable
 
   SORTKEYS = %w[author name].freeze
-  ATTRIBUTES = %i[author compatibility description files id image_url metadata name readme_url timestamps version created_at updated_at].freeze
+  ATTRIBUTES = %i[author compatibility description files id image_url metadata name readme_url timestamps version
+                  created_at updated_at].freeze
 
   ATTRIBUTES.each { |attr| attr_accessor attr }
 
   def self.all
-    firestore.col("mods").get.filter_map do |mod|
+    Rails.cache.fetch("firestore/mods", expires_in: 5.minutes) do
+      fetch_all
+    end
+  end
+
+  def self.fetch_all # :nodoc:
+    mods = firestore.col("mods").get.filter_map do |mod|
       new(
         author: mod.data[:author],
         compatibility: mod.data[:compatibility],
@@ -28,18 +34,14 @@ class Mod
         created_at: mod.create_time,
         updated_at: mod.update_time
       )
-    end.sort_by(&:name)
+    end
+
+    mods.uniq { |mod| [mod.name.downcase, mod.author_slug] }.sort_by(&:name)
   end
+  private_class_method :fetch_all
 
-  def readme
-    # We stip out the first # line of the README, as it's usually a title
-    @readme ||= Net::HTTP.get(raw_uri(readme_url)).gsub(/^#\s+.*$/, "").strip if readme_url.present?
-  end
-
-  def details
-    return readme if readme.present?
-
-    description
+  def self.expire_cache
+    Rails.cache.delete("firestore/mods")
   end
 
   def files?
@@ -54,19 +56,28 @@ class Mod
     files.key?(:zip)
   end
 
+  def exmod?
+    files.key?(:exmod)
+  end
+
   def exmodz?
     files.key?(:exmodz)
   end
 
-  # Determins which file types can be downloaded from the index page
+  # Determines which file types can be downloaded from the index page
+  # Priority: pak > zip > exmodz > exmod (most common/compatible format first)
   def preferred_type
     return :pak if pak?
-    :zip if zip?
+    return :zip if zip?
+    return :exmodz if exmodz?
+    return :exmod if exmod?
+
+    nil
   end
 
-  # Determins which file types can be downloaded from the show page
+  # Determines which file types can be downloaded from the show page
   def download_types
-    file_types.map(&:to_sym) & %i[pak zip exmodz]
+    file_types.map(&:to_sym) & %i[pak zip exmodz exmod]
   end
 
   def file_types
@@ -89,32 +100,16 @@ class Mod
     file_types.map(&:upcase).sort.join(" / ")
   end
 
-  def author_slug
-    author.parameterize
-  end
-
   def slug
     name.parameterize
-  end
-
-  def updated_string
-    "Last Updated on #{updated_at.strftime("%B %d, %Y")}"
-  end
-
-  def version_string
-    v = []
-    v << "v#{version}" if version.present?
-    v << compatibility if compatibility.present?
-
-    v.join(" / ")
   end
 
   private
 
   def filename(url)
-    return unless url
+    return if url.blank?
 
-    URI(url).path.split("/").last
+    url.split("?").first.split("/").last
   end
 
   def exmod_type

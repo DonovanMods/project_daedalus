@@ -7,4 +7,4 @@ end
 
 system! "bundle exec bundle-audit --update"
 system! "bundle exec brakeman -q -w2"
-system! "bundle exec standardrb --parallel"
+system! "bundle exec rubocop --parallel"

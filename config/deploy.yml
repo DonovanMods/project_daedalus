@@ -1,0 +1,59 @@
+# Name of your application. Used to uniquely configure containers.
+service: project-daedalus
+
+# Name of the container image.
+image: dyoung522/project-daedalus
+
+# Deploy to these servers.
+servers:
+  web:
+    - 10.30.11.2
+
+# Proxy configuration.
+# SSL/TLS is terminated by Cloudflare (HTTPS on :443 from clients),
+# which forwards plain HTTP to Kamal's proxy on port 80.
+# The proxy then forwards to the app on app_port (3000).
+proxy:
+  ssl: false
+  app_port: 3000
+  forward_headers: true
+
+logging:
+  driver: json-file
+  options:
+    max-size: 10m
+
+# Credentials for your image host.
+registry:
+  username: dyoung522
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Configure builder setup.
+builder:
+  arch: amd64
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+env:
+  clear:
+    GOOGLE_PROJECT_ID: projectdaedalus-fb09f
+    STORAGE_BUCKET_NAME: project-daedalus-public
+    GOOGLE_REGION: us-central1
+    # Run the Solid Queue supervisor inside Puma (single-server deployment,
+    # see config/puma.rb).
+    SOLID_QUEUE_IN_PUMA: true
+  secret:
+    - RAILS_MASTER_KEY
+
+# Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
+# "bin/kamal app logs -r job" will tail logs from the first server in the job section.
+aliases:
+  shell: app exec --interactive --reuse "bash"
+  console: app exec --interactive --reuse "rails console"
+
+# Use persistent storage volumes.
+volumes:
+  - rails_tmp:/rails/tmp
+  # Solid Cache/Queue/Cable sqlite databases live under storage/ (see
+  # config/database.yml) and must survive deploys/restarts.
+  - rails_storage:/rails/storage
