@@ -25,6 +25,11 @@
       <%= form_with(url: current_path, method: :get, data: {turbo_frame: "mods", turbo_action: "advance"}) do |form| %>
         <%= form.text_field :query, placeholder: "Search mods...", data: {action: "input->mods#search"},
             class: "px-3 py-2 text-sm border rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 ring-0 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-hidden md:w-64" %>
+        <%= form.select :type,
+            [["ALL", "all"], ["PAK", "pak"], ["ZIP", "zip"], ["EXMOD(z)", "exmod"]],
+            {selected: params[:type].presence_in(%w[pak zip exmod]) || "all"},
+            data: {action: "change->mods#submit"},
+            class: "px-3 py-2 text-sm border rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-icarus-500 focus:border-icarus-500 focus:outline-hidden" %>
       <% end %>
       <%= collection_select nil, nil, @authors, :parameterize, :to_s,
                             {
