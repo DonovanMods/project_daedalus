@@ -1,0 +1,56 @@
+name: Add my mod repository
+description: Ask for your GitHub repository to be added to the Daedalus / IMM mod registry
+title: "Request: Add OWNER/REPO to the registry"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing your mods! Once your repository is in the registry, the mods it lists show up in the Daedalus catalog and in the Icarus Mod Manager.
+
+        **What happens next:** automated checks run on your repository within a few hours and post the results here. If they pass, a maintainer reviews the request and adds the repository. If something needs fixing, the comment says what; push the fix and the checks run again automatically.
+
+        **Before you submit, please replace `OWNER/REPO` in the title** with your repository (for example `Request: Add YourName/Icarus-Mods to the registry`).
+  - type: input
+    id: repository
+    attributes:
+      label: Repository URL
+      description: The full GitHub URL of the public repository that contains your `modinfo.json` and/or `toolinfo.json`.
+      placeholder: https://github.com/YourName/Icarus-Mods
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: Author name
+      description: The author name used in your `modinfo.json` / `toolinfo.json`.
+    validations:
+      required: true
+  - type: textarea
+    id: contents
+    attributes:
+      label: What does it contain?
+      description: The mods or tools in the repository, with the game week they are compatible with if you know it.
+      placeholder: |
+        - Pickup and Move v1.0.0 (Week 250)
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: The repository is public, and `modinfo.json` (for mods) or `toolinfo.json` (for tools) is in the repository.
+          required: true
+        - label: Every file linked from it (`.pak`, `.exmodz`, `.zip`, images, readmes) is hosted on GitHub, in the repository or its Releases.
+          required: true
+        - label: I am the author of these mods/tools, or have the author's permission to publish them.
+          required: true
+        - label: The files contain only mod data; no executables, scripts, installers, or instructions to download anything else.
+          required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else?
+      description: Optional. Anything a maintainer should know.
+    validations:
+      required: false
