@@ -104,6 +104,20 @@ RSpec.describe "Mods Show", type: :request do
     end
 
     context "with README content" do
+      it "shows UTF-8 README text as written" do
+        allow(Net::HTTP).to receive(:get).and_return("Duration \u{2014} permanent".b)
+
+        get mod_detail_path(author: mod1.author_slug, slug: mod1.slug)
+        expect(response.body).to include("Duration \u{2014} permanent")
+      end
+
+      it "shows a README table as a table" do
+        allow(Net::HTTP).to receive(:get).and_return("| Tier | HP |\n|------|----|\n| Boss | +75% |")
+
+        get mod_detail_path(author: mod1.author_slug, slug: mod1.slug)
+        expect(response.body).to include("<th>Tier</th>")
+      end
+
       it "displays description when README URL is not available" do
         mod_no_readme = build(:mod, name: "No README", author: "Author", description: "Description only", readme_url: nil)
         allow(Mod).to receive(:all).and_return([mod_no_readme])

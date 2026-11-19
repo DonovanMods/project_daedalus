@@ -170,6 +170,49 @@ RSpec.describe Mod do
     end
   end
 
+  # Net::HTTP returns the body as binary, whatever charset the server declares
+  context "when the readme is UTF-8 text" do
+    def binary(text)
+      text.dup.force_encoding(Encoding::BINARY)
+    end
+
+    it "returns non-ASCII characters intact" do
+      allow(Net::HTTP).to receive(:get).and_return(binary("Duration — permanent · 3× faster"))
+
+      expect(mod.readme).to eq("Duration — permanent · 3× faster")
+    end
+
+    it "returns a UTF-8 string" do
+      allow(Net::HTTP).to receive(:get).and_return(binary("Duration — permanent"))
+
+      expect(mod.readme.encoding).to eq(Encoding::UTF_8)
+    end
+
+    it "drops a leading byte order mark so the title line is still stripped" do
+      allow(Net::HTTP).to receive(:get).and_return(binary("\u{FEFF}# Title\nBody"))
+
+      expect(mod.readme).to eq("Body")
+    end
+
+    it "reads a byte that is not UTF-8 as Windows-1252 instead of raising" do
+      allow(Net::HTTP).to receive(:get).and_return("caf\xE9 \x93ok\x94".b)
+
+      expect(mod.readme).to eq("caf\u{00E9} \u{201C}ok\u{201D}")
+    end
+
+    it "keeps the UTF-8 text around such a byte" do
+      allow(Net::HTTP).to receive(:get).and_return("Duration \xE2\x80\x94 caf\xE9".b)
+
+      expect(mod.readme).to eq("Duration \u{2014} caf\u{00E9}")
+    end
+
+    it "replaces a byte that Windows-1252 does not define either" do
+      allow(Net::HTTP).to receive(:get).and_return("a\x81b".b)
+
+      expect(mod.readme).to eq("a\u{FFFD}b")
+    end
+  end
+
   context "when the readme_url is not present" do
     before { mod.readme_url = "" }
 

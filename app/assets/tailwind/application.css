@@ -200,3 +200,35 @@
     @apply text-blue-500 dark:text-blue-300 no-underline;
   }
 }
+
+/*
+  README badge rows. The typography plugin gives every image its own block with a large
+  margin, and the Markdown renderer's hard wraps add a <br> after each line, so a row of
+  badges written one per line rendered as a tall stack. Keep images inline and let
+  consecutive ones share a line, as they do on GitHub.
+*/
+.prose a > img,
+.prose p > img {
+  display: inline;
+  margin: 0;
+}
+
+.prose :is(img, a:has(> img)) + br:has(+ img, + a > img) {
+  display: none;
+}
+
+/*
+  A table wider than the text column scrolls sideways inside its wrapper instead of widening the page.
+  The wrapper takes over the table's margin; it sits in the components layer so the typography plugin
+  can still drop that margin at the start and end of the README.
+*/
+@layer components {
+  .prose .table-scroll {
+    margin-block: 2em;
+    overflow-x: auto;
+  }
+}
+
+.prose .table-scroll > table {
+  margin: 0;
+}
