@@ -59,6 +59,64 @@ RSpec.describe ApplicationHelper, type: :helper do
       end
     end
 
+    context "with tables" do
+      let(:table) { "| Tier | HP |\n|------|----|\n| Boss | +75% |" }
+
+      it "renders a table" do
+        result = helper.markdown(table)
+        expect(result).to include("<table>")
+        expect(result).to include("<th>Tier</th>")
+        expect(result).to include("<td>+75%</td>")
+      end
+
+      it "does not leave the pipe syntax in the output" do
+        expect(helper.markdown(table)).not_to include("|")
+      end
+
+      it "wraps the table so that a wide one scrolls sideways instead of widening the page" do
+        expect(helper.markdown(table)).to include('<div class="table-scroll"><table>')
+      end
+
+      it "keeps column alignment" do
+        result = helper.markdown("| L | C | R |\n|:--|:-:|--:|\n| a | b | c |")
+        expect(result).to include('<th class="text-left">L</th>')
+        expect(result).to include('<td class="text-center">b</td>')
+        expect(result).to include('<td class="text-right">c</td>')
+      end
+
+      it "still removes scripts inside a table cell" do
+        result = helper.markdown("| A |\n|---|\n| <script>alert(1)</script> |")
+        expect(result).not_to include("<script>")
+      end
+
+      # 150 columns by 300 rows is over the bound, yet small enough that a broken bound fails the example
+      # instead of exhausting the machine's memory.
+      it "renders an oversized table as text rather than as tens of thousands of cells" do
+        oversized = "|#{"a|" * 150}\n|#{"-|" * 150}\n#{"|\n" * 300}"
+
+        expect(helper.markdown(oversized)).not_to include("<table>")
+      end
+
+      it "applies the bound when lines end in a lone carriage return, which Redcarpet also treats as a line end" do
+        oversized = "|#{"a|" * 150}\r|#{"-|" * 150}\r#{"|\r" * 300}"
+
+        expect(helper.markdown(oversized)).not_to include("<table>")
+      end
+
+      it "still renders a long table that is within the bound" do
+        long = "|#{"a|" * 8}\n|#{"-|" * 8}\n#{"|b|\n" * 300}"
+
+        expect(helper.markdown(long)).to include("<table>")
+      end
+    end
+
+    context "with non-ASCII text" do
+      it "keeps UTF-8 characters intact" do
+        result = helper.markdown("50% — permanent · 3× faster")
+        expect(result).to include("50% — permanent · 3× faster")
+      end
+    end
+
     context "with security features" do
       it "sanitizes malicious HTML/JavaScript" do
         malicious = "<script>alert('XSS')</script>"
